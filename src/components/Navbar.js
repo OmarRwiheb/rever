@@ -85,9 +85,12 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
 
   return (
     <div
-      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10 `}
+      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10 overflow-hidden`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      style={{
+        animation: 'elegantDropdown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+      }}
     >
       {/* Empty space to cover navbar area */}
       <div className="h-20"></div>
@@ -117,6 +120,20 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
           ))}
         </div>
       </div>
+      
+      <style jsx>{`
+        @keyframes elegantDropdown {
+          0% {
+            opacity: 0;
+            transform: translateY(-100%) scaleY(0.9);
+          }
+          
+          100% {
+            opacity: 1;
+            transform: translateY(0) scaleY(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };
