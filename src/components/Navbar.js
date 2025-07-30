@@ -85,7 +85,7 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
 
   return (
     <div
-      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10`}
+      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10 `}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -158,7 +158,7 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
   <div className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     <a
       href={link.href}
-      className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-colors duration-200 flex items-center gap-1`}
+      className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
     >
       {link.name}
       {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />}
@@ -480,7 +480,7 @@ export default function Navbar() {
           {/* Brand Logo */}
           <div className="flex-1 flex justify-center lg:justify-center">
             <a href="/" className="text-center">
-              <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider`}>
+              <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
                 <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
               </h1>
             </a>
@@ -499,7 +499,7 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               />
             ))}
-            <button className={`${styles.text} ${styles.hover} transition-colors duration-200`}>
+            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out`}>
               <Search size={18} />
             </button>
           </div>
