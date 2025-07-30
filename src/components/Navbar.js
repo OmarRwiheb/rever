@@ -184,18 +184,19 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
 );
 
 const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) => (
-  <div>
+  <div className="space-y-3">
     <div className="flex items-center justify-between">
       <a
         href={link.href}
-        className={`block text-sm font-light uppercase tracking-wider ${styles.text} ${styles.hover} transition-colors duration-200 py-2 flex-1`}
+        className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
       >
         {link.name}
       </a>
       {hasDropdown && (
         <button
           onClick={onToggle}
-          className={`${styles.text} ${styles.hover} transition-colors duration-200 p-2`}
+          className="text-black hover:text-gray-600 transition-colors duration-200 p-2 touch-manipulation"
+          style={{ touchAction: 'manipulation' }}
         >
           <ChevronDown size={16} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
@@ -483,8 +484,12 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex justify-center lg:justify-center">
             <button
-              onClick={toggleMobileMenu}
-              className={`${styles.text} ${styles.hover} transition-colors duration-200`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMobileMenu();
+              }}
+              className={`${styles.text} ${styles.hover} transition-colors duration-200 touch-manipulation`}
+              style={{ touchAction: 'manipulation' }}
             >
               {isMobileMenuOpen ? (
                 <X size={24} />
@@ -552,36 +557,99 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden">
-            <div className={`px-2 pt-2 pb-3 space-y-1 ${styles.bg} border-t ${isHomePage ? 'border-white/20' : 'border-white/20'}`}>
-              {/* Left Links */}
-              <div className="space-y-2 mb-4">
-                {navLinks.map((link) => (
-                  <MobileNavLink 
-                    key={link.name} 
-                    link={link} 
-                    styles={styles}
-                    hasDropdown={link.hasDropdown}
-                    isDropdownOpen={mobileDropdowns[link.name]}
-                    onToggle={() => toggleMobileDropdown(link.name)}
-                  />
-                ))}
+          <div 
+            className="lg:hidden fixed top-0 left-0 w-full h-full bg-gray-50/90 backdrop-blur-sm z-[9999] overflow-hidden"
+            style={{
+              animation: 'slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col h-full">
+              {/* Mobile Header - Same structure as main navbar */}
+              <div className="mx-0 px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative">
+                  {/* Mobile Menu Button - Now Close Button */}
+                  <div className="lg:hidden flex justify-center lg:justify-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMobileMenu();
+                      }}
+                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
+                      style={{ touchAction: 'manipulation' }}
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+
+                  {/* Brand Logo */}
+                  <div className="flex-1 flex justify-center lg:justify-center">
+                    <a href="/" className="text-center">
+                      <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
+                        <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
+                      </h1>
+                    </a>
+                  </div>
+
+                  {/* Search Icon for Mobile */}
+                  <div className="lg:hidden flex items-center justify-center">
+                    <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out">
+                      <Search size={20} />
+                    </button>
+                  </div>
+                </div>
               </div>
               
-              {/* Right Links */}
-              <div className="space-y-2">
-                {rightNavLinks.map((link) => (
-                  <MobileNavLink 
-                    key={link.name} 
-                    link={link} 
-                    styles={styles}
-                    hasDropdown={link.hasDropdown}
-                    isDropdownOpen={mobileDropdowns[link.name]}
-                    onToggle={() => toggleMobileDropdown(link.name)}
-                  />
-                ))}
+              {/* Mobile Navigation */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-6 space-y-8">
+                  {/* Left Links */}
+                  <div className="space-y-6">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+                      Collections
+                    </h3>
+                    {navLinks.map((link) => (
+                      <MobileNavLink 
+                        key={link.name} 
+                        link={link} 
+                        styles={{ text: 'text-black', hover: 'hover:text-gray-600' }}
+                        hasDropdown={link.hasDropdown}
+                        isDropdownOpen={mobileDropdowns[link.name]}
+                        onToggle={() => toggleMobileDropdown(link.name)}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Right Links */}
+                  <div className="space-y-6">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+                      Services
+                    </h3>
+                    {rightNavLinks.map((link) => (
+                      <MobileNavLink 
+                        key={link.name} 
+                        link={link} 
+                        styles={{ text: 'text-black', hover: 'hover:text-gray-600' }}
+                        hasDropdown={link.hasDropdown}
+                        isDropdownOpen={mobileDropdowns[link.name]}
+                        onToggle={() => toggleMobileDropdown(link.name)}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
+            
+            <style jsx>{`
+              @keyframes slideInFromTop {
+                0% {
+                  opacity: 0;
+                }
+                100% {
+                  opacity: 1;
+                }
+              }
+            `}</style>
           </div>
         )}
       </div>
