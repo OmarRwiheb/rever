@@ -202,6 +202,7 @@ export default function Navbar() {
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
+  const [hoverTimeout, setHoverTimeout] = useState(null);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
@@ -213,6 +214,21 @@ export default function Navbar() {
       [linkName]: !prev[linkName]
     }));
   }, []);
+
+  const handleMouseEnter = useCallback((linkName) => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setActiveDropdown(linkName);
+  }, [hoverTimeout, setActiveDropdown]);
+
+  const handleMouseLeave = useCallback(() => {
+    const timeout = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150);
+    setHoverTimeout(timeout);
+  }, [setActiveDropdown]);
 
   // Use dynamic styles only on home page, static black styles on other pages
   const styles = useMemo(() => {
@@ -441,8 +457,8 @@ export default function Navbar() {
                 styles={styles}
                 hasDropdown={link.hasDropdown}
                 isDropdownOpen={activeDropdown === link.name}
-                onMouseEnter={() => setActiveDropdown(link.name)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                onMouseEnter={() => handleMouseEnter(link.name)}
+                onMouseLeave={handleMouseLeave}
               />
             ))}
           </div>
@@ -479,8 +495,8 @@ export default function Navbar() {
                 styles={styles}
                 hasDropdown={link.hasDropdown}
                 isDropdownOpen={activeDropdown === link.name}
-                onMouseEnter={() => setActiveDropdown(link.name)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                onMouseEnter={() => handleMouseEnter(link.name)}
+                onMouseLeave={handleMouseLeave}
               />
             ))}
             <button className={`${styles.text} ${styles.hover} transition-colors duration-200`}>
@@ -507,8 +523,8 @@ export default function Navbar() {
                     items={activeLink.dropdownItems}
                     styles={styles}
                     isOpen={true}
-                    onMouseEnter={() => setActiveDropdown(activeDropdown)}
-                    onMouseLeave={() => setActiveDropdown(null)}
+                    onMouseEnter={() => handleMouseEnter(activeDropdown)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 );
               }
