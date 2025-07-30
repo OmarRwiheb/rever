@@ -145,7 +145,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex justify-center lg:justify-center">
             <button
               onClick={toggleMobileMenu}
               className={`${styles.text} ${styles.hover} transition-colors duration-200`}
@@ -178,7 +178,7 @@ export default function Navbar() {
           </div>
 
           {/* Search Icon for Mobile */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center justify-center">
             <button className={`${styles.text} ${styles.hover} transition-colors duration-200`}>
               <Search size={20} />
             </button>
