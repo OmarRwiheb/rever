@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useContext, createContext, useMemo, useCallback } from 'react';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 // Create context for navbar state
@@ -76,23 +76,114 @@ export const NavbarProvider = ({ children }) => {
   );
 };
 
+// Dropdown component for desktop
+const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className={`absolute top-full left-0 mt-0 w-full bg-gray-50/90 backdrop-blur-sm py-12 z-50`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div className="px-8 w-full flex justify-start gap-20">
+        {items.map((item, index) => (
+          <div key={index} className="min-w-[200px]">
+            {item.title && (
+              <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">
+                {item.title}
+              </h3>
+            )}
+            <div className="space-y-3">
+              {item.links.map((link, linkIndex) => (
+                <a
+                  key={linkIndex}
+                  href={link.href}
+                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Mobile dropdown component
+const MobileDropdownMenu = ({ items, styles, isOpen, onToggle }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="pl-4 border-l border-gray-200 ml-4 mt-2">
+      <div className="space-y-1">
+        {items.map((item, index) => (
+          <div key={index} className="mb-3 last:mb-0">
+            {item.title && (
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-600 mb-2">
+                {item.title}
+              </h4>
+            )}
+            <div className="space-y-1">
+              {item.links.map((link, linkIndex) => (
+                <a
+                  key={linkIndex}
+                  href={link.href}
+                  className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // Memoized link components to prevent unnecessary re-renders
-const NavLink = ({ link, styles }) => (
-  <a
-    href={link.href}
-    className={`text-xs font-light uppercase tracking-wider ${styles.text} ${styles.hover} transition-colors duration-200`}
-  >
-    {link.name}
-  </a>
+const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMouseLeave }) => (
+  <div className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <a
+      href={link.href}
+      className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-colors duration-200 flex items-center gap-1`}
+    >
+      {link.name}
+      {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />}
+    </a>
+  </div>
 );
 
-const MobileNavLink = ({ link, styles }) => (
-  <a
-    href={link.href}
-    className={`block text-sm font-light uppercase tracking-wider ${styles.text} ${styles.hover} transition-colors duration-200 py-2`}
-  >
-    {link.name}
-  </a>
+const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) => (
+  <div>
+    <div className="flex items-center justify-between">
+      <a
+        href={link.href}
+        className={`block text-sm font-light uppercase tracking-wider ${styles.text} ${styles.hover} transition-colors duration-200 py-2 flex-1`}
+      >
+        {link.name}
+      </a>
+      {hasDropdown && (
+        <button
+          onClick={onToggle}
+          className={`${styles.text} ${styles.hover} transition-colors duration-200 p-2`}
+        >
+          <ChevronDown size={16} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
+      )}
+    </div>
+    {hasDropdown && (
+      <MobileDropdownMenu
+        items={link.dropdownItems}
+        styles={styles}
+        isOpen={isDropdownOpen}
+        onToggle={onToggle}
+      />
+    )}
+  </div>
 );
 
 export default function Navbar() {
@@ -101,9 +192,18 @@ export default function Navbar() {
   
   const { currentSection, getNavbarStyles } = useNavbar();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileDropdowns, setMobileDropdowns] = useState({});
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
+  }, []);
+
+  const toggleMobileDropdown = useCallback((linkName) => {
+    setMobileDropdowns(prev => ({
+      ...prev,
+      [linkName]: !prev[linkName]
+    }));
   }, []);
 
   // Use dynamic styles only on home page, static black styles on other pages
@@ -115,16 +215,194 @@ export default function Navbar() {
   }, [isHomePage, currentSection, getNavbarStyles]);
 
   const navLinks = useMemo(() => [
-    { name: 'HIGHLIGHTS', href: '/highlights' },
-    { name: 'WOMEN', href: '/women' },
-    { name: 'MEN', href: '/men' },
-    { name: 'SL PRODUCTIONS', href: '/sl-productions' },
+    { 
+      name: 'HIGHLIGHTS', 
+      href: '/highlights',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'FEATURED',
+          links: [
+            { name: 'NEW ARRIVALS', href: '/highlights/new-arrivals' },
+            { name: 'BEST SELLERS', href: '/highlights/best-sellers' },
+            { name: 'TRENDING', href: '/highlights/trending' }
+          ]
+        },
+        {
+          title: 'COLLECTIONS',
+          links: [
+            { name: 'SPRING/SUMMER 2024', href: '/highlights/spring-summer-2024' },
+            { name: 'FALL/WINTER 2024', href: '/highlights/fall-winter-2024' },
+            { name: 'LIMITED EDITION', href: '/highlights/limited-edition' }
+          ]
+        }
+      ]
+    },
+    { 
+      name: 'WOMEN', 
+      href: '/women',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'CLOTHING',
+          links: [
+            { name: 'DRESSES', href: '/women/dresses' },
+            { name: 'TOPS', href: '/women/tops' },
+            { name: 'BOTTOMS', href: '/women/bottoms' },
+            { name: 'OUTERWEAR', href: '/women/outerwear' }
+          ]
+        },
+        {
+          title: 'ACCESSORIES',
+          links: [
+            { name: 'BAGS', href: '/women/bags' },
+            { name: 'SHOES', href: '/women/shoes' },
+            { name: 'JEWELRY', href: '/women/jewelry' },
+            { name: 'SCARVES', href: '/women/scarves' }
+          ]
+        }
+      ]
+    },
+    { 
+      name: 'MEN', 
+      href: '/men',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'CLOTHING',
+          links: [
+            { name: 'SHIRTS', href: '/men/shirts' },
+            { name: 'PANTS', href: '/men/pants' },
+            { name: 'SUITS', href: '/men/suits' },
+            { name: 'OUTERWEAR', href: '/men/outerwear' }
+          ]
+        },
+        {
+          title: 'ACCESSORIES',
+          links: [
+            { name: 'BAGS', href: '/men/bags' },
+            { name: 'SHOES', href: '/men/shoes' },
+            { name: 'BELTS', href: '/men/belts' },
+            { name: 'TIES', href: '/men/ties' }
+          ]
+        }
+      ]
+    },
+    { 
+      name: 'SL PRODUCTIONS', 
+      href: '/sl-productions',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'SL PRODUCTIONS',
+          links: [
+            { name: 'ABOUT', href: '/sl-productions/about' }
+          ]
+        },
+        {
+          title: '2024',
+          links: [
+            { name: 'FABRICE DU WELZ', href: '/sl-productions/fabrice-du-welz' },
+            { name: 'JACQUES AUDIARD', href: '/sl-productions/jacques-audiard' },
+            { name: 'DAVID CRONENBERG', href: '/sl-productions/david-cronenberg' },
+            { name: 'PAOLO SORRENTINO', href: '/sl-productions/paolo-sorrentino' }
+          ]
+        },
+        {
+          title: '2023',
+          links: [
+            { name: 'PEDRO ALMODÓVAR', href: '/sl-productions/pedro-almodovar' },
+            { name: 'JEAN-LUC GODARD', href: '/sl-productions/jean-luc-godard' }
+          ]
+        },
+        {
+          title: '2020',
+          links: [
+            { name: 'ABEL FERRARA', href: '/sl-productions/abel-ferrara' }
+          ]
+        },
+        {
+          title: '2019',
+          links: [
+            { name: 'WONG KAR WAI', href: '/sl-productions/wong-kar-wai' },
+            { name: 'GASPAR NOÉ', href: '/sl-productions/gaspar-noe' },
+            { name: 'BRET EASTON ELLIS', href: '/sl-productions/bret-easton-ellis' }
+          ]
+        }
+      ]
+    },
   ], []);
 
   const rightNavLinks = useMemo(() => [
-    { name: 'LA MAISON', href: '/la-maison' },
-    { name: 'STORES', href: '/stores' },
-    { name: 'SERVICES', href: '/services' },
+    { 
+      name: 'LA MAISON', 
+      href: '/la-maison',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'ABOUT',
+          links: [
+            { name: 'OUR STORY', href: '/la-maison/our-story' },
+            { name: 'HERITAGE', href: '/la-maison/heritage' },
+            { name: 'CRAFTSMANSHIP', href: '/la-maison/craftsmanship' }
+          ]
+        },
+        {
+          title: 'EXPERIENCE',
+          links: [
+            { name: 'BOUTIQUES', href: '/la-maison/boutiques' },
+            { name: 'PERSONAL SHOPPING', href: '/la-maison/personal-shopping' },
+            { name: 'VIP SERVICES', href: '/la-maison/vip-services' }
+          ]
+        }
+      ]
+    },
+    { 
+      name: 'STORES', 
+      href: '/stores',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'LOCATIONS',
+          links: [
+            { name: 'FIND A STORE', href: '/stores/find' },
+            { name: 'FLAGSHIP STORES', href: '/stores/flagship' },
+            { name: 'BOUTIQUES', href: '/stores/boutiques' }
+          ]
+        },
+        {
+          title: 'SERVICES',
+          links: [
+            { name: 'PERSONAL STYLING', href: '/stores/personal-styling' },
+            { name: 'ALTERATIONS', href: '/stores/alterations' },
+            { name: 'GIFT SERVICES', href: '/stores/gift-services' }
+          ]
+        }
+      ]
+    },
+    { 
+      name: 'SERVICES', 
+      href: '/services',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          title: 'CUSTOMER CARE',
+          links: [
+            { name: 'CONTACT US', href: '/services/contact' },
+            { name: 'RETURNS & EXCHANGES', href: '/services/returns' },
+            { name: 'SIZE GUIDE', href: '/services/size-guide' }
+          ]
+        },
+        {
+          title: 'PERSONALIZATION',
+          links: [
+            { name: 'MONOGRAMMING', href: '/services/monogramming' },
+            { name: 'CUSTOM ORDERS', href: '/services/custom-orders' },
+            { name: 'GIFT WRAPPING', href: '/services/gift-wrapping' }
+          ]
+        }
+      ]
+    },
     { name: 'LOGIN', href: '/login' },
   ], []);
 
@@ -140,7 +418,15 @@ export default function Navbar() {
           {/* Left Navigation Links */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <NavLink key={link.name} link={link} styles={styles} />
+              <NavLink 
+                key={link.name} 
+                link={link} 
+                styles={styles}
+                hasDropdown={link.hasDropdown}
+                isDropdownOpen={activeDropdown === link.name}
+                onMouseEnter={() => setActiveDropdown(link.name)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              />
             ))}
           </div>
 
@@ -170,7 +456,15 @@ export default function Navbar() {
           {/* Right Navigation Links */}
           <div className="hidden lg:flex items-center space-x-8">
             {rightNavLinks.map((link) => (
-              <NavLink key={link.name} link={link} styles={styles} />
+              <NavLink 
+                key={link.name} 
+                link={link} 
+                styles={styles}
+                hasDropdown={link.hasDropdown}
+                isDropdownOpen={activeDropdown === link.name}
+                onMouseEnter={() => setActiveDropdown(link.name)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              />
             ))}
             <button className={`${styles.text} ${styles.hover} transition-colors duration-200`}>
               <Search size={18} />
@@ -185,6 +479,27 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Desktop Dropdown */}
+        {activeDropdown && (
+          <div className="hidden lg:block">
+            {(() => {
+              const activeLink = [...navLinks, ...rightNavLinks].find(link => link.name === activeDropdown);
+              if (activeLink && activeLink.hasDropdown) {
+                return (
+                  <DropdownMenu
+                    items={activeLink.dropdownItems}
+                    styles={styles}
+                    isOpen={true}
+                    onMouseEnter={() => setActiveDropdown(activeDropdown)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                  />
+                );
+              }
+              return null;
+            })()}
+          </div>
+        )}
+
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden">
@@ -192,14 +507,28 @@ export default function Navbar() {
               {/* Left Links */}
               <div className="space-y-2 mb-4">
                 {navLinks.map((link) => (
-                  <MobileNavLink key={link.name} link={link} styles={styles} />
+                  <MobileNavLink 
+                    key={link.name} 
+                    link={link} 
+                    styles={styles}
+                    hasDropdown={link.hasDropdown}
+                    isDropdownOpen={mobileDropdowns[link.name]}
+                    onToggle={() => toggleMobileDropdown(link.name)}
+                  />
                 ))}
               </div>
               
               {/* Right Links */}
               <div className="space-y-2">
                 {rightNavLinks.map((link) => (
-                  <MobileNavLink key={link.name} link={link} styles={styles} />
+                  <MobileNavLink 
+                    key={link.name} 
+                    link={link} 
+                    styles={styles}
+                    hasDropdown={link.hasDropdown}
+                    isDropdownOpen={mobileDropdowns[link.name]}
+                    onToggle={() => toggleMobileDropdown(link.name)}
+                  />
                 ))}
               </div>
             </div>
