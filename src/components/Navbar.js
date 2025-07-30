@@ -58,6 +58,7 @@ const STATIC_NAVBAR_STYLES = {
 
 export const NavbarProvider = ({ children }) => {
   const [currentSection, setCurrentSection] = useState('hero');
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const getNavbarStyles = useCallback((section) => {
     return NAVBAR_STYLES[section] || NAVBAR_STYLES.default;
@@ -66,8 +67,10 @@ export const NavbarProvider = ({ children }) => {
   const contextValue = useMemo(() => ({
     currentSection,
     setCurrentSection,
+    activeDropdown,
+    setActiveDropdown,
     getNavbarStyles
-  }), [currentSection, getNavbarStyles]);
+  }), [currentSection, activeDropdown, getNavbarStyles]);
 
   return (
     <NavbarContext.Provider value={contextValue}>
@@ -82,31 +85,37 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
 
   return (
     <div
-      className={`absolute top-full left-0 mt-0 w-full bg-gray-50/90 backdrop-blur-sm py-12 z-50`}
+      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="px-8 w-full flex justify-start gap-20">
-        {items.map((item, index) => (
-          <div key={index} className="min-w-[200px]">
-            {item.title && (
-              <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">
-                {item.title}
-              </h3>
-            )}
-            <div className="space-y-3">
-              {item.links.map((link, linkIndex) => (
-                <a
-                  key={linkIndex}
-                  href={link.href}
-                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
-                >
-                  {link.name}
-                </a>
-              ))}
+      {/* Empty space to cover navbar area */}
+      <div className="h-20"></div>
+      
+      {/* Dropdown content */}
+      <div className="py-12">
+        <div className="px-8 w-full flex justify-start gap-20">
+          {items.map((item, index) => (
+            <div key={index} className="min-w-[200px]">
+              {item.title && (
+                <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">
+                  {item.title}
+                </h3>
+              )}
+              <div className="space-y-3">
+                {item.links.map((link, linkIndex) => (
+                  <a
+                    key={linkIndex}
+                    href={link.href}
+                    className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -190,9 +199,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
   
-  const { currentSection, getNavbarStyles } = useNavbar();
+  const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
 
   const toggleMobileMenu = useCallback(() => {
@@ -209,10 +217,19 @@ export default function Navbar() {
   // Use dynamic styles only on home page, static black styles on other pages
   const styles = useMemo(() => {
     if (isHomePage) {
-      return getNavbarStyles(currentSection);
+      const baseStyles = getNavbarStyles(currentSection);
+      // Override text color to black when dropdown is active
+      if (activeDropdown) {
+        return {
+          ...baseStyles,
+          text: 'text-black',
+          hover: 'hover:text-gray-600'
+        };
+      }
+      return baseStyles;
     }
     return STATIC_NAVBAR_STYLES;
-  }, [isHomePage, currentSection, getNavbarStyles]);
+  }, [isHomePage, currentSection, getNavbarStyles, activeDropdown]);
 
   const navLinks = useMemo(() => [
     { 
@@ -407,14 +424,14 @@ export default function Navbar() {
   ], []);
 
   const navClassName = useMemo(() => 
-    `fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${styles.bg}`,
+    `fixed top-0 left-0 right-0 z-20 transition-all duration-500 ${styles.bg}`,
     [styles.bg]
   );
 
   return (
     <nav className={navClassName}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
+        <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative" >
           {/* Left Navigation Links */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
