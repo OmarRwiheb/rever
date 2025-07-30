@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext, createContext, useMemo, useCallback } from 'react';
+import { useState, useContext, createContext, useMemo, useCallback, useEffect } from 'react';
 import { Search, Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -247,6 +247,25 @@ export default function Navbar() {
     }, 150);
     setHoverTimeout(timeout);
   }, [setActiveDropdown]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   // Use dynamic styles only on home page, static black styles on other pages
   const styles = useMemo(() => {
@@ -563,45 +582,58 @@ export default function Navbar() {
               animation: 'slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
             }}
             onClick={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            onScroll={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-col h-full">
-              {/* Mobile Header - Same structure as main navbar */}
-              <div className="mx-0 px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative">
-                  {/* Mobile Menu Button - Now Close Button */}
-                  <div className="lg:hidden flex justify-center lg:justify-center">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleMobileMenu();
-                      }}
-                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
-                      style={{ touchAction: 'manipulation' }}
-                    >
-                      <X size={24} />
-                    </button>
-                  </div>
+                          <div className="flex flex-col h-full">
+                {/* Mobile Header - Same structure as main navbar */}
+                <div className="mx-0 px-4 sm:px-6 lg:px-8 flex-shrink-0">
+                  <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative">
+                    {/* Mobile Menu Button - Now Close Button */}
+                    <div className="lg:hidden flex justify-center lg:justify-center">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMobileMenu();
+                        }}
+                        className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
+                        style={{ touchAction: 'manipulation' }}
+                      >
+                        <X size={24} />
+                      </button>
+                    </div>
 
-                  {/* Brand Logo */}
-                  <div className="flex-1 flex justify-center lg:justify-center">
-                    <a href="/" className="text-center">
-                      <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
-                        <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
-                      </h1>
-                    </a>
-                  </div>
+                    {/* Brand Logo */}
+                    <div className="flex-1 flex justify-center lg:justify-center">
+                      <a href="/" className="text-center">
+                        <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
+                          <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
+                        </h1>
+                      </a>
+                    </div>
 
-                  {/* Search Icon for Mobile */}
-                  <div className="lg:hidden flex items-center justify-center">
-                    <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out">
-                      <Search size={20} />
-                    </button>
+                    {/* Search Icon for Mobile */}
+                    <div className="lg:hidden flex items-center justify-center">
+                      <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out">
+                        <Search size={20} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
               
               {/* Mobile Navigation */}
-              <div className="flex-1 overflow-y-auto">
+              <div 
+                className="flex-1 overflow-y-auto" 
+                style={{ WebkitOverflowScrolling: 'touch' }}
+                onWheel={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                onTouchMove={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <div className="p-6 space-y-8">
                   {/* Left Links */}
                   <div className="space-y-6">
