@@ -115,7 +115,7 @@ export default function OutfitDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-white relative pt-20">
       {/* Main Content */}
       <div className="flex h-full justify-center">
         <div className="max-w-7xl w-full flex mx-4 md:mx-16 my-4 md:my-16 gap-4 md:gap-20 flex-col lg:flex-row">
