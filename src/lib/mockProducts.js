@@ -5,7 +5,7 @@ const products = [
     name: "Checked Top with Asymmetric Neckline",
     imageUrl: "/img/product-test.jpg",
     images: [
-      "/img/product-test.jpg",
+      "/img/zoom.jpg",
       "/img/product-test.jpg",
       "/img/product-test.jpg",
       "/img/product-test.jpg",
