@@ -29,15 +29,15 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-white pt-20">
       {/* Main Product Section */}
-      <div className="flex flex-wrap">
-        {/* Product Image - Fixed Left Section */}
-        <div className="sticky top-0 w-full lg:w-1/2 2xl:w-2/3 h-screen">
+      <div className="flex flex-col lg:flex-row">
+        {/* Product Image - Full width on mobile, left side on desktop */}
+        <div className="w-full lg:w-1/2 2xl:w-2/3 lg:sticky lg:top-0 lg:h-screen">
           <ProductImage product={product} />
         </div>
         
-        {/* Product Info - Scrollable Right Section */}
+        {/* Product Info - Full width on mobile, right side on desktop */}
         <div className="w-full lg:w-1/2 2xl:w-1/3">
-          <div className="px-8 py-8">
+          <div className="px-4 lg:px-8 py-8">
             <ProductInfo product={product} />
             <ProductHighlights />
           </div>
@@ -45,7 +45,7 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Product Recommendations - Under both sections */}
-      <div className="w-full px-8 py-8">
+      <div className="w-full px-4 lg:px-8 py-8">
         <ProductRecommendationGrid productId={product.id} />
       </div>
 

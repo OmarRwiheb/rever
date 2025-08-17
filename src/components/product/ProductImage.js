@@ -5,7 +5,24 @@ export default function ProductImage({ product }) {
   const productImages = product.images || [product.imageUrl];
 
   return (
-    <div className="relative h-screen">
+    <div className="relative h-auto lg:h-screen">
+      {/* Custom scrollbar styles */}
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #000000;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #333333;
+        }
+      `}</style>
+      
       {/* Two-column layout on 2XL screens */}
       <div className="flex h-full">
 
@@ -24,10 +41,10 @@ export default function ProductImage({ product }) {
 
         
         {/* Scrollable Image Gallery - Left side */}
-        <div className="w-full 2xl:w-1/2 h-full overflow-y-auto">
+        <div className="w-full 2xl:w-1/2 h-full overflow-y-auto custom-scrollbar">
           <div className="space-y-0">
             {productImages.map((image, index) => (
-              <div key={index} className="relative h-screen">
+              <div key={index} className="relative h-screen lg:h-screen">
                 <Image
                   src={image}
                   alt={`${product.name} - Image ${index + 1}`}
