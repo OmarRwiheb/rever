@@ -37,27 +37,20 @@ export default function ProductImage({ product }) {
           }
         `}</style>
         
-        {/* Two-column layout on 2XL screens */}
+        {/* Two-column layout on 2XL screens: Text on left, Images on right */}
         <div className="flex h-full">
 
-          {/* Additional Photo Section - Right side (2XL only) */}
-          <div className="hidden 2xl:block w-1/2 h-full">
-            <div 
-              className="relative h-full cursor-pointer hover:opacity-90 transition-opacity"
-              onClick={() => openModal(0)}
-            >
-              <Image
-                src={productImages[0]}
-                alt={`${product.name} - Additional view`}
-                fill
-                className="object-cover"
-                sizes="30vw"
-              />
+          {/* Brand Name Section - Left side (2XL only) */}
+          <div className="hidden 2xl:block w-1/2 h-full bg-gray-50 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h1 className="text-6xl font-light text-gray-900 tracking-wider">
+                REVER
+              </h1>
             </div>
           </div>
 
           
-          {/* Scrollable Image Gallery - Left side */}
+          {/* Scrollable Image Gallery - Right side */}
           <div className="w-full 2xl:w-1/2 h-full overflow-y-auto custom-scrollbar">
             <div className="space-y-0">
               {productImages.map((image, index) => (

@@ -207,7 +207,7 @@ export default function LookbookPage() {
                           <img
                             src={look.image}
                             alt={look.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-500"
                           />
                           
                           {/* Plus icon overlay */}

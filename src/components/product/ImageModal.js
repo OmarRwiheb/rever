@@ -186,7 +186,7 @@ export default function ImageModal({ isOpen, onClose, images, initialIndex = 0 }
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           style={{ 
-            cursor: isZoomed ? (isDragging ? 'grabbing' : 'grab') : 'pointer'
+            cursor: isZoomed ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
           }}
         >
           <style jsx>{`
