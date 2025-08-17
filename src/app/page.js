@@ -2,7 +2,7 @@ import FullPageScroll from "@/components/home/layout/FullPageScroll";
 import HeroSection from "@/components/home/sections/Hero";
 import WomenSection from "@/components/home/sections/Women";
 import MenSection from "@/components/home/sections/Men";
-import Footer from "@/components/UI/Footer";
+import Footer from "@/components/Footer";
 import SecondVideo from "@/components/home/sections/SecondVideo";
 
 export default function HomePage() {

@@ -39,7 +39,7 @@ const NAVBAR_STYLES = {
   },
   footer: {
     bg: 'bg-transparent',
-    text: 'text-black',
+    text: 'text-white',
     hover: 'hover:text-gray-600'
   },
   default: {
@@ -522,7 +522,7 @@ export default function Navbar() {
           <div className="flex-1 flex justify-center lg:justify-center">
             <a href="/" className="text-center">
               <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
-                <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
+                REVER
               </h1>
             </a>
           </div>
