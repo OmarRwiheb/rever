@@ -8,70 +8,80 @@ const looks = [
     title: "Look 1",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 1
   },
   {
     id: 2,
     title: "Look 2", 
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 2
   },
   {
     id: 3,
     title: "Look 3",
     image: "/img/lookbook.jpg", 
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 3
   },
   {
     id: 4,
     title: "Look 4",
     image: "/img/lookbook.jpg",
     category: "Women", 
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 4
   },
   {
     id: 5,
     title: "Look 5",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 5
   },
   {
     id: 6,
     title: "Look 6",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 6
   },
   {
     id: 7,
     title: "Look 7",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 30
   },
   {
     id: 8,
     title: "Look 8",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 31
   },
   {
     id: 9,
     title: "Look 9",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 32
   },
   {
     id: 10,
     title: "Look 10",
     image: "/img/lookbook.jpg",
     category: "Women",
-    season: "Fall 2025"
+    season: "Fall 2025",
+    productId: 33
   },
   
 ];
@@ -188,35 +198,43 @@ export default function LookbookPage() {
                     className="px-2 w-full md:w-[40%]"
                     style={containerStyle}
                   >
-                    <div 
-                      className="relative group cursor-pointer overflow-hidden w-1/2"
-                      style={elementStyle}
-                    >
-                      <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
-                        <img
-                          src={look.image}
-                          alt={look.title}
-                          className="w-full h-full object-cover transition-transform duration-500"
-                        />
-                        
-                        {/* Plus icon overlay */}
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            width="24" 
-                            height="24" 
-                            fill="none" 
-                            className="text-white"
-                          >
-                            <path 
-                              stroke="currentColor" 
-                              strokeWidth="1.5"
-                              d="M20 12H4M12 20V4"
-                            />
-                          </svg>
+                    <Link href={`/lookbook/${look.id}`}>
+                      <div 
+                        className="relative group cursor-pointer overflow-hidden w-1/2"
+                        style={elementStyle}
+                      >
+                        <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
+                          <img
+                            src={look.image}
+                            alt={look.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          
+                          {/* Plus icon overlay */}
+                          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              width="24" 
+                              height="24" 
+                              fill="none" 
+                              className="text-white"
+                            >
+                              <path 
+                                stroke="currentColor" 
+                                strokeWidth="1.5"
+                                d="M20 12H4M12 20V4"
+                              />
+                            </svg>
+                          </div>
+                          
+                          {/* Look info overlay on hover */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <h3 className="text-sm font-medium">{look.title}</h3>
+                            <p className="text-xs text-gray-200">View Look</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 );
               })}

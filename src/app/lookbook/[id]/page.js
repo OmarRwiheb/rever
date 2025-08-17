@@ -11,11 +11,11 @@ const lookbookOutfits = [
     title: 'Autumn Collection',
     description: 'Brown leather bomber jacket with cream patterned pants',
     products: [
-      { id: 'jacket-1', name: 'BOMBER JACKET IN AGED LAMBSKIN', price: '$2,500', image: '/img/product-test.jpg' },
-      { id: 'shirt-1', name: 'BRODERIE ANGLAISE PAJAMA SET IN COTTON', price: '$450', image: '/img/product-test.jpg' },
-      { id: 'belt-1', name: 'CHAIN BELT IN METAL AND RESIN', price: '$680', image: '/img/product-test.jpg' },
-      { id: 'sunglasses-1', name: 'SL 831 VESPER', price: '$890', image: '/img/product-test.jpg' },
-      { id: 'shoes-1', name: 'SLINGBACK PUMP IN NUDE', price: '$720', image: '/img/product-test.jpg' }
+      { id: 1, name: 'Checked Top with Asymmetric Neckline', price: 'EGP 2,990.00', image: '/img/product-test.jpg' },
+      { id: 2, name: 'Mid-Rise Wide-Leg Full Length Jeans', price: 'EGP 2,490.00', image: '/img/product-test.jpg' },
+      { id: 3, name: 'Rhinestone Leather Sandals', price: 'EGP 1,990.00', image: '/img/product-test.jpg' },
+      { id: 4, name: 'Oval Hoop Earrings', price: 'EGP 1,790.00', image: '/img/product-test.jpg' },
+      { id: 5, name: 'Evening Gown', price: 'EGP 3,299.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -24,9 +24,9 @@ const lookbookOutfits = [
     title: 'Evening Elegance',
     description: 'Black leather jacket with red skirt',
     products: [
-      { id: 'jacket-2', name: 'BLACK LEATHER JACKET', price: '$1,800', image: '/img/product-test.jpg' },
-      { id: 'skirt-2', name: 'RED SILK SKIRT', price: '$750', image: '/img/product-test.jpg' },
-      { id: 'shoes-2', name: 'STILETTO HEELS', price: '$650', image: '/img/product-test.jpg' }
+      { id: 6, name: 'Summer Maxi Dress', price: 'EGP 2,199.00', image: '/img/product-test.jpg' },
+      { id: 30, name: 'Elegant Cocktail Dress', price: 'EGP 2,399.00', image: '/img/product-test.jpg' },
+      { id: 31, name: 'Summer Maxi Dress', price: 'EGP 2,199.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -35,9 +35,9 @@ const lookbookOutfits = [
     title: 'Casual Chic',
     description: 'Patterned blazer with teal skirt',
     products: [
-      { id: 'blazer-3', name: 'PATTERNED BLAZER', price: '$1,200', image: '/img/product-test.jpg' },
-      { id: 'skirt-3', name: 'TEAL PENCIL SKIRT', price: '$580', image: '/img/product-test.jpg' },
-      { id: 'shoes-3', name: 'LOAFERS', price: '$420', image: '/img/product-test.jpg' }
+      { id: 32, name: 'Formal Business Dress', price: 'EGP 2,799.00', image: '/img/product-test.jpg' },
+      { id: 33, name: 'Casual Weekend Dress', price: 'EGP 1,599.00', image: '/img/product-test.jpg' },
+      { id: 34, name: 'Elegant Evening Dress', price: 'EGP 3,299.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -46,8 +46,8 @@ const lookbookOutfits = [
     title: 'Summer Breeze',
     description: 'Light pink flowing dress',
     products: [
-      { id: 'dress-4', name: 'PINK FLOWING DRESS', price: '$1,350', image: '/img/product-test.jpg' },
-      { id: 'shoes-4', name: 'SANDALS', price: '$380', image: '/img/product-test.jpg' }
+      { id: 35, name: 'Summer Boho Dress', price: 'EGP 1,899.00', image: '/img/product-test.jpg' },
+      { id: 36, name: 'Cocktail Party Dress', price: 'EGP 2,299.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -56,9 +56,9 @@ const lookbookOutfits = [
     title: 'Monochrome Magic',
     description: 'Black suit with statement pieces',
     products: [
-      { id: 'suit-5', name: 'BLACK TAILORED SUIT', price: '$2,800', image: '/img/product-test.jpg' },
-      { id: 'shoes-5', name: 'OXFORD SHOES', price: '$720', image: '/img/product-test.jpg' },
-      { id: 'bag-5', name: 'LEATHER BAG', price: '$950', image: '/img/product-test.jpg' }
+      { id: 1, name: 'Checked Top with Asymmetric Neckline', price: 'EGP 2,990.00', image: '/img/product-test.jpg' },
+      { id: 2, name: 'Mid-Rise Wide-Leg Full Length Jeans', price: 'EGP 2,490.00', image: '/img/product-test.jpg' },
+      { id: 3, name: 'Rhinestone Leather Sandals', price: 'EGP 1,990.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -67,9 +67,9 @@ const lookbookOutfits = [
     title: 'Urban Sophistication',
     description: 'Brown bomber jacket with patterned pants',
     products: [
-      { id: 'jacket-6', name: 'BROWN BOMBER JACKET', price: '$1,650', image: '/img/product-test.jpg' },
-      { id: 'pants-6', name: 'PATTERNED PANTS', price: '$520', image: '/img/product-test.jpg' },
-      { id: 'shoes-6', name: 'SNEAKERS', price: '$480', image: '/img/product-test.jpg' }
+      { id: 4, name: 'Oval Hoop Earrings', price: 'EGP 1,790.00', image: '/img/product-test.jpg' },
+      { id: 5, name: 'Evening Gown', price: 'EGP 3,299.00', image: '/img/product-test.jpg' },
+      { id: 6, name: 'Summer Maxi Dress', price: 'EGP 2,199.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -78,9 +78,9 @@ const lookbookOutfits = [
     title: 'Winter Warmth',
     description: 'Faux fur coat with slip dress',
     products: [
-      { id: 'coat-7', name: 'FAUX FUR COAT', price: '$2,100', image: '/img/product-test.jpg' },
-      { id: 'dress-7', name: 'SILK SLIP DRESS', price: '$890', image: '/img/product-test.jpg' },
-      { id: 'shoes-7', name: 'ANKLE BOOTS', price: '$720', image: '/img/product-test.jpg' }
+      { id: 30, name: 'Elegant Cocktail Dress', price: 'EGP 2,399.00', image: '/img/product-test.jpg' },
+      { id: 31, name: 'Summer Maxi Dress', price: 'EGP 2,199.00', image: '/img/product-test.jpg' },
+      { id: 32, name: 'Formal Business Dress', price: 'EGP 2,799.00', image: '/img/product-test.jpg' }
     ]
   },
   {
@@ -89,9 +89,9 @@ const lookbookOutfits = [
     title: 'Classic Elegance',
     description: 'Trench coat with light blue pants',
     products: [
-      { id: 'coat-8', name: 'BEIGE TRENCH COAT', price: '$2,300', image: '/img/product-test.jpg' },
-      { id: 'pants-8', name: 'LIGHT BLUE PANTS', price: '$680', image: '/img/product-test.jpg' },
-      { id: 'shoes-8', name: 'BLACK BOOTS', price: '$890', image: '/img/product-test.jpg' }
+      { id: 33, name: 'Casual Weekend Dress', price: 'EGP 1,599.00', image: '/img/product-test.jpg' },
+      { id: 34, name: 'Elegant Evening Dress', price: 'EGP 3,299.00', image: '/img/product-test.jpg' },
+      { id: 35, name: 'Summer Boho Dress', price: 'EGP 1,899.00', image: '/img/product-test.jpg' }
     ]
   }
 ];
@@ -136,20 +136,23 @@ export default function OutfitDetailPage() {
               {/* Product Flex */}
               <div className="flex flex-wrap justify-around md:justify-start gap-2 md:gap-4">
                 {outfit.products.map((product, index) => (
-                  <div key={product.id} className="w-[110px] md:w-[160px] space-y-2 mb-4 md:mb-8">
-                    <div className="bg-gray-100">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
+                  <Link key={product.id} href={`/product/${product.id}`}>
+                    <div className="w-[110px] md:w-[160px] space-y-2 mb-4 md:mb-8 group cursor-pointer">
+                      <div className="bg-gray-100 overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-gray-900 uppercase tracking-wide group-hover:text-gray-600 transition-colors">
+                          {product.name}
+                        </p>
+                        <p className="text-xs text-gray-500">{product.price}</p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-gray-900 uppercase tracking-wide">
-                        {product.name}
-                      </p>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
