@@ -61,7 +61,7 @@ export default function ProductImage({ product }) {
       
       {/* Massimo Dutti Logo */}
       <div className="absolute bottom-8 left-8">
-        <span className="text-black font-semibold text-lg">Massimo Dutti</span>
+        <span className="text-black font-semibold text-lg">Rever</span>
       </div>
     </div>
   );
