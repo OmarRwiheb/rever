@@ -215,12 +215,18 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
 
 export default function Navbar() {
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
-  
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
   const [hoverTimeout, setHoverTimeout] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+  
+  const isHomePage = isClient && pathname === '/';
+
+  // Ensure client-side hydration consistency
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
@@ -288,7 +294,13 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   // Use dynamic styles only on home page, static black styles on other pages
+  // Ensure consistent rendering between server and client
   const styles = useMemo(() => {
+    if (!isClient) {
+      // During SSR and initial hydration, use default styles to prevent mismatch
+      return isHomePage ? NAVBAR_STYLES.hero : STATIC_NAVBAR_STYLES;
+    }
+    
     if (isHomePage) {
       const baseStyles = getNavbarStyles(currentSection);
       // Override text color to black when dropdown is active
@@ -302,7 +314,7 @@ export default function Navbar() {
       return baseStyles;
     }
     return STATIC_NAVBAR_STYLES;
-  }, [isHomePage, currentSection, getNavbarStyles, activeDropdown]);
+  }, [isClient, isHomePage, currentSection, getNavbarStyles, activeDropdown]);
 
   const navLinks = useMemo(() => [
     { 
@@ -560,9 +572,23 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               />
             ))}
-            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out`}>
-              <Search size={18} />
+            {/* Basket Icon */}
+            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}>
+              <div className="relative">
+                {/* Clear Shopping Cart Icon */}
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                
+                {/* Item Count Badge - Positioned outside the icon */}
+                <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
+                  0
+                </div>
+              </div>
             </button>
+            {/* <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out`}>
+              <Search size={18} />
+            </button> */}
           </div>
 
           {/* Search Icon for Mobile */}
@@ -628,15 +654,29 @@ export default function Navbar() {
                     <div className="flex-1 flex justify-center lg:justify-center">
                       <a href="/" className="text-center">
                         <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
-                          <span className="text-3xl lg:text-4xl">S</span>AINT LAURENT
+                          REVER
                         </h1>
                       </a>
                     </div>
 
                     {/* Search Icon for Mobile */}
-                    <div className="lg:hidden flex items-center justify-center">
+                    <div className="lg:hidden flex items-center justify-center space-x-4">
                       <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out">
                         <Search size={20} />
+                      </button>
+                      {/* Basket Icon for Mobile */}
+                      <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group">
+                        <div className="relative">
+                          {/* Clear Shopping Cart Icon */}
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                          </svg>
+                          
+                          {/* Item Count Badge - Positioned outside the icon */}
+                          <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
+                            0
+                          </div>
+                        </div>
                       </button>
                     </div>
                   </div>
