@@ -33,4 +33,201 @@ body {
   font-family: 'HelveticaCustom', sans-serif;
 }
 
+/* Custom animations for filter panel */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Smooth transitions for filter options */
+.filter-option-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.filter-option-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms, transform 200ms;
+}
+
+.filter-option-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.filter-option-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 200ms, transform 200ms;
+}
+
+/* Custom scrollbar styling for filter panel */
+.filter-panel-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-panel-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.filter-panel-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-panel-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox scrollbar styling */
+.filter-panel-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Enhanced sort dropdown animations */
+.sort-dropdown-option {
+  transition: all 0.2s ease;
+}
+
+.sort-dropdown-option:hover {
+  background-color: #f8fafc;
+  transform: translateX(4px);
+}
+
+/* Sort indicator pulse animation */
+@keyframes sortPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.sort-indicator {
+  animation: sortPulse 2s ease-in-out infinite;
+}
+
+/* Dropdown arrow rotation */
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* Custom dropdown animations */
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dropdownSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+}
+
+.dropdown-enter {
+  animation: dropdownSlideIn 0.3s ease-out forwards;
+}
+
+.dropdown-exit {
+  animation: dropdownSlideOut 0.2s ease-in forwards;
+}
+
+/* Dropdown option hover effects */
+.dropdown-option {
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.dropdown-option:hover::before {
+  left: 100%;
+}
+
+/* Active option highlight */
+.dropdown-option-active {
+  background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%);
+  border-right: 4px solid #3b82f6;
+  position: relative;
+}
+
+.dropdown-option-active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+  pointer-events: none;
+}
+
+/* Filter element hover scaling fix */
+.filter-option-container {
+  overflow: visible;
+  padding: 4px;
+}
+
+.filter-option {
+  transform-origin: center;
+  transition: all 0.3s ease;
+}
+
+.filter-option:hover {
+  transform: scale(1.02);
+  z-index: 10;
+  position: relative;
+}
+
+/* Ensure scaled elements don't get cut off */
+.filter-grid {
+  overflow: visible;
+  padding: 8px;
+}
+
+.filter-grid > * {
+  overflow: visible;
+}
+
 

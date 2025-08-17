@@ -31,6 +31,8 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 40,
+    color: "BLUE",
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
     id: 3,
@@ -42,6 +44,8 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 80,
+    color: "BLACK",
+    sizes: ['36', '37', '38', '39', '40', '41'],
   },
   {
     id: 4,
@@ -53,6 +57,8 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 55,
+    color: "GOLD",
+    sizes: ['ONE_SIZE'],
   },
   {
     id: 5,
@@ -62,6 +68,8 @@ const products = [
     originalPrice: "EGP 3,999.00",
     isNew: false,
     isSale: true,
+    color: "RED",
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
     id: 6,
@@ -71,6 +79,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "WHITE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 7,
@@ -80,6 +90,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "BLACK",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 8,
@@ -89,6 +101,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: true,
+    color: "GREEN",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 9,
@@ -98,6 +112,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "NAVY",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 10,
@@ -107,6 +123,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "PINK",
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
     id: 11,
@@ -116,6 +134,8 @@ const products = [
     originalPrice: "EGP 2,999.00",
     isNew: false,
     isSale: true,
+    color: "BLACK",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 12,
@@ -125,6 +145,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "BLUE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 13,
@@ -134,6 +156,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "GRAY",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 14,
@@ -143,6 +167,8 @@ const products = [
     originalPrice: "EGP 2,599.00",
     isNew: false,
     isSale: true,
+    color: "RED",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 15,
@@ -152,6 +178,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "PURPLE",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 16,
@@ -161,6 +189,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "YELLOW",
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
     id: 17,
@@ -170,6 +200,8 @@ const products = [
     originalPrice: "EGP 2,799.00",
     isNew: false,
     isSale: true,
+    color: "BLACK",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 18,
@@ -179,6 +211,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "GREEN",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 19,
@@ -188,6 +222,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "BLACK",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 20,
@@ -197,6 +233,8 @@ const products = [
     originalPrice: "EGP 2,199.00",
     isNew: false,
     isSale: true,
+    color: "ORANGE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 21,
@@ -206,6 +244,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "BLUE",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 22,
@@ -215,6 +255,8 @@ const products = [
     originalPrice: "EGP 3,299.00",
     isNew: false,
     isSale: true,
+    color: "BURGUNDY",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 23,
@@ -224,6 +266,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "PINK",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 24,
@@ -233,6 +277,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "BLACK",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 25,
@@ -242,6 +288,8 @@ const products = [
     originalPrice: "EGP 2,899.00",
     isNew: false,
     isSale: true,
+    color: "RED",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 26,
@@ -251,6 +299,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "GRAY",
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
     id: 27,
@@ -260,6 +310,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "WHITE",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 28,
@@ -269,6 +321,8 @@ const products = [
     originalPrice: "EGP 3,999.00",
     isNew: false,
     isSale: true,
+    color: "BLACK",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 29,
@@ -278,6 +332,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "BLUE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 30,
@@ -287,6 +343,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "PURPLE",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 31,
@@ -296,6 +354,8 @@ const products = [
     originalPrice: "EGP 2,599.00",
     isNew: false,
     isSale: true,
+    color: "GREEN",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 32,
@@ -305,6 +365,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "NAVY",
+    sizes: ['S', 'M', 'L'],
   },
   {
     id: 33,
@@ -314,6 +376,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "PINK",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 34,
@@ -323,6 +387,8 @@ const products = [
     originalPrice: "EGP 3,699.00",
     isNew: false,
     isSale: true,
+    color: "BLACK",
+    sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 35,
@@ -332,6 +398,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
+    color: "ORANGE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
   {
     id: 36,
@@ -341,6 +409,8 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
+    color: "BLUE",
+    sizes: ['XS', 'S', 'M', 'L'],
   },
 ];
 
