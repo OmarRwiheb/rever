@@ -13,14 +13,14 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
   };
 
   return (
-    <div className="group relative">
+    <Link href={`/product/${id}`} className="block group relative">
         {/* Product Image */}
         <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
             <Image
             src={imageUrl}
             alt={name}
             fill
-            className="object-cover transition-transform duration-300"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             />
             
@@ -39,11 +39,9 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
               {/* Product Info */}
       {viewMode !== 'grid-12' && (
         <div className="text-left px-2 mt-1">
-            <Link href={`/product/${id}`} className="block leading-tight">
-                <h3 className="text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors uppercase mb-0.5">
+                <h3 className="text-xs font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-0.5">
                 {name}
                 </h3>
-            </Link>
 
             {originalPrice && (
                 <span className="text-xs text-gray-900 line-through mb-0.5 block">
@@ -63,6 +61,6 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
             </div>
         </div>
       )}
-    </div>
+    </Link>
   );
 } 
