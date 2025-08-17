@@ -166,7 +166,7 @@ export default function ImageModal({ isOpen, onClose, images, initialIndex = 0 }
       }}
     >
       {/* Main image area - Center */}
-      <div className="flex-1 flex items-center justify-center relative p-6" style={{ zIndex: 2147483647, minHeight: 0 }}>
+      <div className="flex-1 flex items-center justify-center relative" style={{ zIndex: 2147483647, minHeight: 0 }}>
         {/* Close button */}
         <button
           onClick={onClose}
