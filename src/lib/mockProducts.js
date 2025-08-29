@@ -18,7 +18,7 @@ const products = [
     colors: "BLACK",
     reference: "REF. 5157/650",
     sizes: ['XS', 'S', 'M', 'L'],
-    modelInfo: "The model wears size S and is 179 cm tall.",
+    modelInfo: "",
     discountPercentage: 40,
   },
   {

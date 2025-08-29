@@ -1,8 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MeasurementTablePopup from './MeasurementTablePopup';
 
-export default function ProductInfo({ product }) {
+export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const [selectedSize, setSelectedSize] = useState('S');
   const [isMeasurementPopupOpen, setIsMeasurementPopupOpen] = useState(false);
 
@@ -10,8 +10,8 @@ export default function ProductInfo({ product }) {
     <>
       <div className="text-left space-y-6 lg:px-40 lg:pt-16">
         {/* Product Title */}
-        <div>
-          <h1 className="text-sm font-medium text-gray-900 uppercase tracking-tight">
+        <div className='mb-0'>
+          <h1 className="text-xl font-medium text-gray-900 uppercase tracking-tight">
             {product.name}
           </h1>
         </div>
@@ -31,7 +31,7 @@ export default function ProductInfo({ product }) {
             </div>
           )}
           {!product.isSale && (
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-medium text-gray-900">
               {product.price}
             </div>
           )}
@@ -49,21 +49,53 @@ export default function ProductInfo({ product }) {
           </div>
         )}
           
-        {/* Color and Reference */}
-        {(product.color || product.reference) && (
-          <div className="flex items-center space-x-2">
-            {product.color && <div className="w-3 h-3 bg-black"></div>}
-            <span className="text-xs text-gray-600">
-              {product.color && product.reference ? `${product.color} | ${product.reference}` : product.color || product.reference}
-            </span>
+        {/* Reference */}
+        {product.reference && (
+          <div className="text-xs text-gray-600">
+            {product.reference}
           </div>
         )}
 
-        {/* Pattern Swatch */}
-        <div className="w-5 h-5 border border-gray-300 bg-gray-100">
-          {/* Checkered pattern - you can replace with actual pattern image */}
-          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 opacity-50"></div>
-        </div>
+        {/* Color Display/Selection */}
+        {product.colors && product.colors.length > 0 && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900">Color</span>
+              <button className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            
+            {product.colors.length > 1 ? (
+              // Multiple colors - show selection
+              <div className="flex items-center space-x-4">
+                {product.colors.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => onColorChange(color)}
+                    className={`text-sm font-medium transition-colors ${
+                      selectedColor === color
+                        ? 'underline text-gray-900'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              // Single color - just show the color name
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">
+                  {product.colors[0]}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
 
         {/* Size Selection */}
         <div className="space-y-3">

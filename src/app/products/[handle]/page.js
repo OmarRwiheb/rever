@@ -20,6 +20,7 @@ function toShopifyGID(numericId) {
 export default function ProductDetailPage() {
   const params = useParams();
   const pathname = usePathname();
+  const [selectedColor, setSelectedColor] = useState('');
 
   // Prefer /products/[handle]
   const { handleParam, idParam } = useMemo(() => {
@@ -73,6 +74,10 @@ export default function ProductDetailPage() {
 
         if (!mounted) return;
         setProduct(p);
+        // Set initial selected color
+        if (p.colors && p.colors.length > 0) {
+          setSelectedColor(p.colors[0]);
+        }
         setLoading(false);
       } catch (e) {
         if (!mounted) return;
@@ -85,6 +90,11 @@ export default function ProductDetailPage() {
 
     return () => { mounted = false; };
   }, [handleParam, idParam]);
+
+  // Handle color selection from ProductInfo
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+  };
 
   if (loading) {
     return (
@@ -99,7 +109,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-semibold text-gray-900 mb-4">Product not found</h1>
-          <p className="text-gray-600">The product you’re looking for doesn’t exist.</p>
+          <p className="text-gray-600">The product you're looking for doesn't exist.</p>
         </div>
       </div>
     );
@@ -111,13 +121,17 @@ export default function ProductDetailPage() {
       <div className="flex flex-col lg:flex-row">
         {/* Product Image */}
         <div className="w-full lg:w-1/2 2xl:w-2/3 lg:sticky lg:top-0 lg:h-screen">
-          <ProductImage product={product} />
+          <ProductImage product={product} selectedColor={selectedColor} />
         </div>
 
         {/* Product Info */}
         <div className="w-full lg:w-1/2 2xl:w-1/3">
           <div className="px-4 lg:px-8 py-8">
-            <ProductInfo product={product} />
+            <ProductInfo 
+              product={product} 
+              selectedColor={selectedColor}
+              onColorChange={handleColorChange}
+            />
             <ProductHighlights />
           </div>
         </div>

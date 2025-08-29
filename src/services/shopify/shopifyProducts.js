@@ -182,7 +182,7 @@ const transformProduct = (p) => {
     colors: colors.map((c) => c.toString().toUpperCase()),
     reference: `REF. ${p.id.split('/').pop()}`, // still show short ref if you like
     sizes,
-    modelInfo: 'The model wears size S and is 179 cm tall.',
+    modelInfo: '',
     discountPercentage: maxDiscount,
     // Useful extras your UI might want:
     availability: {
