@@ -53,12 +53,10 @@ function mapNodeToCard(node) {
 }
 
 export default function CollectionPage() {
-  const params = useParams(); // { collection: 'men', category: 'shoes' }
+  const params = useParams(); // { handle: 'men-shoes' }
+  const handle = String(params?.handle || '');
   console.log('Route params:', params); // Debug: see what params we actually get
-  const collection = String(params?.collection || '');
-  const category = String(params?.category || '');
-  const handle = `${collection}-${category}`; // Combine to create the handle
-  console.log('Constructed handle:', handle); // Debug: see the final handle
+  console.log('Handle:', handle); // Debug: see the handle
 
   const [viewMode, setViewMode] = useState('grid-6');
   const [filters, setFilters] = useState({ colors: [], sizes: [] });
@@ -75,7 +73,7 @@ export default function CollectionPage() {
 
     (async () => {
       try {
-        console.log(handle)
+        console.log('Fetching collection with handle:', handle);
         const { products } = await shopifyService.getCollectionProductsByHandle({
           handle, // adjust up to 250 if you like
           maxPages: 100,

@@ -15,7 +15,7 @@ const products = [
     isNew: false,
     isSale: true,
     description: "Long top made in a flowing fabric. Asymmetric neckline. Check print.",
-    color: "BLACK",
+    colors: "BLACK",
     reference: "REF. 5157/650",
     sizes: ['XS', 'S', 'M', 'L'],
     modelInfo: "The model wears size S and is 179 cm tall.",
@@ -31,7 +31,7 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 40,
-    color: "BLUE",
+    colors: "BLUE",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -44,7 +44,7 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 80,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['36', '37', '38', '39', '40', '41'],
   },
   {
@@ -57,7 +57,7 @@ const products = [
     isNew: false,
     isSale: true,
     discountPercentage: 55,
-    color: "GOLD",
+    colors: "GOLD",
     sizes: ['ONE_SIZE'],
   },
   {
@@ -68,7 +68,7 @@ const products = [
     originalPrice: "EGP 3,999.00",
     isNew: false,
     isSale: true,
-    color: "RED",
+    colors: "RED",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -79,7 +79,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "WHITE",
+    colors: "WHITE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -90,7 +90,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -101,7 +101,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: true,
-    color: "GREEN",
+    colors: "GREEN",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -112,7 +112,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "NAVY",
+    colors: "NAVY",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -123,7 +123,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "PINK",
+    colors: "PINK",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -134,7 +134,7 @@ const products = [
     originalPrice: "EGP 2,999.00",
     isNew: false,
     isSale: true,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -145,7 +145,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "BLUE",
+    colors: "BLUE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -156,7 +156,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "GRAY",
+    colors: "GRAY",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -167,7 +167,7 @@ const products = [
     originalPrice: "EGP 2,599.00",
     isNew: false,
     isSale: true,
-    color: "RED",
+    colors: "RED",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -178,7 +178,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "PURPLE",
+    colors: "PURPLE",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -189,7 +189,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "YELLOW",
+    colors: "YELLOW",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -200,7 +200,7 @@ const products = [
     originalPrice: "EGP 2,799.00",
     isNew: false,
     isSale: true,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -211,7 +211,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "GREEN",
+    colors: "GREEN",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -222,7 +222,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -233,7 +233,7 @@ const products = [
     originalPrice: "EGP 2,199.00",
     isNew: false,
     isSale: true,
-    color: "ORANGE",
+    colors: "ORANGE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -244,7 +244,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "BLUE",
+    colors: "BLUE",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -255,7 +255,7 @@ const products = [
     originalPrice: "EGP 3,299.00",
     isNew: false,
     isSale: true,
-    color: "BURGUNDY",
+    colors: "BURGUNDY",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -266,7 +266,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "PINK",
+    colors: "PINK",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -277,7 +277,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -288,7 +288,7 @@ const products = [
     originalPrice: "EGP 2,899.00",
     isNew: false,
     isSale: true,
-    color: "RED",
+    colors: "RED",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -299,7 +299,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "GRAY",
+    colors: "GRAY",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -310,7 +310,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "WHITE",
+    colors: "WHITE",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -321,7 +321,7 @@ const products = [
     originalPrice: "EGP 3,999.00",
     isNew: false,
     isSale: true,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -332,7 +332,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "BLUE",
+    colors: "BLUE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -343,7 +343,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "PURPLE",
+    colors: "PURPLE",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -354,7 +354,7 @@ const products = [
     originalPrice: "EGP 2,599.00",
     isNew: false,
     isSale: true,
-    color: "GREEN",
+    colors: "GREEN",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -365,7 +365,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "NAVY",
+    colors: "NAVY",
     sizes: ['S', 'M', 'L'],
   },
   {
@@ -376,7 +376,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "PINK",
+    colors: "PINK",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -387,7 +387,7 @@ const products = [
     originalPrice: "EGP 3,699.00",
     isNew: false,
     isSale: true,
-    color: "BLACK",
+    colors: "BLACK",
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
@@ -398,7 +398,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: false,
     isSale: false,
-    color: "ORANGE",
+    colors: "ORANGE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
   {
@@ -409,7 +409,7 @@ const products = [
     originalPrice: "EGP 2,299.00",
     isNew: true,
     isSale: false,
-    color: "BLUE",
+    colors: "BLUE",
     sizes: ['XS', 'S', 'M', 'L'],
   },
 ];

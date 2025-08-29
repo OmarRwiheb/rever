@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useContext, createContext, useMemo, useCallback, useEffect } from 'react';
-import { Search, Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { shopifyService } from '@/services/shopify/shopify';
 
 // Create context for navbar state
 const NavbarContext = createContext();
@@ -101,20 +102,33 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
           {items.map((item, index) => (
             <div key={index} className="min-w-[200px]">
               {item.title && (
-                <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">
-                  {item.title}
-                </h3>
+                <div className="mb-6">
+                  {/* Section title is always clickable */}
+                  <a
+                    href={item.href}
+                    className="text-xs font-bold uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 block"
+                  >
+                    {item.title}
+                  </a>
+                </div>
               )}
               <div className="space-y-3">
-                {item.links.map((link, linkIndex) => (
-                  <a
-                    key={linkIndex}
-                    href={link.href}
-                    className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
-                  >
-                    {link.name}
-                  </a>
-                ))}
+                {item.links && item.links.length > 0 ? (
+                  item.links.map((link, linkIndex) => (
+                    <a
+                      key={linkIndex}
+                      href={link.href}
+                      className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
+                    >
+                      {link.name}
+                    </a>
+                  ))
+                ) : (
+                  /* If no links, show a subtle indicator that this is just a clickable section */
+                  <div className="text-xs text-gray-400 italic">
+                    Click title to view
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -148,20 +162,33 @@ const MobileDropdownMenu = ({ items, styles, isOpen, onToggle }) => {
         {items.map((item, index) => (
           <div key={index} className="mb-3 last:mb-0">
             {item.title && (
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-600 mb-2">
-                {item.title}
-              </h4>
+              <div className="mb-2">
+                {/* Section title is always clickable */}
+                <a
+                  href={item.href}
+                  className="text-xs font-semibold uppercase tracking-wider text-gray-600 hover:text-gray-800 transition-colors duration-200 block"
+                >
+                  {item.title}
+                </a>
+              </div>
             )}
             <div className="space-y-1">
-              {item.links.map((link, linkIndex) => (
-                <a
-                  key={linkIndex}
-                  href={link.href}
-                  className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
-                >
-                  {link.name}
-                </a>
-              ))}
+              {item.links && item.links.length > 0 ? (
+                item.links.map((link, linkIndex) => (
+                  <a
+                    key={linkIndex}
+                    href={link.href}
+                    className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
+                  >
+                    {link.name}
+                  </a>
+                ))
+              ) : (
+                /* If no links, show a subtle indicator */
+                <div className="text-xs text-gray-400 italic pl-2">
+                  Click title to view
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -216,16 +243,42 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
 export default function Navbar() {
   const pathname = usePathname();
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [isClient, setIsClient] = useState(false);
-  
+
+  // NEW: dynamic nav links from Shopify
+  const [navLinks, setNavLinks] = useState([]);
+  const [menuLoaded, setMenuLoaded] = useState(false);
+
   const isHomePage = isClient && pathname === '/';
 
   // Ensure client-side hydration consistency
   useEffect(() => {
     setIsClient(true);
+  }, []);
+
+  // Load menu from Shopify (handle: 'main-menu' — change if yours differs)
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const links = await shopifyService.getNavLinks('main-menu');
+        if (mounted) {
+          setNavLinks(links);
+          setMenuLoaded(true);
+        }
+      } catch (e) {
+        console.error('Menu load failed:', e);
+        if (mounted) {
+          setNavLinks([]); // fail safe
+          setMenuLoaded(true);
+        }
+      }
+    })();
+    return () => { mounted = false; };
   }, []);
 
   const toggleMobileMenu = useCallback(() => {
@@ -257,53 +310,36 @@ export default function Navbar() {
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      // Store current scroll position
       const scrollY = window.scrollY;
-      
-      // Prevent scroll by setting body to fixed and restoring scroll position
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
     } else {
-      // Restore scroll position and body styles
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
-      
-      // Restore scroll position
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
-
     return () => {
-      // Cleanup: restore body styles and scroll position
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
-      
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
     };
   }, [isMobileMenuOpen]);
 
-  // Use dynamic styles only on home page, static black styles on other pages
-  // Ensure consistent rendering between server and client
+  // Styles (same as your original)
   const styles = useMemo(() => {
     if (!isClient) {
-      // During SSR and initial hydration, use default styles to prevent mismatch
       return isHomePage ? NAVBAR_STYLES.hero : STATIC_NAVBAR_STYLES;
     }
-    
     if (isHomePage) {
       const baseStyles = getNavbarStyles(currentSection);
-      // Override text color to black when dropdown is active
       if (activeDropdown) {
         return {
           ...baseStyles,
@@ -316,198 +352,6 @@ export default function Navbar() {
     return STATIC_NAVBAR_STYLES;
   }, [isClient, isHomePage, currentSection, getNavbarStyles, activeDropdown]);
 
-  const navLinks = useMemo(() => [
-    { 
-      name: 'HIGHLIGHTS', 
-      href: '/highlights',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'FEATURED',
-          links: [
-            { name: 'NEW ARRIVALS', href: '/highlights/new-arrivals' },
-            { name: 'BEST SELLERS', href: '/highlights/best-sellers' },
-            { name: 'TRENDING', href: '/highlights/trending' }
-          ]
-        },
-        {
-          title: 'COLLECTIONS',
-          links: [
-            { name: 'SPRING/SUMMER 2024', href: '/highlights/spring-summer-2024' },
-            { name: 'FALL/WINTER 2024', href: '/highlights/fall-winter-2024' },
-            { name: 'LIMITED EDITION', href: '/highlights/limited-edition' }
-          ]
-        }
-      ]
-    },
-    { 
-      name: 'WOMEN', 
-      href: '/women',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'CLOTHING',
-          links: [
-            { name: 'DRESSES', href: '/women/dresses' },
-            { name: 'TOPS', href: '/women/tops' },
-            { name: 'BOTTOMS', href: '/women/bottoms' },
-            { name: 'OUTERWEAR', href: '/women/outerwear' }
-          ]
-        },
-        {
-          title: 'ACCESSORIES',
-          links: [
-            { name: 'BAGS', href: '/women/bags' },
-            { name: 'SHOES', href: '/women/shoes' },
-            { name: 'JEWELRY', href: '/women/jewelry' },
-            { name: 'SCARVES', href: '/women/scarves' }
-          ]
-        }
-      ]
-    },
-    { 
-      name: 'MEN', 
-      href: '/men',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'CLOTHING',
-          links: [
-            { name: 'SHIRTS', href: '/men/shirts' },
-            { name: 'PANTS', href: '/men/pants' },
-            { name: 'SUITS', href: '/men/suits' },
-            { name: 'OUTERWEAR', href: '/men/outerwear' }
-          ]
-        },
-        {
-          title: 'ACCESSORIES',
-          links: [
-            { name: 'BAGS', href: '/men/bags' },
-            { name: 'SHOES', href: '/men/shoes' },
-            { name: 'BELTS', href: '/men/belts' },
-            { name: 'TIES', href: '/men/ties' }
-          ]
-        }
-      ]
-    },
-    { 
-      name: 'SL PRODUCTIONS', 
-      href: '/sl-productions',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'SL PRODUCTIONS',
-          links: [
-            { name: 'ABOUT', href: '/sl-productions/about' }
-          ]
-        },
-        {
-          title: '2024',
-          links: [
-            { name: 'FABRICE DU WELZ', href: '/sl-productions/fabrice-du-welz' },
-            { name: 'JACQUES AUDIARD', href: '/sl-productions/jacques-audiard' },
-            { name: 'DAVID CRONENBERG', href: '/sl-productions/david-cronenberg' },
-            { name: 'PAOLO SORRENTINO', href: '/sl-productions/paolo-sorrentino' }
-          ]
-        },
-        {
-          title: '2023',
-          links: [
-            { name: 'PEDRO ALMODÓVAR', href: '/sl-productions/pedro-almodovar' },
-            { name: 'JEAN-LUC GODARD', href: '/sl-productions/jean-luc-godard' }
-          ]
-        },
-        {
-          title: '2020',
-          links: [
-            { name: 'ABEL FERRARA', href: '/sl-productions/abel-ferrara' }
-          ]
-        },
-        {
-          title: '2019',
-          links: [
-            { name: 'WONG KAR WAI', href: '/sl-productions/wong-kar-wai' },
-            { name: 'GASPAR NOÉ', href: '/sl-productions/gaspar-noe' },
-            { name: 'BRET EASTON ELLIS', href: '/sl-productions/bret-easton-ellis' }
-          ]
-        }
-      ]
-    },
-  ], []);
-
-  const rightNavLinks = useMemo(() => [
-    { 
-      name: 'LA MAISON', 
-      href: '/la-maison',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'ABOUT',
-          links: [
-            { name: 'OUR STORY', href: '/la-maison/our-story' },
-            { name: 'HERITAGE', href: '/la-maison/heritage' },
-            { name: 'CRAFTSMANSHIP', href: '/la-maison/craftsmanship' }
-          ]
-        },
-        {
-          title: 'EXPERIENCE',
-          links: [
-            { name: 'BOUTIQUES', href: '/la-maison/boutiques' },
-            { name: 'PERSONAL SHOPPING', href: '/la-maison/personal-shopping' },
-            { name: 'VIP SERVICES', href: '/la-maison/vip-services' }
-          ]
-        }
-      ]
-    },
-    { 
-      name: 'STORES', 
-      href: '/stores',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'LOCATIONS',
-          links: [
-            { name: 'FIND A STORE', href: '/stores/find' },
-            { name: 'FLAGSHIP STORES', href: '/stores/flagship' },
-            { name: 'BOUTIQUES', href: '/stores/boutiques' }
-          ]
-        },
-        {
-          title: 'SERVICES',
-          links: [
-            { name: 'PERSONAL STYLING', href: '/stores/personal-styling' },
-            { name: 'ALTERATIONS', href: '/stores/alterations' },
-            { name: 'GIFT SERVICES', href: '/stores/gift-services' }
-          ]
-        }
-      ]
-    },
-    { 
-      name: 'SERVICES', 
-      href: '/services',
-      hasDropdown: true,
-      dropdownItems: [
-        {
-          title: 'CUSTOMER CARE',
-          links: [
-            { name: 'CONTACT US', href: '/services/contact' },
-            { name: 'RETURNS & EXCHANGES', href: '/services/returns' },
-            { name: 'SIZE GUIDE', href: '/services/size-guide' }
-          ]
-        },
-        {
-          title: 'PERSONALIZATION',
-          links: [
-            { name: 'MONOGRAMMING', href: '/services/monogramming' },
-            { name: 'CUSTOM ORDERS', href: '/services/custom-orders' },
-            { name: 'GIFT WRAPPING', href: '/services/gift-wrapping' }
-          ]
-        }
-      ]
-    },
-    { name: 'LOGIN', href: '/login' },
-  ], []);
-
   const navClassName = useMemo(() => 
     `fixed top-0 left-0 right-0 z-20 transition-all duration-500 ${styles.bg}`,
     [styles.bg]
@@ -516,10 +360,10 @@ export default function Navbar() {
   return (
     <nav className={navClassName}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative" >
-          {/* Left Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => (
+        <div className="flex items-center h-16 lg:h-20 z-20 relative" >
+          {/* Left Navigation Links - Fixed Width */}
+          <div className="hidden lg:flex items-center justify-start gap-10 w-1/3">
+            {(menuLoaded ? navLinks : []).map((link) => (
               <NavLink 
                 key={link.name} 
                 link={link} 
@@ -532,8 +376,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden flex justify-center lg:justify-center">
+          {/* Mobile Menu Button - Only visible on mobile */}
+          <div className="lg:hidden flex justify-start w-1/3">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -550,8 +394,8 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Brand Logo */}
-          <div className="flex-1 flex justify-center lg:justify-center">
+          {/* Brand Logo - Center Section */}
+          <div className="flex justify-center items-center w-1/3">
             <a href="/" className="text-center">
               <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
                 REVER
@@ -559,42 +403,31 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {rightNavLinks.map((link) => (
-              <NavLink 
-                key={link.name} 
-                link={link} 
-                styles={styles}
-                hasDropdown={link.hasDropdown}
-                isDropdownOpen={activeDropdown === link.name}
-                onMouseEnter={() => handleMouseEnter(link.name)}
-                onMouseLeave={handleMouseLeave}
-              />
-            ))}
-            {/* Basket Icon */}
+          {/* Right side - Shopping Cart Only - Fixed Width */}
+          <div className="hidden lg:flex items-center justify-end w-1/3">
             <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}>
               <div className="relative">
-                {/* Clear Shopping Cart Icon */}
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
-                
-                {/* Item Count Badge - Positioned outside the icon */}
                 <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
                   0
                 </div>
               </div>
             </button>
-            {/* <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out`}>
-              <Search size={18} />
-            </button> */}
           </div>
 
-          {/* Search Icon for Mobile */}
-          <div className="lg:hidden flex items-center justify-center">
-            <button className={`${styles.text} ${styles.hover} transition-colors duration-200`}>
-              <Search size={20} />
+          {/* Mobile Shopping Cart - Only visible on mobile */}
+          <div className="lg:hidden flex justify-end w-1/3">
+            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}>
+              <div className="relative">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
+                  0
+                </div>
+              </div>
             </button>
           </div>
         </div>
@@ -603,7 +436,7 @@ export default function Navbar() {
         {activeDropdown && (
           <div className="hidden lg:block">
             {(() => {
-              const activeLink = [...navLinks, ...rightNavLinks].find(link => link.name === activeDropdown);
+              const activeLink = (menuLoaded ? navLinks : []).find(link => link.name === activeDropdown);
               if (activeLink && activeLink.hasDropdown) {
                 return (
                   <DropdownMenu
@@ -632,56 +465,46 @@ export default function Navbar() {
             onWheel={(e) => e.stopPropagation()}
             onScroll={(e) => e.stopPropagation()}
           >
-                          <div className="flex flex-col h-full">
-                {/* Mobile Header - Same structure as main navbar */}
-                <div className="mx-0 px-4 sm:px-6 lg:px-8 flex-shrink-0">
-                  <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative">
-                    {/* Mobile Menu Button - Now Close Button */}
-                    <div className="lg:hidden flex justify-center lg:justify-center">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleMobileMenu();
-                        }}
-                        className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
-                        style={{ touchAction: 'manipulation' }}
-                      >
-                        <X size={24} />
-                      </button>
-                    </div>
+            <div className="flex flex-col h-full">
+              {/* Mobile Header */}
+              <div className="mx-0 px-4 sm:px-6 lg:px-8 flex-shrink-0">
+                <div className="flex justify-between items-center h-16 lg:h-20 z-20 relative">
+                  <div className="lg:hidden flex justify-center lg:justify-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMobileMenu();
+                      }}
+                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
+                      style={{ touchAction: 'manipulation' }}
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
 
-                    {/* Brand Logo */}
-                    <div className="flex-1 flex justify-center lg:justify-center">
-                      <a href="/" className="text-center">
-                        <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
-                          REVER
-                        </h1>
-                      </a>
-                    </div>
+                  <div className="flex-1 flex justify-center lg:justify-center">
+                    <a href="/" className="text-center">
+                      <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
+                        REVER
+                      </h1>
+                    </a>
+                  </div>
 
-                    {/* Search Icon for Mobile */}
-                    <div className="lg:hidden flex items-center justify-center space-x-4">
-                      <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out">
-                        <Search size={20} />
-                      </button>
-                      {/* Basket Icon for Mobile */}
-                      <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group">
-                        <div className="relative">
-                          {/* Clear Shopping Cart Icon */}
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                          </svg>
-                          
-                          {/* Item Count Badge - Positioned outside the icon */}
-                          <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
-                            0
-                          </div>
+                  <div className="lg:hidden flex items-center justify-center">
+                    <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group">
+                      <div className="relative">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
+                          0
                         </div>
-                      </button>
-                    </div>
+                      </div>
+                    </button>
                   </div>
                 </div>
-              
+              </div>
+            
               {/* Mobile Navigation */}
               <div 
                 className="flex-1 overflow-y-auto" 
@@ -695,29 +518,11 @@ export default function Navbar() {
                 }}
               >
                 <div className="p-6 space-y-8">
-                  {/* Left Links */}
                   <div className="space-y-6">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
                       Collections
                     </h3>
-                    {navLinks.map((link) => (
-                      <MobileNavLink 
-                        key={link.name} 
-                        link={link} 
-                        styles={{ text: 'text-black', hover: 'hover:text-gray-600' }}
-                        hasDropdown={link.hasDropdown}
-                        isDropdownOpen={mobileDropdowns[link.name]}
-                        onToggle={() => toggleMobileDropdown(link.name)}
-                      />
-                    ))}
-                  </div>
-                  
-                  {/* Right Links */}
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
-                      Services
-                    </h3>
-                    {rightNavLinks.map((link) => (
+                    {(menuLoaded ? navLinks : []).map((link) => (
                       <MobileNavLink 
                         key={link.name} 
                         link={link} 
@@ -747,4 +552,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-} 
+}

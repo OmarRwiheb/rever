@@ -1,12 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
-
 import FilterBar from '../../../components/productsGrid/FilterBar';
 import ProductGrid from '../../../components/productsGrid/ProductGrid';
 import Footer from '../../../components/Footer';
-import { shopifyService } from '@/services/shopify/shopify';
+import { shopifyService } from '@/services/shopify/shopify'; // <- use the ALL-PAGES fn
 
 const DEFAULT_SIZE = 'ONE_SIZE';
 const DEFAULT_COLOR = 'MULTI';
@@ -18,18 +16,16 @@ function toPriceString(amount, currency) {
   return `${c} ${a.toFixed(2)}`;
 }
 
-// Map a Storefront product node → your grid item shape
+// Map Storefront product node -> your grid item shape
 function mapNodeToCard(node) {
   const minPrice = node?.priceRange?.minVariantPrice?.amount;
   const currency = node?.priceRange?.minVariantPrice?.currencyCode || DEFAULT_CURRENCY;
 
-  // sizes from options if present
   const sizeOpt =
     (node?.options || []).find((o) =>
       String(o?.name || '').toLowerCase().includes('size')
     )?.values || [DEFAULT_SIZE];
 
-  // naive color (you can improve if you store color option)
   const color = DEFAULT_COLOR;
 
   return {
@@ -39,9 +35,9 @@ function mapNodeToCard(node) {
     imageUrl: node?.featuredImage?.url || '/img/product-test.jpg',
     images: node?.featuredImage?.url ? [node.featuredImage.url] : [],
     price: toPriceString(minPrice, currency),
-    originalPrice: null,       // you can extend the collection query to include variants/compareAt if needed
-    isNew: false,              // optional: compute from createdAt if you add it to the query
-    isSale: false,             // optional: compute from compareAt if you add variants
+    originalPrice: null,
+    isNew: false,
+    isSale: false,
     description: node?.description || '',
     color,
     colors: [color],
@@ -52,14 +48,7 @@ function mapNodeToCard(node) {
   };
 }
 
-export default function CollectionPage() {
-  const params = useParams(); // { collection: 'men', category: 'shoes' }
-  console.log('Route params:', params); // Debug: see what params we actually get
-  const collection = String(params?.collection || '');
-  const category = String(params?.category || '');
-  const handle = `${collection}-${category}`; // Combine to create the handle
-  console.log('Constructed handle:', handle); // Debug: see the final handle
-
+export default function CollectionClient({ handle }) {
   const [viewMode, setViewMode] = useState('grid-6');
   const [filters, setFilters] = useState({ colors: [], sizes: [] });
   const [sortBy, setSortBy] = useState('featured');
@@ -70,21 +59,18 @@ export default function CollectionPage() {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
     setErr(null);
+    setLoading(true);
 
     (async () => {
       try {
-        console.log(handle)
         const { products } = await shopifyService.getCollectionProductsByHandle({
-          handle, // adjust up to 250 if you like
+          handle,
+          pageSize: 100,  // up to 250 with Storefront API
           maxPages: 100,
         });
-
         if (!mounted) return;
-
-        const mapped = (products || []).map(mapNodeToCard);
-        setAllProducts(mapped);
+        setAllProducts((products || []).map(mapNodeToCard));
         setLoading(false);
       } catch (e) {
         if (!mounted) return;
@@ -98,48 +84,39 @@ export default function CollectionPage() {
     return () => { mounted = false; };
   }, [handle]);
 
-  // Apply filters + sorting
   const filteredProducts = useMemo(() => {
-    let filtered = allProducts.filter((product) => {
-      // Color filter
-      if (filters.colors.length > 0 && !filters.colors.includes(product.color)) {
-        return false;
-      }
-      // Size filter
-      if (filters.sizes.length > 0) {
-        const hasMatchingSize = product.sizes && product.sizes.some((s) => filters.sizes.includes(s));
-        if (!hasMatchingSize) return false;
-      }
-      return true;
-    });
+    const out = allProducts
+      .filter((p) => {
+        if (filters.colors.length > 0 && !filters.colors.includes(p.color)) return false;
+        if (filters.sizes.length > 0) {
+          const hasSize = p.sizes?.some((s) => filters.sizes.includes(s));
+          if (!hasSize) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        const toNum = (p) => parseFloat(String(p).replace(/[^\d.]/g, '')) || 0;
+        switch (sortBy) {
+          case 'price-low':  return toNum(a.price) - toNum(b.price);
+          case 'price-high': return toNum(b.price) - toNum(a.price);
+          case 'name':       return a.name.localeCompare(b.name);
+          case 'newest':     return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+          default:           return (a.isSale ? 1 : 0) - (b.isSale ? 1 : 0);
+        }
+      });
 
-    // Sort
-    filtered.sort((a, b) => {
-      const toNum = (p) => parseFloat(String(p).replace(/[^\d.]/g, '')) || 0;
-      switch (sortBy) {
-        case 'price-low':  return toNum(a.price) - toNum(b.price);
-        case 'price-high': return toNum(b.price) - toNum(a.price);
-        case 'name':       return a.name.localeCompare(b.name);
-        case 'newest':     return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-        default:           return (a.isSale ? 1 : 0) - (b.isSale ? 1 : 0);
-      }
-    });
-
-    return filtered;
+    return out;
   }, [allProducts, filters, sortBy]);
-
-  const handleFiltersChange = (newFilters) => setFilters(newFilters);
-  const handleSortChange = (newSortBy) => setSortBy(newSortBy);
 
   return (
     <div className="min-h-screen bg-white pt-20">
       <FilterBar
         totalItems={filteredProducts.length}
         onViewModeChange={setViewMode}
-        onFiltersChange={handleFiltersChange}
-        onSortChange={handleSortChange}
+        onFiltersChange={setFilters}
+        onSortChange={setSortBy}
         sortBy={sortBy}
-        products={allProducts}   // if FilterBar needs full list to build facets
+        products={allProducts}
       />
       {loading ? (
         <div className="px-6 py-20 text-center text-sm text-gray-500">Loading…</div>
