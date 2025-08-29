@@ -4,27 +4,32 @@ import Link from 'next/link';
 export default function ProductCard({ product, viewMode = 'grid-6' }) {
   const { id, name, imageUrl, price, originalPrice } = product;
 
+  // ✅ Build the product link by handle, with fallbacks
+  const href =
+    product.href ||
+    `/products/${product.slug || product.handle || String(id || '').split('/').pop()}`;
+
   const calculateDiscount = (originalPrice, currentPrice) => {
-    // Extract numeric values from price strings (remove "EGP " and parse)
-    const original = parseFloat(originalPrice.replace('EGP ', '').replace(',', ''));
-    const current = parseFloat(currentPrice.replace('EGP ', '').replace(',', ''));
+    // keep your original logic to avoid visual/format changes
+    const original = parseFloat(String(originalPrice).replace('EGP ', '').replace(',', ''));
+    const current = parseFloat(String(currentPrice).replace('EGP ', '').replace(',', ''));
     const discountPercentage = ((original - current) / original) * 100;
     return `${Math.round(discountPercentage)}%`;
   };
 
   return (
-    <Link href={`/product/${id}`} className="block group relative">
-        {/* Product Image */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-            <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            />
-            
-                    {/* Hover Overlay with Quick Add Button */}
+    <Link href={href} className="block group relative">
+      {/* Product Image */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+        <Image
+          src={imageUrl}
+          alt={name}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+        />
+
+        {/* Hover Overlay with Quick Add Button */}
         {viewMode !== 'grid-12' && (
           <div className="absolute inset-0 transition-all duration-300 flex items-end justify-start">
             <button className=" bg-white text-gray-900 shadow-lg transition-all duration-300 hover:bg-gray-100 m-2">
@@ -34,33 +39,33 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
             </button>
           </div>
         )}
-        </div>
+      </div>
 
-              {/* Product Info */}
+      {/* Product Info */}
       {viewMode !== 'grid-12' && (
         <div className="text-left px-2 mt-1">
-                <h3 className="text-xs font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-0.5">
-                {name}
-                </h3>
+          <h3 className="text-xs font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-0.5">
+            {name}
+          </h3>
 
-            {originalPrice && (
-                <span className="text-xs text-gray-900 line-through mb-0.5 block">
-                {originalPrice}
-                </span>
-            )}
+          {originalPrice && (
+            <span className="text-xs text-gray-900 line-through mb-0.5 block">
+              {originalPrice}
+            </span>
+          )}
 
-            <div className="flex flex-col items-start justify-start text-xs leading-tight">
-                <span className={`font-medium text-gray-900 ${originalPrice ? 'bg-[#FFE693]' : ''}`}>
-                {originalPrice && (
-                    <span className="font-medium text-gray-900 mr-1">
-                        -{calculateDiscount(originalPrice, price)}
-                    </span>
-                )}
-                {price}
+          <div className="flex flex-col items-start justify-start text-xs leading-tight">
+            <span className={`font-medium text-gray-900 ${originalPrice ? 'bg-[#FFE693]' : ''}`}>
+              {originalPrice && (
+                <span className="font-medium text-gray-900 mr-1">
+                  -{calculateDiscount(originalPrice, price)}
                 </span>
-            </div>
+              )}
+              {price}
+            </span>
+          </div>
         </div>
       )}
     </Link>
   );
-} 
+}

@@ -1,4 +1,4 @@
-import { getProductById, getProducts } from './shopifyProducts';
+import { getProductById, getProducts, getProductByHandle } from './shopifyProducts';
 import { getNavLinks } from './shopifyMenu';
 import { getCollectionProductsByHandle } from './shopifyCollection';
 
@@ -6,6 +6,7 @@ import { getCollectionProductsByHandle } from './shopifyCollection';
 export const shopifyService = {
   getProducts,
   getProductById,
+  getProductByHandle,
   getNavLinks,
   getCollectionProductsByHandle,
 };

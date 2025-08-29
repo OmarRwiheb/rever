@@ -28,9 +28,13 @@ function mapNodeToCard(node) {
 
   const color = DEFAULT_COLOR;
 
+  const handle = node?.handle || String(node?.id || '').split('/').pop();
+  const href = handle ? `/products/${handle}` : '#';
+
   return {
     id: node.id,
-    slug: node.handle,
+    slug: handle,                 // keep if you use it elsewhere
+    href,                         // ✅ add this
     name: node.title,
     imageUrl: node?.featuredImage?.url || '/img/product-test.jpg',
     images: node?.featuredImage?.url ? [node.featuredImage.url] : [],
@@ -41,12 +45,13 @@ function mapNodeToCard(node) {
     description: node?.description || '',
     color,
     colors: [color],
-    reference: `REF. ${node.id.split('/').pop()}`,
+    reference: `REF. ${String(node.id).split('/').pop()}`,
     sizes: sizeOpt,
     modelInfo: '',
     discountPercentage: 0,
   };
 }
+
 
 export default function CollectionClient({ handle }) {
   const [viewMode, setViewMode] = useState('grid-6');

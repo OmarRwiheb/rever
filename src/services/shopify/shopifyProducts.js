@@ -55,6 +55,15 @@ const PRODUCT_BY_ID_QUERY = `
   }
 `;
 
+const PRODUCT_BY_HANDLE_QUERY = `
+  query ProductByHandle($handle: String!) @inContext(country: EG, language: EN) {
+    product(handle: $handle) {
+      ${PRODUCT_FIELDS}
+    }
+  }
+`;
+
+
 // ---------- Helpers ----------
 const lc = (s) => (s || '').toLowerCase();
 
@@ -203,5 +212,9 @@ export async function getProductById(id) {
   return transformProduct(data.product);
 }
 
-
+export async function getProductByHandle(handle) {
+  const data = await apiClient.graphql(PRODUCT_BY_HANDLE_QUERY, { handle });
+  if (!data?.product) throw new Error('Product not found');
+  return transformProduct(data.product);
+}
 
