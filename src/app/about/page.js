@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Image from 'next/image';
-import Footer from '@/components/UI/Footer';
+import Footer from '@/components/Footer';
 
 const FAQItem = ({ question, answer, isOpen, onToggle }) => (
   <div className="border-b border-gray-200 py-6">
