@@ -3,14 +3,16 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { query, variables } = await request.json();
-    const shopifyEndpoint = process.env.SHOPIFY_GRAPHQL_ENDPOINT; // .../api/2024-07/graphql.json
+    const body = await request.json();
+    const { query, variables } = body;
+    const shopifyEndpoint = process.env.SHOPIFY_GRAPHQL_ENDPOINT;
     const accessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
     if (!shopifyEndpoint || !accessToken) {
+      console.error('Missing Shopify configuration');
       return NextResponse.json({ error: 'Shopify configuration missing' }, { status: 500 });
     }
-
+    
     const resp = await fetch(shopifyEndpoint, {
       method: 'POST',
       headers: {
@@ -20,9 +22,13 @@ export async function POST(request) {
       body: JSON.stringify({ query, variables }),
     });
 
-    const payload = await resp.json().catch(() => ({}));
+    const payload = await resp.json().catch((e) => {
+      console.error('Failed to parse response:', e);
+      return {};
+    });
 
     if (!resp.ok) {
+      console.error('Shopify API Error:', resp.status, payload);
       return NextResponse.json(
         { error: `HTTP ${resp.status}`, details: payload?.errors || payload },
         { status: 502 }
@@ -30,11 +36,11 @@ export async function POST(request) {
     }
 
     if (payload.errors?.length) {
+      console.error('Shopify GraphQL Errors:', payload.errors);
       const message = payload.errors.map((e) => e.message).join(' | ');
       return NextResponse.json({ error: message, details: payload.errors }, { status: 400 });
     }
 
-    // Include cost info for debugging (not required by client)
     return NextResponse.json({ data: payload.data, extensions: payload.extensions });
   } catch (err) {
     console.error('Shopify GraphQL API Error:', err);

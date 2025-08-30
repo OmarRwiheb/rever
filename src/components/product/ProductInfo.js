@@ -1,10 +1,94 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useCart } from '@/contexts/CartContext';
 import MeasurementTablePopup from './MeasurementTablePopup';
 
 export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const [selectedSize, setSelectedSize] = useState('S');
+  const [quantity, setQuantity] = useState(1);
   const [isMeasurementPopupOpen, setIsMeasurementPopupOpen] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [addToCartMessage, setAddToCartMessage] = useState('');
+  
+  const { addToCart, getItemQuantity, isItemInCart } = useCart();
+
+  // Find the actual variant based on selected color and size
+  const getSelectedVariant = () => {
+    if (!product.variants || !product.variants.length) {
+      return null;
+    }
+    
+    // First, try to find an exact match
+    let variant = product.variants.find(variant => {
+      const colorMatch = selectedColor && variant.color && 
+        variant.color.toLowerCase() === selectedColor.toLowerCase();
+      const sizeMatch = selectedSize && variant.size && 
+        variant.size.toLowerCase() === selectedSize.toLowerCase();
+      
+      return colorMatch && sizeMatch;
+    });
+    
+    // If no exact match, try to find by color only
+    if (!variant && selectedColor) {
+      variant = product.variants.find(variant => 
+        variant.color && variant.color.toLowerCase() === selectedColor.toLowerCase()
+      );
+    }
+    
+    // If still no match, try to find by size only
+    if (!variant && selectedSize) {
+      variant = product.variants.find(variant => 
+        variant.size && variant.size.toLowerCase() === selectedSize.toLowerCase()
+      );
+    }
+    
+    // Final fallback to first variant
+    if (!variant) {
+      variant = product.variants[0];
+    }
+    
+    return variant;
+  };
+
+  const selectedVariant = getSelectedVariant();
+
+  // Check if current variant is in cart
+  const isInCart = selectedVariant ? isItemInCart(selectedVariant.id) : false;
+  const cartQuantity = selectedVariant ? getItemQuantity(selectedVariant.id) : 0;
+
+  // Handle add to cart
+  const handleAddToCart = async () => {
+    if (!selectedVariant) {
+      setAddToCartMessage('Please select a variant');
+      return;
+    }
+
+    setIsAddingToCart(true);
+    setAddToCartMessage('');
+
+    try {
+      // Use the actual variant ID from Shopify
+      const result = await addToCart(selectedVariant.id, quantity);
+      
+      if (result.success) {
+        setAddToCartMessage('Added to cart successfully!');
+        // Reset message after 3 seconds
+        setTimeout(() => setAddToCartMessage(''), 3000);
+      } else {
+        setAddToCartMessage(result.error || 'Failed to add item to cart');
+      }
+    } catch (error) {
+      setAddToCartMessage('Error adding to cart');
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  // Update quantity
+  const updateQuantity = (delta) => {
+    const newQuantity = Math.max(1, quantity + delta);
+    setQuantity(newQuantity);
+  };
 
   return (
     <>
@@ -96,7 +180,6 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           </div>
         )}
 
-
         {/* Size Selection */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -138,9 +221,66 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           )}
         </div>
 
+        {/* Quantity Selection */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-900">Quantity</span>
+            {isInCart && (
+              <span className="text-xs text-gray-500">
+                {cartQuantity} in cart
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => updateQuantity(-1)}
+              disabled={quantity <= 1}
+              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              -
+            </button>
+            <span className="w-12 text-center text-sm text-gray-900">
+              {quantity}
+            </span>
+            <button
+              onClick={() => updateQuantity(1)}
+              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Add to Cart Message */}
+        {addToCartMessage && (
+          <div className={`p-3 rounded-md text-sm ${
+            addToCartMessage.includes('successfully') 
+              ? 'bg-green-50 text-green-700 border border-green-200'
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}>
+            {addToCartMessage}
+          </div>
+        )}
+
         {/* Add to Basket Button */}
-        <button className="w-full bg-white border border-gray-900 text-gray-900 font-medium py-3 px-6 hover:bg-gray-900 hover:text-white transition-colors">
-          ADD TO BASKET
+        <button 
+          onClick={handleAddToCart}
+          disabled={isAddingToCart || !selectedVariant}
+          className={`w-full font-medium py-3 px-6 transition-colors ${
+            isAddingToCart
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : isInCart
+              ? 'bg-green-600 text-white hover:bg-green-700'
+              : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+          }`}
+        >
+          {isAddingToCart 
+            ? 'ADDING...' 
+            : isInCart 
+            ? 'ADDED TO CART' 
+            : 'ADD TO BASKET'
+          }
         </button>
 
         {/* Additional Links */}
@@ -152,7 +292,6 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             >
               SEE MEASUREMENT TABLE
             </button>
-
           </div>
         </div>
       </div>

@@ -9,15 +9,20 @@ const api = axios.create({
 
 export const apiClient = {
   graphql: async (query, variables = {}, config = {}) => {
-    const res = await api.post('/shopify/graphql', { query, variables }, config);
-    if (res.data?.error) {
-      const error = new Error(`[Shopify GraphQL] ${res.data.error}`);
-      error.name = 'ShopifyGraphQLError';
-      error.details = res.data.details;
+    try {
+      const res = await api.post('/shopify/graphql', { query, variables }, config);
+      
+      if (res.data?.error) {
+        const error = new Error(`[Shopify GraphQL] ${res.data.error}`);
+        error.name = 'ShopifyGraphQLError';
+        error.details = res.data.details;
+        throw error;
+      }
+      
+      return res.data.data;
+    } catch (error) {
       throw error;
     }
-    // Optional: inspect res.data.extensions?.cost here
-    return res.data.data;
   },
 };
 

@@ -25,6 +25,21 @@ const COLLECTION_BY_HANDLE_QUERY = `
             vendor
             tags
             options { name values }
+            variants(first: 50) {
+              edges {
+                cursor
+                node {
+                  id
+                  title
+                  availableForSale
+                  quantityAvailable
+                  price { amount currencyCode }
+                  compareAtPrice { amount currencyCode }
+                  selectedOptions { name value }
+                  image { url altText }
+                }
+              }
+            }
           }
         }
         pageInfo { hasNextPage endCursor }

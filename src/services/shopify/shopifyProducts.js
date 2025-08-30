@@ -166,8 +166,31 @@ const transformProduct = (p) => {
       ? `${currency} ${minEntry.price.toFixed(2)}`
       : `${currency} ${(Number(p.priceRange?.minVariantPrice?.amount) || 0).toFixed(2)}`;
 
+  // Create full variants array with all necessary data for cart operations
+  const fullVariants = variants.map(variant => {
+    const selectedOptions = variant.selectedOptions || [];
+    const colorOption = selectedOptions.find(opt => 
+      opt.name.toLowerCase().includes('color') || opt.name.toLowerCase().includes('colour')
+    );
+    const sizeOption = selectedOptions.find(opt => 
+      opt.name.toLowerCase().includes('size')
+    );
+    
+    return {
+      id: variant.id,
+      title: variant.title,
+      availableForSale: variant.availableForSale,
+      quantityAvailable: variant.quantityAvailable,
+      price: variant.price,
+      compareAtPrice: variant.compareAtPrice,
+      color: colorOption?.value || primaryColor,
+      size: sizeOption?.value || DEFAULT_SIZE,
+      selectedOptions: selectedOptions
+    };
+  });
+
   return {
-    // Keep full Shopify GID (don’t parse into number; safer for APIs and links)
+    // Keep full Shopify GID (don't parse into number; safer for APIs and links)
     id: p.id,
     slug: p.handle,
     name: p.title,
@@ -184,6 +207,8 @@ const transformProduct = (p) => {
     sizes,
     modelInfo: '',
     discountPercentage: maxDiscount,
+    // Full variants data for cart operations
+    variants: fullVariants,
     // Useful extras your UI might want:
     availability: {
       hasAnyAvailable: variants.some((v) => v.availableForSale),

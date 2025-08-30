@@ -4,6 +4,8 @@ import { useState, useContext, createContext, useMemo, useCallback, useEffect } 
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { shopifyService } from '@/services/shopify/shopify';
+import { useCart } from '@/contexts/CartContext';
+import CartDropdown from './CartDropdown';
 
 // Create context for navbar state
 const NavbarContext = createContext();
@@ -243,11 +245,13 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
 export default function Navbar() {
   const pathname = usePathname();
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
+  const { getItemCount } = useCart();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [isClient, setIsClient] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // NEW: dynamic nav links from Shopify
   const [navLinks, setNavLinks] = useState([]);
@@ -405,13 +409,16 @@ export default function Navbar() {
 
           {/* Right side - Shopping Cart Only - Fixed Width */}
           <div className="hidden lg:flex items-center justify-end w-1/3">
-            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}>
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}
+            >
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
-                  0
+                  {getItemCount()}
                 </div>
               </div>
             </button>
@@ -419,13 +426,16 @@ export default function Navbar() {
 
           {/* Mobile Shopping Cart - Only visible on mobile */}
           <div className="lg:hidden flex justify-end w-1/3">
-            <button className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}>
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}
+            >
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
-                  0
+                  {getItemCount()}
                 </div>
               </div>
             </button>
@@ -491,13 +501,19 @@ export default function Navbar() {
                   </div>
 
                   <div className="lg:hidden flex items-center justify-center">
-                    <button className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group">
+                    <button 
+                      onClick={() => {
+                        setIsCartOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group"
+                    >
                       <div className="relative">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                         <div className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 shadow-sm border border-white">
-                          0
+                          {getItemCount()}
                         </div>
                       </div>
                     </button>
@@ -549,6 +565,12 @@ export default function Navbar() {
             `}</style>
           </div>
         )}
+
+        {/* Cart Dropdown */}
+        <CartDropdown 
+          isOpen={isCartOpen} 
+          onClose={() => setIsCartOpen(false)} 
+        />
       </div>
     </nav>
   );

@@ -31,6 +31,30 @@ function mapNodeToCard(node) {
   const handle = node?.handle || String(node?.id || '').split('/').pop();
   const href = handle ? `/products/${handle}` : '#';
 
+  // Transform variants data for cart operations
+  const variants = (node?.variants?.edges || []).map((e) => {
+    const variant = e.node;
+    const selectedOptions = variant.selectedOptions || [];
+    const colorOption = selectedOptions.find(opt => 
+      opt.name.toLowerCase().includes('color') || opt.name.toLowerCase().includes('colour')
+    );
+    const sizeOption = selectedOptions.find(opt => 
+      opt.name.toLowerCase().includes('size')
+    );
+    
+    return {
+      id: variant.id,
+      title: variant.title,
+      availableForSale: variant.availableForSale,
+      quantityAvailable: variant.quantityAvailable,
+      price: variant.price,
+      compareAtPrice: variant.compareAtPrice,
+      color: colorOption?.value || color,
+      size: sizeOption?.value || DEFAULT_SIZE,
+      selectedOptions: selectedOptions
+    };
+  });
+
   return {
     id: node.id,
     slug: handle,                 // keep if you use it elsewhere
@@ -49,6 +73,7 @@ function mapNodeToCard(node) {
     sizes: sizeOpt,
     modelInfo: '',
     discountPercentage: 0,
+    variants: variants, // Add variants for quick add functionality
   };
 }
 
