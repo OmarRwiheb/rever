@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar, { NavbarProvider } from "@/components/Navbar";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import { CartProvider } from "@/contexts/CartContext";
+import { UserProvider } from "@/contexts/UserContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,10 +27,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavbarProvider>
-          <CartProvider>
-            <Navbar />
-            {children}
-          </CartProvider>
+          <UserProvider>
+            <CartProvider>
+              <Navbar />
+              {children}
+            </CartProvider>
+          </UserProvider>
         </NavbarProvider>
         <NewsletterPopup />
       </body>

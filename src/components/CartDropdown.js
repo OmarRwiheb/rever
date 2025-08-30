@@ -2,10 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
+import { useUser } from '@/contexts/UserContext';
+import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
 import Image from 'next/image';
 
 export default function CartDropdown({ isOpen, onClose }) {
-  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart } = useCart();
+  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart, getCustomerCheckoutUrl } = useCart();
+  const { user, isAuthenticated } = useUser();
   const dropdownRef = useRef(null);
   const [editingItem, setEditingItem] = useState(null);
   const [availableVariants, setAvailableVariants] = useState({});
@@ -238,6 +241,20 @@ export default function CartDropdown({ isOpen, onClose }) {
 
   const renderCartSummary = () => (
     <div className="border-t border-gray-200 pt-4">
+      {/* Customer checkout info */}
+      {isAuthenticated && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <div className="flex items-center space-x-2">
+            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm text-blue-800">
+              Checkout with your account info: {user?.firstName} {user?.lastName}
+            </span>
+          </div>
+        </div>
+      )}
+      
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm font-medium text-gray-900">Subtotal</span>
         <span className="text-sm font-medium text-gray-900">{cart.subtotal}</span>
@@ -253,23 +270,31 @@ export default function CartDropdown({ isOpen, onClose }) {
     </div>
   );
 
-  const renderActionButtons = () => (
-    <div className="flex space-x-3 pt-4">
-      <button
-        onClick={clearCart}
-        disabled={loading}
-        className="flex-1 px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
-      >
-        Clear Cart
-      </button>
-      <a
-        href={cart.checkoutUrl}
-        className="flex-1 px-4 py-2 border border-transparent text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-500 text-center"
-      >
-        Checkout
-      </a>
-    </div>
-  );
+  const renderActionButtons = () => {
+    // Get customer checkout URL if user is logged in
+    const accessToken = isAuthenticated ? shopifyTokenManager.getToken() : null;
+    const checkoutUrl = accessToken 
+      ? getCustomerCheckoutUrl(accessToken) 
+      : cart.checkoutUrl;
+
+    return (
+      <div className="flex space-x-3 pt-4">
+        <button
+          onClick={clearCart}
+          disabled={loading}
+          className="flex-1 px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+        >
+          Clear Cart
+        </button>
+        <a
+          href={checkoutUrl}
+          className="flex-1 px-4 py-2 border border-transparent text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-500 text-center"
+        >
+          {isAuthenticated ? 'Checkout with Account' : 'Checkout'}
+        </a>
+      </div>
+    );
+  };
 
   const renderEmptyCart = () => (
     <div className="text-center py-8">

@@ -192,6 +192,11 @@ export function CartProvider({ children }) {
   const getItemCount = useCallback(() => state.cart?.totalQuantity || 0, [state.cart]);
   const isCartEmpty = useCallback(() => !state.cart || state.cart.items.length === 0, [state.cart]);
   const getCartTotal = useCallback(() => state.cart?.total || '$0.00', [state.cart]);
+  const getCustomerCheckoutUrl = useCallback((customerAccessToken) => {
+    return cartService.getCustomerCheckoutUrl(customerAccessToken);
+  }, []);
+
+
   const isItemInCart = useCallback((variantId) => {
     if (!state.cart) return false;
     return state.cart.items.some(item => item.variantId === variantId);
@@ -225,6 +230,7 @@ export function CartProvider({ children }) {
     getCartTotal,
     isItemInCart,
     getItemQuantity,
+    getCustomerCheckoutUrl,
   };
 
   return (

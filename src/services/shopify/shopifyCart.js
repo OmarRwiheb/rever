@@ -527,6 +527,23 @@ class CartService {
 
   getCartId() { return this.cartId; }
   hasCart() { return !!this.cartId; }
+
+  // Get checkout URL with customer info if logged in
+  getCustomerCheckoutUrl(customerAccessToken = null) {
+    if (!this.cartId) return null;
+    
+    let checkoutUrl = this.cart?.checkoutUrl;
+    
+    if (customerAccessToken && checkoutUrl) {
+      // Add customer access token to checkout URL for pre-filled customer data
+      const separator = checkoutUrl.includes('?') ? '&' : '?';
+      checkoutUrl += `${separator}customer_access_token=${customerAccessToken}`;
+    }
+    
+    return checkoutUrl;
+  }
+
+
 }
 
 // Export singleton instance

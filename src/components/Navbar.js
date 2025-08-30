@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useContext, createContext, useMemo, useCallback, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { shopifyService } from '@/services/shopify/shopify';
 import { useCart } from '@/contexts/CartContext';
+import { useUser } from '@/contexts/UserContext';
 import CartDropdown from './CartDropdown';
+import AuthModal from './auth/AuthModal';
+import UserDropdown from './auth/UserDropdown';
 
 // Create context for navbar state
 const NavbarContext = createContext();
@@ -246,12 +249,14 @@ export default function Navbar() {
   const pathname = usePathname();
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const { getItemCount } = useCart();
+  const { isAuthenticated, user } = useUser();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // NEW: dynamic nav links from Shopify
   const [navLinks, setNavLinks] = useState([]);
@@ -407,8 +412,19 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right side - Shopping Cart Only - Fixed Width */}
-          <div className="hidden lg:flex items-center justify-end w-1/3">
+          {/* Right side - Shopping Cart and User Account - Fixed Width */}
+          <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
+            {isAuthenticated ? (
+              <UserDropdown />
+            ) : (
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center space-x-2`}
+              >
+                <User className="w-5 h-5" />
+                <span className="text-sm">Sign In</span>
+              </button>
+            )}
             <button 
               onClick={() => setIsCartOpen(true)}
               className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}
@@ -534,6 +550,55 @@ export default function Navbar() {
                 }}
               >
                 <div className="p-6 space-y-8">
+                  {/* User Account Section */}
+                  <div className="space-y-6">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+                      Account
+                    </h3>
+                    {isAuthenticated ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-medium">
+                              {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {user?.firstName} {user?.lastName}
+                            </p>
+                            <p className="text-sm text-gray-500">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <a href="/account/profile" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                            Profile
+                          </a>
+                          <a href="/account/orders" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                            Orders
+                          </a>
+                          <a href="/account/addresses" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                            Addresses
+                          </a>
+                          <a href="/account/settings" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                            Settings
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={() => {
+                          setIsAuthModalOpen(true);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full text-left text-sm text-gray-700 hover:text-gray-900 py-2 flex items-center space-x-2"
+                      >
+                        <User className="w-4 h-4" />
+                        <span>Sign In / Sign Up</span>
+                      </button>
+                    )}
+                  </div>
+
                   <div className="space-y-6">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
                       Collections
@@ -570,6 +635,12 @@ export default function Navbar() {
         <CartDropdown 
           isOpen={isCartOpen} 
           onClose={() => setIsCartOpen(false)} 
+        />
+
+        {/* Auth Modal */}
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)} 
         />
       </div>
     </nav>
