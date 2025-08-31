@@ -415,7 +415,7 @@ export default function Navbar() {
           {/* Right side - Shopping Cart and User Account - Fixed Width */}
           <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
             {isAuthenticated ? (
-              <UserDropdown />
+              <UserDropdown styles={styles} />
             ) : (
               <button 
                 onClick={() => setIsAuthModalOpen(true)}

@@ -4,10 +4,18 @@ import { useState, useRef, useEffect } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { User, Package, MapPin, Settings, LogOut, ChevronDown } from 'lucide-react';
 
-export default function UserDropdown() {
+export default function UserDropdown({ styles }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { user, logout } = useUser();
+
+  // Default styles fallback if none provided
+  const defaultStyles = {
+    text: 'text-gray-700',
+    hover: 'hover:text-gray-900'
+  };
+  
+  const currentStyles = styles || defaultStyles;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -58,7 +66,7 @@ export default function UserDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200"
+        className={`flex items-center space-x-2 ${currentStyles.text} ${currentStyles.hover} transition-all duration-500 ease-out`}
       >
         <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
           <span className="text-white text-sm font-medium">

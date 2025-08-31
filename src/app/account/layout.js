@@ -31,11 +31,10 @@ export default function AccountLayout({ children }) {
     { name: 'Profile', href: '/account/profile', icon: User },
     { name: 'Orders', href: '/account/orders', icon: Package },
     { name: 'Addresses', href: '/account/addresses', icon: MapPin },
-    { name: 'Settings', href: '/account/settings', icon: Settings },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-18">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
           {/* Sidebar */}
