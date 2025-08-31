@@ -53,12 +53,6 @@ export default function UserDropdown({ styles }) {
       icon: MapPin,
       href: '/account/addresses',
       description: 'Manage your shipping addresses'
-    },
-    {
-      label: 'Settings',
-      icon: Settings,
-      href: '/account/settings',
-      description: 'Account preferences and security'
     }
   ];
 
