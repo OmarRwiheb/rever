@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { cartService } from '@/services/shopify/shopifyCart';
+import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
 
 // Cart state reducer
 const cartReducer = (state, action) => {
@@ -96,6 +97,19 @@ export function CartProvider({ children }) {
     );
   }, [handleCartOperation]);
 
+  // Ensure cart is associated with customer if they're logged in
+  const ensureCartCustomerAssociation = useCallback(async () => {
+    const token = shopifyTokenManager.getToken();
+    if (token && cartService.hasCart()) {
+      try {
+        await cartService.updateCartBuyerIdentity(token);
+        console.log('Cart automatically associated with customer');
+      } catch (error) {
+        console.warn('Failed to automatically associate cart with customer:', error);
+      }
+    }
+  }, []);
+
   // Refresh cart data
   const refreshCart = useCallback(async () => {
     await handleCartOperation(
@@ -106,11 +120,18 @@ export function CartProvider({ children }) {
 
   // Add item to cart
   const addToCart = useCallback(async (variantId, quantity = 1, customAttributes = []) => {
-    return handleCartOperation(
+    const result = await handleCartOperation(
       () => cartService.addToCart(variantId, quantity, customAttributes),
       'Failed to add item to cart'
     );
-  }, [handleCartOperation]);
+    
+    // If successful and user is logged in, ensure cart is associated with customer
+    if (result.success) {
+      await ensureCartCustomerAssociation();
+    }
+    
+    return result;
+  }, [handleCartOperation, ensureCartCustomerAssociation]);
 
   // Update cart line quantity
   const updateCartLine = useCallback(async (lineId, quantity) => {
@@ -169,6 +190,14 @@ export function CartProvider({ children }) {
     }
   }, []);
 
+  // Update cart buyer identity to associate cart with customer
+  const updateCartBuyerIdentity = useCallback(async (customerAccessToken) => {
+    return handleCartOperation(
+      () => cartService.updateCartBuyerIdentity(customerAccessToken),
+      'Failed to update cart buyer identity'
+    );
+  }, [handleCartOperation]);
+
   // Clear cart
   const clearCart = useCallback(async () => {
     try {
@@ -192,8 +221,12 @@ export function CartProvider({ children }) {
   const getItemCount = useCallback(() => state.cart?.totalQuantity || 0, [state.cart]);
   const isCartEmpty = useCallback(() => !state.cart || state.cart.items.length === 0, [state.cart]);
   const getCartTotal = useCallback(() => state.cart?.total || '$0.00', [state.cart]);
-  const getCustomerCheckoutUrl = useCallback((customerAccessToken) => {
-    return cartService.getCustomerCheckoutUrl(customerAccessToken);
+  const getCustomerCheckoutUrl = useCallback(async (customerAccessToken) => {
+    return await cartService.getCustomerCheckoutUrl(customerAccessToken);
+  }, []);
+
+  const getCheckoutUrl = useCallback(async () => {
+    return await cartService.getCheckoutUrl();
   }, []);
 
 
@@ -219,6 +252,8 @@ export function CartProvider({ children }) {
     removeFromCart,
     changeVariant,
     getProductVariants,
+    updateCartBuyerIdentity,
+    ensureCartCustomerAssociation,
     clearCart,
     clearError,
     loadCart,
@@ -231,6 +266,7 @@ export function CartProvider({ children }) {
     isItemInCart,
     getItemQuantity,
     getCustomerCheckoutUrl,
+    getCheckoutUrl,
   };
 
   return (

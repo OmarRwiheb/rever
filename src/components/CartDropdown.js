@@ -7,7 +7,7 @@ import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
 import Image from 'next/image';
 
 export default function CartDropdown({ isOpen, onClose }) {
-  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart, getCustomerCheckoutUrl } = useCart();
+  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart, getCustomerCheckoutUrl, updateCartBuyerIdentity, getCheckoutUrl } = useCart();
   const { user, isAuthenticated } = useUser();
   const dropdownRef = useRef(null);
   const [editingItem, setEditingItem] = useState(null);
@@ -241,6 +241,33 @@ export default function CartDropdown({ isOpen, onClose }) {
 
   const renderCartSummary = () => (
     <div className="border-t border-gray-200 pt-4">
+      {/* Customer checkout info */}
+      {isAuthenticated && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <div className="flex items-center space-x-2">
+            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm text-blue-800">
+              Checkout with your account info: {user?.firstName} {user?.lastName}
+            </span>
+          </div>
+        </div>
+      )}
+      
+      {!isAuthenticated && (
+        <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
+          <div className="flex items-center space-x-2">
+            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm text-gray-800">
+              Checkout as a guest (no account required)
+            </span>
+          </div>
+        </div>
+      )}
+      
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm font-medium text-gray-900">Subtotal</span>
         <span className="text-sm font-medium text-gray-900">{cart.subtotal}</span>
@@ -257,12 +284,6 @@ export default function CartDropdown({ isOpen, onClose }) {
   );
 
   const renderActionButtons = () => {
-    // Get customer checkout URL if user is logged in
-    const accessToken = isAuthenticated ? shopifyTokenManager.getToken() : null;
-    const checkoutUrl = accessToken 
-      ? getCustomerCheckoutUrl(accessToken) 
-      : cart.checkoutUrl;
-
     return (
       <div className="flex space-x-3 pt-4">
         <button
@@ -272,14 +293,49 @@ export default function CartDropdown({ isOpen, onClose }) {
         >
           Clear Cart
         </button>
-        <a
-          href={checkoutUrl}
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
           className="flex-1 px-4 py-2 border border-transparent text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-500 text-center"
         >
-          {isAuthenticated ? 'Checkout with Account' : 'Checkout'}
-        </a>
+          {isAuthenticated ? 'Checkout with Account' : 'Checkout as Guest'}
+        </button>
       </div>
     );
+  };
+
+  const handleCheckout = async () => {
+    if (!cart || cart.items.length === 0) {
+      alert('Your cart is empty');
+      return;
+    }
+
+    // If user is logged in, ensure cart is associated with their account
+    if (isAuthenticated && user) {
+      try {
+        // Get the customer access token
+        const accessToken = shopifyTokenManager.getToken();
+        if (accessToken) {
+          // This will automatically associate the cart with the customer
+          // The cart is already associated on login, but this ensures it's up to date
+          await updateCartBuyerIdentity(accessToken);
+          console.log('Cart buyer identity updated successfully');
+        }
+      } catch (error) {
+        console.error('Failed to update cart buyer identity:', error);
+        // Continue with checkout even if this fails
+      }
+    }
+
+    // Get the checkout URL (automatically includes customer token if logged in)
+    const checkoutUrl = await getCheckoutUrl();
+    
+    if (checkoutUrl) {
+      // Redirect to Shopify checkout
+      window.location.href = checkoutUrl;
+    } else {
+      alert('Unable to generate checkout URL');
+    }
   };
 
   const renderEmptyCart = () => (
@@ -303,40 +359,32 @@ export default function CartDropdown({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg max-h-[90vh]">
-          {/* Header - Fixed */}
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 pt-5 pb-4 sm:px-6 sm:pb-4 bg-white sticky top-0 z-10">
-            <h3 className="text-lg font-medium text-gray-900">Shopping Cart</h3>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={refreshCart}
-                disabled={loading}
-                className="p-1 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
-                title="Refresh cart"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </button>
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+        <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <div ref={dropdownRef} className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Shopping Cart</h3>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={refreshCart}
+                  disabled={loading}
+                  className="p-1 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+                  title="Refresh cart"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+                <button
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Scrollable Content */}
-          <div 
-            ref={dropdownRef} 
-            className="modal-content modal-scrollable px-4 pb-4 sm:px-6 sm:pb-6 max-h-[calc(90vh-8rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-            onWheel={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-          >
-
 
             {/* Error Message */}
             {error && (
@@ -357,51 +405,14 @@ export default function CartDropdown({ isOpen, onClose }) {
               <div className="space-y-4">
                 {cart.items.map(renderCartItem)}
                 {renderCartSummary()}
+                {renderActionButtons()}
               </div>
             ) : (
               renderEmptyCart()
             )}
           </div>
-
-          {/* Action Buttons - Fixed at bottom */}
-          {!loading && cart && cart.items && cart.items.length > 0 && (
-            <div className="border-t border-gray-200 px-4 py-4 sm:px-6 bg-white sticky bottom-0">
-              {renderActionButtons()}
-            </div>
-          )}
         </div>
       </div>
-
-      <style jsx global>{`
-        .modal-content {
-          overflow-y: auto !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-        
-        .modal-scrollable {
-          overflow-y: auto !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-        
-        /* Custom scrollbar styles */
-        .scrollbar-thin::-webkit-scrollbar {
-          width: 6px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-track {
-          background: #f3f4f6;
-          border-radius: 3px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: #d1d5db;
-          border-radius: 3px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: #9ca3af;
-        }
-      `}</style>
     </div>
   );
 }

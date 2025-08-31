@@ -165,6 +165,47 @@ const REMOVE_FROM_CART_MUTATION = `
   }
 `;
 
+const CART_BUYER_IDENTITY_UPDATE_MUTATION = `
+  mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+      cart {
+        id
+        checkoutUrl
+        totalQuantity
+        cost {
+          subtotalAmount { amount currencyCode }
+          totalAmount { amount currencyCode }
+          totalTaxAmount { amount currencyCode }
+        }
+        lines(first: 250) {
+          edges {
+            node {
+              id
+              quantity
+              cost { subtotalAmount { amount currencyCode } }
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price { amount currencyCode }
+                  product {
+                    id
+                    title
+                    handle
+                    featuredImage { url altText }
+                  }
+                  selectedOptions { name value }
+                }
+              }
+            }
+          }
+        }
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
 const GET_CART_QUERY = `
   query GetCart($cartId: ID!) {
     cart(id: $cartId) {
@@ -351,16 +392,20 @@ class CartService {
 
   async getCart() {
     if (!this.cartId) return null;
+    
     try {
       const res = await apiClient.graphql(GET_CART_QUERY, { cartId: this.cartId });
       const cart = res?.cart;
+      
       if (!cart) {
         this.cartId = null;
         this.saveCartIdToStorage(null);
         return null;
       }
+      
       return transformCart(cart);
     } catch (e) {
+      console.error('Error in getCart:', e);
       this.cartId = null;
       this.saveCartIdToStorage(null);
       return null;
@@ -529,18 +574,96 @@ class CartService {
   hasCart() { return !!this.cartId; }
 
   // Get checkout URL with customer info if logged in
-  getCustomerCheckoutUrl(customerAccessToken = null) {
+  async getCustomerCheckoutUrl(customerAccessToken = null) {
     if (!this.cartId) return null;
     
-    let checkoutUrl = this.cart?.checkoutUrl;
+    if (!customerAccessToken) return null;
     
-    if (customerAccessToken && checkoutUrl) {
-      // Add customer access token to checkout URL for pre-filled customer data
-      const separator = checkoutUrl.includes('?') ? '&' : '?';
-      checkoutUrl += `${separator}customer_access_token=${customerAccessToken}`;
+    try {
+      // Get the current cart data to access checkoutUrl
+      const cart = await this.getCart();
+      if (!cart) return null;
+      
+      let checkoutUrl = cart.checkoutUrl;
+      
+      if (checkoutUrl) {
+        // Add customer access token to checkout URL for pre-filled customer data
+        const separator = checkoutUrl.includes('?') ? '&' : '?';
+        checkoutUrl += `${separator}customer_access_token=${customerAccessToken}`;
+        return checkoutUrl;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Failed to get customer checkout URL:', error);
+      return null;
     }
+  }
+
+  // Get checkout URL with automatic customer token detection
+  async getCheckoutUrl() {
+    if (!this.cartId) return null;
     
-    return checkoutUrl;
+    try {
+      // Get the current cart data to access checkoutUrl
+      const cart = await this.getCart();
+      if (!cart) return null;
+      
+      // Try to get customer access token from storage
+      try {
+        const token = localStorage.getItem('shopify_customer_token') || sessionStorage.getItem('shopify_customer_token');
+        
+        if (token) {
+          // User is logged in, use authenticated checkout
+          const customerUrl = await this.getCustomerCheckoutUrl(token);
+          return customerUrl;
+        } else {
+          // User is not logged in, use regular unauthenticated checkout
+          return cart.checkoutUrl || null;
+        }
+      } catch (error) {
+        // Fall back to regular checkout if token retrieval fails
+        return cart.checkoutUrl || null;
+      }
+    } catch (error) {
+      console.error('Failed to get checkout URL:', error);
+      return null;
+    }
+  }
+
+  // Update cart buyer identity to associate cart with customer
+  async updateCartBuyerIdentity(customerAccessToken) {
+    if (!this.cartId) {
+      throw new Error('No cart found');
+    }
+
+    if (!customerAccessToken) {
+      throw new Error('Customer access token is required');
+    }
+
+    try {
+      const res = await apiClient.graphql(CART_BUYER_IDENTITY_UPDATE_MUTATION, {
+        cartId: this.cartId,
+        buyerIdentity: {
+          customerAccessToken: customerAccessToken
+        }
+      });
+
+      const errs = res?.cartBuyerIdentityUpdate?.userErrors || [];
+      if (errs.length) {
+        throw new Error(errs.map(e => e.message).join(' | '));
+      }
+
+      const cart = res?.cartBuyerIdentityUpdate?.cart;
+      if (!cart) {
+        throw new Error('Failed to update cart buyer identity');
+      }
+
+      return transformCart(cart);
+    } catch (error) {
+      console.error('Failed to update cart buyer identity:', error);
+      throw error;
+    }
   }
 
 

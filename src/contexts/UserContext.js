@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { shopifyCustomerService } from '@/services/shopify/shopifyCustomer';
 import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
+import { cartService } from '@/services/shopify/shopifyCart';
 
 const UserContext = createContext();
 
@@ -32,6 +33,17 @@ export const UserProvider = ({ children }) => {
           if (result.success) {
             setUser(result.customer);
             setIsAuthenticated(true);
+            
+            // Associate cart with customer if cart exists
+            try {
+              if (cartService.hasCart()) {
+                await cartService.updateCartBuyerIdentity(token);
+                console.log('Cart successfully associated with customer on app load');
+              }
+            } catch (cartError) {
+              console.warn('Failed to associate cart with customer on app load:', cartError);
+              // Don't fail authentication if cart association fails
+            }
           } else {
             // Token might be invalid, clear it
             shopifyTokenManager.clearAuth();
@@ -76,6 +88,18 @@ export const UserProvider = ({ children }) => {
         if (customerResult.success) {
           setUser(customerResult.customer);
           setIsAuthenticated(true);
+          
+          // Associate cart with customer if cart exists
+          try {
+            if (cartService.hasCart()) {
+              await cartService.updateCartBuyerIdentity(result.accessToken.accessToken);
+              console.log('Cart successfully associated with customer');
+            }
+          } catch (cartError) {
+            console.warn('Failed to associate cart with customer:', cartError);
+            // Don't fail login if cart association fails
+          }
+          
           return { success: true, message: 'Login successful' };
         } else {
           return { success: false, error: 'Failed to fetch customer data' };
