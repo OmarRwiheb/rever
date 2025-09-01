@@ -413,8 +413,15 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right side - Wishlist, Shopping Cart and User Account - Fixed Width */}
+          {/* Right side - Blog, Wishlist, Shopping Cart and User Account - Fixed Width */}
           <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
+            {/* Blog Link */}
+            <a
+              href="/blog"
+              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+            >
+              Blog
+            </a>
             {isAuthenticated ? (
               <UserDropdown styles={styles} />
             ) : (
@@ -615,6 +622,13 @@ export default function Navbar() {
                         onToggle={() => toggleMobileDropdown(link.name)}
                       />
                     ))}
+                    {/* Blog Link for Mobile */}
+                    <a
+                      href="/blog"
+                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                    >
+                      Blog
+                    </a>
                   </div>
                 </div>
               </div>
