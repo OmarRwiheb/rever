@@ -23,9 +23,9 @@ export default function Footer({ fullPage = false  }) {
             <h3 className="text-sm font-semibold mb-4">Customer Service</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link href="/returns" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Shipping Info</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Size Guide</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
