@@ -4,6 +4,7 @@ import Navbar, { NavbarProvider } from "@/components/Navbar";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +30,10 @@ export default function RootLayout({ children }) {
         <NavbarProvider>
           <UserProvider>
             <CartProvider>
-              <Navbar />
-              {children}
+              <WishlistProvider>
+                <Navbar />
+                {children}
+              </WishlistProvider>
             </CartProvider>
           </UserProvider>
         </NavbarProvider>

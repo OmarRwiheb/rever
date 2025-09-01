@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import MeasurementTablePopup from './MeasurementTablePopup';
+import WishlistButton from '@/components/wishlist/WishlistButton';
 
 export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const [selectedSize, setSelectedSize] = useState('S');
@@ -263,25 +264,32 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           </div>
         )}
 
-        {/* Add to Basket Button */}
-        <button 
-          onClick={handleAddToCart}
-          disabled={isAddingToCart || !selectedVariant}
-          className={`w-full font-medium py-3 px-6 transition-colors ${
-            isAddingToCart
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : isInCart
-              ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
-          }`}
-        >
-          {isAddingToCart 
-            ? 'ADDING...' 
-            : isInCart 
-            ? 'ADDED TO CART' 
-            : 'ADD TO BASKET'
-          }
-        </button>
+        {/* Add to Basket Button and Wishlist Button */}
+        <div className="space-y-3">
+          <button 
+            onClick={handleAddToCart}
+            disabled={isAddingToCart || !selectedVariant}
+            className={`w-full font-medium py-3 px-6 transition-colors ${
+              isAddingToCart
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : isInCart
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+            }`}
+          >
+            {isAddingToCart 
+              ? 'ADDING...' 
+              : isInCart 
+              ? 'ADDED TO CART' 
+              : 'ADD TO BASKET'
+            }
+          </button>
+          
+          {/* Wishlist Button */}
+          <div className="flex justify-center">
+            <WishlistButton product={product} size="large" showText={true} />
+          </div>
+        </div>
 
         {/* Additional Links */}
         <div className="space-y-4 text-xs">

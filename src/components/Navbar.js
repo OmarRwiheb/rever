@@ -9,6 +9,7 @@ import { useUser } from '@/contexts/UserContext';
 import CartDropdown from './CartDropdown';
 import AuthModal from './auth/AuthModal';
 import UserDropdown from './auth/UserDropdown';
+import WishlistIntegration from './wishlist/WishlistIntegration';
 
 // Create context for navbar state
 const NavbarContext = createContext();
@@ -412,7 +413,7 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right side - Shopping Cart and User Account - Fixed Width */}
+          {/* Right side - Wishlist, Shopping Cart and User Account - Fixed Width */}
           <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
             {isAuthenticated ? (
               <UserDropdown styles={styles} />
@@ -425,6 +426,7 @@ export default function Navbar() {
                 <span className="text-sm">Sign In</span>
               </button>
             )}
+            <WishlistIntegration />
             <button 
               onClick={() => setIsCartOpen(true)}
               className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}

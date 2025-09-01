@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
+import WishlistButton from '@/components/wishlist/WishlistButton';
 
 export default function ProductCard({ product, viewMode = 'grid-6' }) {
   const { id, name, imageUrl, price, originalPrice, variants } = product;
@@ -86,9 +87,10 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
           />
         </Link>
 
-        {/* Hover Overlay with Quick Add Button */}
+        {/* Hover Overlay with Quick Add Button and Wishlist Button */}
         {viewMode !== 'grid-12' && (
-          <div className="absolute inset-0 transition-all duration-300 flex items-end justify-start pointer-events-none">
+          <div className="absolute inset-0 transition-all duration-300 flex items-end justify-between pointer-events-none">
+            {/* Quick Add Button */}
             <button 
               onClick={handleQuickAdd}
               disabled={isAddingToCart || !firstVariant}
@@ -113,6 +115,11 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
                 </svg>
               )}
             </button>
+
+            {/* Wishlist Button */}
+            <div className="m-2 pointer-events-auto">
+              <WishlistButton product={product} size="default" />
+            </div>
             
             {/* Quick Add Message */}
             {addToCartMessage && (
