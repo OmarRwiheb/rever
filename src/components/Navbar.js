@@ -426,7 +426,7 @@ export default function Navbar() {
                 <span className="text-sm">Sign In</span>
               </button>
             )}
-            <WishlistIntegration />
+            <WishlistIntegration styles={styles} />
             <button 
               onClick={() => setIsCartOpen(true)}
               className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}

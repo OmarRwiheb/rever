@@ -2,14 +2,14 @@
 import { useWishlist } from '@/contexts/WishlistContext';
 import Link from 'next/link';
 
-export default function WishlistIntegration() {
+export default function WishlistIntegration({ styles }) {
   const { getWishlistCount } = useWishlist();
   const wishlistCount = getWishlistCount();
 
   return (
     <Link 
       href="/wishlist"
-      className="relative flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+      className={`relative flex items-center ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
       title="View Wishlist"
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
