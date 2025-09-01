@@ -241,32 +241,13 @@ export default function CartDropdown({ isOpen, onClose }) {
 
   const renderCartSummary = () => (
     <div className="border-t border-gray-200 pt-4">
-      {/* Customer checkout info */}
-      {isAuthenticated && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <div className="flex items-center space-x-2">
-            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-sm text-blue-800">
-              Checkout with your account info: {user?.firstName} {user?.lastName}
-            </span>
-          </div>
-        </div>
-      )}
       
-      {!isAuthenticated && (
-        <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-          <div className="flex items-center space-x-2">
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-sm text-gray-800">
-              Checkout as a guest (no account required)
-            </span>
-          </div>
-        </div>
-      )}
+      {/* Shipping Information */}
+      <div className="mb-4 text-center">
+        <p className="text-xs text-gray-500">
+          Estimated shipping: 3-5 business days
+        </p>
+      </div>
       
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm font-medium text-gray-900">Subtotal</span>

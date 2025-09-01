@@ -265,11 +265,11 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         )}
 
         {/* Add to Basket Button and Wishlist Button */}
-        <div className="space-y-3">
+        <div className="flex space-x-3">
           <button 
             onClick={handleAddToCart}
             disabled={isAddingToCart || !selectedVariant}
-            className={`w-full font-medium py-3 px-6 transition-colors ${
+            className={`flex-1 font-medium py-3 px-6 transition-colors ${
               isAddingToCart
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : isInCart
@@ -286,9 +286,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           </button>
           
           {/* Wishlist Button */}
-          <div className="flex justify-center">
-            <WishlistButton product={product} size="large" showText={true} />
-          </div>
+          <WishlistButton product={product} size="default" showText={false} />
         </div>
 
         {/* Additional Links */}

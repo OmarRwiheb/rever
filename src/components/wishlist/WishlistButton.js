@@ -36,7 +36,7 @@ export default function WishlistButton({ product, size = 'default', showText = f
 
   const sizeClasses = {
     small: 'w-6 h-6',
-    default: 'w-8 h-8',
+    default: 'w-12 h-12',
     large: 'w-10 h-10'
   };
 
@@ -54,14 +54,13 @@ export default function WishlistButton({ product, size = 'default', showText = f
         className={`
           ${sizeClasses[size]}
           flex items-center justify-center
-          rounded-full
-          transition-all duration-300
+          font-medium
+          transition-colors
           ${isWishlisted 
             ? 'bg-red-500 text-white hover:bg-red-600' 
-            : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-300'
+            : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
           }
           ${isToggling ? 'opacity-50 cursor-not-allowed' : ''}
-          shadow-sm hover:shadow-md
         `}
         title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
       >
@@ -92,12 +91,7 @@ export default function WishlistButton({ product, size = 'default', showText = f
         </div>
       )}
 
-      {/* Text version for larger buttons */}
-      {showText && (
-        <span className="ml-2 text-sm text-gray-600">
-          {isWishlisted ? 'Saved' : 'Save'}
-        </span>
-      )}
+
     </div>
   );
 }
