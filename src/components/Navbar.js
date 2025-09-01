@@ -346,7 +346,7 @@ export default function Navbar() {
   // Styles (same as your original)
   const styles = useMemo(() => {
     if (!isClient) {
-      return isHomePage ? NAVBAR_STYLES.hero : STATIC_NAVBAR_STYLES;
+      return STATIC_NAVBAR_STYLES; // Always use static styles during SSR
     }
     if (isHomePage) {
       const baseStyles = getNavbarStyles(currentSection);
