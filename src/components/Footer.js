@@ -6,7 +6,7 @@ export default function Footer({ fullPage = false  }) {
     <footer className={`${fullPage ? "h-screen" : "py-20"} bg-black text-white`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 h-full flex flex-col justify-center">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Column */}
           <div>
             <h3 className="text-sm font-semibold mb-4">About</h3>
@@ -15,6 +15,17 @@ export default function Footer({ fullPage = false  }) {
               <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Press</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Sustainability</Link></li>
+            </ul>
+          </div>
+
+          {/* Customer Service Column */}
+          <div>
+            <h3 className="text-sm font-semibold mb-4">Customer Service</h3>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li><Link href="/returns" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Shipping Info</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Size Guide</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

@@ -3,7 +3,7 @@
 import { useUser } from '@/contexts/UserContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { User, Package, MapPin, Settings, LogOut } from 'lucide-react';
+import { User, Package, MapPin, RotateCcw, Settings, LogOut } from 'lucide-react';
 
 export default function AccountLayout({ children }) {
   const { user, isAuthenticated, isLoading } = useUser();
