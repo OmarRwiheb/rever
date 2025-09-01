@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar, { NavbarProvider } from "@/components/Navbar";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import WhatsAppSupport from "@/components/WhatsAppSupport";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
           </UserProvider>
         </NavbarProvider>
         <NewsletterPopup />
+        <WhatsAppSupport />
       </body>
     </html>
   );
