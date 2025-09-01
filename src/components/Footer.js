@@ -4,17 +4,15 @@ import NewsletterSignupForm from './NewsletterSignupForm';
 export default function Footer({ fullPage = false  }) {
   return (
     <footer className={`${fullPage ? "h-screen" : "py-20"} bg-black text-white`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 h-full flex flex-col justify-center">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ${fullPage ? "h-full flex flex-col justify-center" : ""}`}>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {/* About Column */}
           <div>
             <h3 className="text-sm font-semibold mb-4">About</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link href="#" className="hover:text-white transition-colors">Our Story</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Press</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Sustainability</Link></li>
             </ul>
           </div>
 
@@ -24,11 +22,8 @@ export default function Footer({ fullPage = false  }) {
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link href="/returns" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Shipping Info</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Size Guide</Link></li>
             </ul>
           </div>
-
           {/* Follow Us Column */}
           <div>
             <h3 className="text-sm font-semibold mb-4">Follow Us</h3>
@@ -47,9 +42,9 @@ export default function Footer({ fullPage = false  }) {
           </div>
 
           {/* Newsletter Section */}
-          <div className="mb-12 text-center">
-            <h3 className="text-2xl font-semibold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 mb-6 max-w-md mx-auto">
+          <div className="mb-8 md:mb-12 text-center">
+            <h3 className="text-xl md:text-2xl font-semibold mb-4">Stay Updated</h3>
+            <p className="text-gray-300 mb-6 max-w-md mx-auto text-sm md:text-base">
               Subscribe to our newsletter for exclusive updates, new arrivals, and special offers delivered straight to your inbox.
             </p>
             <NewsletterSignupForm />
@@ -57,7 +52,7 @@ export default function Footer({ fullPage = false  }) {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+        <div className="md:mt-12 pt-6 md:pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm text-gray-400">
             © 2025 Rever. All rights reserved.
           </div>
