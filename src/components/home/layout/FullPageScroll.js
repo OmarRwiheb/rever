@@ -1,5 +1,5 @@
 "use client";
-import { useLayoutEffect, useRef, useCallback, useState, useMemo, React } from "react";
+import React, { useLayoutEffect, useRef, useCallback, useState, useMemo } from "react";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { useNavbar } from "@/components/Navbar";

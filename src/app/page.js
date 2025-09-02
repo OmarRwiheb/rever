@@ -10,14 +10,13 @@ export default function HomePage() {
     <>
       <FullPageScroll
       mountRadius={1}
-        children={[
-          <HeroSection key="hero" />,
-          <WomenSection key="women" />,
-          <MenSection key="men" />,
-          <SecondVideo key="second-video" />,
-          <Footer key="footer" fullPage />
-        ]}
-      />
+      >
+        <HeroSection key="hero" />
+        <WomenSection key="women" />
+        <MenSection key="men" />
+        <SecondVideo key="second-video" />
+        <Footer key="footer" fullPage />
+      </FullPageScroll>
     </>
   );
 }

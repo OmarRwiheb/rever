@@ -118,7 +118,7 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
 
             {/* Wishlist Button */}
             <div className="m-2 pointer-events-auto">
-              <WishlistButton product={product} size="default" />
+              <WishlistButton product={product} size="cart" variant="circular" borderless={true} showTooltip={false} />
             </div>
             
             {/* Quick Add Message */}
