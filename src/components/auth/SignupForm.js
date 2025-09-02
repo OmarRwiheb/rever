@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { validateFormSubmission } from '@/lib/recaptcha';
 import { User, Mail, Lock, Eye, EyeOff, Loader2, Check } from 'lucide-react';
 
 export default function SignupForm({ onSwitchToLogin, onClose }) {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,7 +16,9 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
     confirmPassword: '',
     phone: '',
     acceptTerms: false,
-    acceptMarketing: false
+    acceptMarketing: false,
+    // Honeypot field - should remain empty
+    website: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -52,9 +57,19 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
 
     if (!validateForm()) return;
 
+    // Check honeypot field
+    if (formData.website) {
+      console.log('Bot detected - honeypot field filled');
+      setError('Invalid submission detected.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      // Verify reCAPTCHA
+      await validateFormSubmission(executeRecaptcha, 'signup');
+
       const userData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -78,6 +93,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
         }
       }
     } catch (err) {
+      console.error('Signup error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -291,6 +307,20 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
               </label>
             </div>
           </div>
+        </div>
+
+        {/* Honeypot field - hidden from users */}
+        <div style={{ display: 'none' }}>
+          <label htmlFor="website">Website (leave blank)</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            tabIndex="-1"
+            autoComplete="off"
+          />
         </div>
 
         <button

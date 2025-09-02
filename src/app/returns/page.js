@@ -1,15 +1,20 @@
 'use client';
 import { useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { validateFormSubmission } from '@/lib/recaptcha';
 import { ArrowRight, Plus, X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function ReturnsPage() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   
   const [formData, setFormData] = useState({
     orderNumber: '',
     email: '',
     phoneNumber: '',
     items: [{ itemId: '', quantity: 1, reason: '' }],
-    additionalInfo: ''
+    additionalInfo: '',
+    // Honeypot field - should remain empty
+    website: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
@@ -65,6 +70,16 @@ export default function ReturnsPage() {
     setSubmitMessage('');
 
     try {
+      // Check honeypot field
+      if (formData.website) {
+        console.log('Bot detected - honeypot field filled');
+        setSubmitMessage('Invalid submission detected.');
+        return;
+      }
+
+      // Verify reCAPTCHA
+      await validateFormSubmission(executeRecaptcha, 'returns');
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
@@ -76,9 +91,11 @@ export default function ReturnsPage() {
         email: '',
         phoneNumber: '',
         items: [{ itemId: '', quantity: 1, reason: '' }],
-        additionalInfo: ''
+        additionalInfo: '',
+        website: ''
       });
     } catch (error) {
+      console.error('Returns form submission error:', error);
       setSubmitMessage('There was an error submitting your request. Please try again or contact customer service.');
     } finally {
       setIsSubmitting(false);
@@ -262,6 +279,20 @@ export default function ReturnsPage() {
                 rows={4}
                 className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500"
                 placeholder="Please provide any additional details about your return request..."
+              />
+            </div>
+
+            {/* Honeypot field - hidden from users */}
+            <div style={{ display: 'none' }}>
+              <label htmlFor="website">Website (leave blank)</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                value={formData.website}
+                onChange={handleInputChange}
+                tabIndex="-1"
+                autoComplete="off"
               />
             </div>
 

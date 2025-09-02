@@ -413,7 +413,7 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right side - Blog, Wishlist, Shopping Cart and User Account - Fixed Width */}
+          {/* Right side - Blog, About, Wishlist, Shopping Cart and User Account - Fixed Width */}
           <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
             {/* Blog Link */}
             <a
@@ -421,6 +421,13 @@ export default function Navbar() {
               className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               Blog
+            </a>
+            {/* About Link */}
+            <a
+              href="/about"
+              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+            >
+              About
             </a>
             {isAuthenticated ? (
               <UserDropdown styles={styles} />
@@ -628,6 +635,13 @@ export default function Navbar() {
                       className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       Blog
+                    </a>
+                    {/* About Link for Mobile */}
+                    <a
+                      href="/about"
+                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                    >
+                      About
                     </a>
                   </div>
                 </div>

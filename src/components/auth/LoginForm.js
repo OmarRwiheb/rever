@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { validateFormSubmission } from '@/lib/recaptcha';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function LoginForm({ onSwitchToSignup, onClose }) {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +22,9 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
     setIsSubmitting(true);
 
     try {
+      // Verify reCAPTCHA
+      await validateFormSubmission(executeRecaptcha, 'login');
+
       const result = await login(email, password);
       if (result.success) {
         onClose?.();
@@ -33,6 +39,7 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
         }
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);

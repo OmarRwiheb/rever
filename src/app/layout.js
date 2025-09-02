@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar, { NavbarProvider } from "@/components/Navbar";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import WhatsAppSupport from "@/components/WhatsAppSupport";
+import RecaptchaProvider from "@/components/RecaptchaProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
@@ -28,16 +29,18 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavbarProvider>
-          <UserProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <Navbar />
-                {children}
-              </WishlistProvider>
-            </CartProvider>
-          </UserProvider>
-        </NavbarProvider>
+        <RecaptchaProvider>
+          <NavbarProvider>
+            <UserProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <Navbar />
+                  {children}
+                </WishlistProvider>
+              </CartProvider>
+            </UserProvider>
+          </NavbarProvider>
+        </RecaptchaProvider>
         <NewsletterPopup />
         <WhatsAppSupport />
       </body>

@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { validateFormSubmission } from '@/lib/recaptcha';
 
 export default function NewsletterSignupForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +17,9 @@ export default function NewsletterSignupForm() {
     setIsLoading(true);
     
     try {
+      // Verify reCAPTCHA
+      await validateFormSubmission(executeRecaptcha, 'newsletter');
+      
       // Here you would typically send the email to your backend
       console.log('Footer newsletter signup:', email);
       

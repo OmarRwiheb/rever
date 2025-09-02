@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { validateFormSubmission } from '@/lib/recaptcha';
 
 export default function NewsletterPopup() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -21,9 +24,14 @@ export default function NewsletterPopup() {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
+    if (!email) return;
+
+    try {
+      // Verify reCAPTCHA
+      await validateFormSubmission(executeRecaptcha, 'newsletter_popup');
+      
       // Here you would typically send the email to your backend
       console.log('Newsletter signup:', email);
       setIsSubmitted(true);
@@ -38,6 +46,8 @@ export default function NewsletterPopup() {
           setEmail('');
         }, 300);
       }, 3000);
+    } catch (error) {
+      console.error('Newsletter popup signup error:', error);
     }
   };
 
