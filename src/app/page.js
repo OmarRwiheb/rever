@@ -9,6 +9,7 @@ export default function HomePage() {
   return (
     <>
       <FullPageScroll
+      mountRadius={1}
         children={[
           <HeroSection key="hero" />,
           <WomenSection key="women" />,
