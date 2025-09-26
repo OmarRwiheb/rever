@@ -2,6 +2,7 @@ import { getProductById, getProducts, getProductByHandle } from './shopifyProduc
 import { getNavLinks } from './shopifyMenu';
 import { getCollectionProductsByHandle } from './shopifyCollection';
 import { cartService } from './shopifyCart';
+import { getLookbooks, getLookbookByHandle } from './shopifyLookbook';
 
 // ---------- Public service ----------
 export const shopifyService = {
@@ -10,6 +11,8 @@ export const shopifyService = {
   getProductByHandle,
   getNavLinks,
   getCollectionProductsByHandle,
+  getLookbooks,
+  getLookbookByHandle,
   cart: cartService,
 };
 

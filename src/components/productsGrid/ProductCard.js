@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import WishlistButton from '@/components/wishlist/WishlistButton';
+import StockStatus from '@/components/product/StockStatus';
 
 export default function ProductCard({ product, viewMode = 'grid-6' }) {
   const { id, name, imageUrl, price, originalPrice, variants } = product;
@@ -87,21 +88,34 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
           />
         </Link>
 
+        {/* Stock Status Overlay */}
+        {firstVariant && (
+          <div className="absolute top-2 left-2">
+            <StockStatus variant={firstVariant} showQuantity={false} size="sm" />
+          </div>
+        )}
+
         {/* Hover Overlay with Quick Add Button and Wishlist Button */}
         {viewMode !== 'grid-12' && (
           <div className="absolute inset-0 transition-all duration-300 flex items-end justify-between pointer-events-none">
             {/* Quick Add Button */}
             <button 
               onClick={handleQuickAdd}
-              disabled={isAddingToCart || !firstVariant}
+              disabled={isAddingToCart || !firstVariant || !firstVariant.availableForSale || firstVariant.quantityAvailable === 0}
               className={`p-2 rounded-full transition-all duration-300 m-2 pointer-events-auto ${
-                isAddingToCart
+                isAddingToCart || !firstVariant || !firstVariant.availableForSale || firstVariant.quantityAvailable === 0
                   ? 'text-gray-500 cursor-not-allowed'
                   : isInCart
                   ? 'text-black hover:text-green-600'
                   : 'text-black hover:text-gray-600'
               }`}
-              title={isInCart ? 'Already in cart' : 'Quick add to cart'}
+              title={
+                !firstVariant || !firstVariant.availableForSale || firstVariant.quantityAvailable === 0
+                  ? 'Out of stock'
+                  : isInCart 
+                  ? 'Already in cart' 
+                  : 'Quick add to cart'
+              }
             >
               {isAddingToCart ? (
                 <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>

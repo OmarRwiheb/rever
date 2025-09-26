@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import MeasurementTablePopup from './MeasurementTablePopup';
 import WishlistButton from '@/components/wishlist/WishlistButton';
+import StockStatus from './StockStatus';
 
 export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const [selectedSize, setSelectedSize] = useState('S');
@@ -87,7 +88,10 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
 
   // Update quantity
   const updateQuantity = (delta) => {
-    const newQuantity = Math.max(1, quantity + delta);
+    if (!selectedVariant) return;
+    
+    const maxQuantity = selectedVariant.quantityAvailable || 0;
+    const newQuantity = Math.max(1, Math.min(maxQuantity, quantity + delta));
     setQuantity(newQuantity);
   };
 
@@ -121,6 +125,13 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             </div>
           )}
         </div>
+
+        {/* Stock Status */}
+        {selectedVariant && (
+          <div className="flex items-center space-x-2">
+            <StockStatus variant={selectedVariant} showQuantity={true} size="md" />
+          </div>
+        )}
 
         {/* Divider */}
         <div className="border-t border-gray-200"></div>
@@ -246,7 +257,8 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             </span>
             <button
               onClick={() => updateQuantity(1)}
-              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50"
+              disabled={!selectedVariant || quantity >= (selectedVariant.quantityAvailable || 0)}
+              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               +
             </button>
@@ -268,9 +280,9 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         <div className="flex space-x-3">
           <button 
             onClick={handleAddToCart}
-            disabled={isAddingToCart || !selectedVariant}
+            disabled={isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0}
             className={`flex-1 font-medium py-3 px-6 transition-colors ${
-              isAddingToCart
+              isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : isInCart
                 ? 'bg-green-600 text-white hover:bg-green-700'
@@ -279,6 +291,8 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           >
             {isAddingToCart 
               ? 'ADDING...' 
+              : !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
+              ? 'OUT OF STOCK'
               : isInCart 
               ? 'ADDED TO CART' 
               : 'ADD TO BASKET'

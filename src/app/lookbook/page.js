@@ -1,120 +1,58 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { shopifyService } from '../../services/shopify/shopify';
 
-const looks = [
-  {
-    id: 1,
-    title: "Look 1",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 1
-  },
-  {
-    id: 2,
-    title: "Look 2", 
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 2
-  },
-  {
-    id: 3,
-    title: "Look 3",
-    image: "/img/lookbook.jpg", 
-    category: "Women",
-    season: "Fall 2025",
-    productId: 3
-  },
-  {
-    id: 4,
-    title: "Look 4",
-    image: "/img/lookbook.jpg",
-    category: "Women", 
-    season: "Fall 2025",
-    productId: 4
-  },
-  {
-    id: 5,
-    title: "Look 5",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 5
-  },
-  {
-    id: 6,
-    title: "Look 6",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 6
-  },
-  {
-    id: 7,
-    title: "Look 7",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 30
-  },
-  {
-    id: 8,
-    title: "Look 8",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 31
-  },
-  {
-    id: 9,
-    title: "Look 9",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 32
-  },
-  {
-    id: 10,
-    title: "Look 10",
-    image: "/img/lookbook.jpg",
-    category: "Women",
-    season: "Fall 2025",
-    productId: 33
-  },
-  
-];
-
-// Function to dynamically create rows from looks array
-const createLookRows = (looksArray) => {
+// Function to dynamically create rows from lookbooks array
+const createLookRows = (lookbooksArray) => {
   const rows = [];
   let currentRow = [];
-  let patternIndex = 0; // Track position in the pattern
-  
-  for (let i = 0; i < looksArray.length; i++) {
-    currentRow.push(looksArray[i]);
-    
-    // Pattern: 1, 2, 2, 1, 2, 2, 1, 2, 2, etc.
-    const pattern = [1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2];
-    const currentPattern = pattern[patternIndex % pattern.length];
-    
-    const shouldCreateRow = 
-      currentRow.length === currentPattern || // Match pattern
-      i === looksArray.length - 1; // Last element
-    
+  let patternIndex = 0;
+
+  const basePattern = [1, 2, 2]; // your repeating rule
+
+  for (let i = 0; i < lookbooksArray.length; i++) {
+    currentRow.push(lookbooksArray[i]);
+
+    // pick pattern size based on repeating base pattern
+    const currentPattern = basePattern[patternIndex % basePattern.length];
+
+    const shouldCreateRow =
+      currentRow.length === currentPattern ||
+      i === lookbooksArray.length - 1;
+
     if (shouldCreateRow) {
       rows.push([...currentRow]);
       currentRow = [];
       patternIndex++;
     }
   }
-  
+
   return rows;
 };
 
 export default function LookbookPage() {
   const [activeTab, setActiveTab] = useState('lookbook');
+  const [lookbooks, setLookbooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLookbooks = async () => {
+      try {
+        setLoading(true);
+        const data = await shopifyService.getLookbooks();
+        setLookbooks(data);
+      } catch (err) {
+        console.error('Error fetching lookbooks:', err);
+        setError('Failed to load lookbooks');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLookbooks();
+  }, []);
 
   const getSizeClass = (rowLength, index, rowIndex) => {
     if (rowLength === 1) {
@@ -141,8 +79,35 @@ export default function LookbookPage() {
     }
   };
 
-  // Dynamically create rows from looks data
-  const lookRows = createLookRows(looks);
+  // Dynamically create rows from lookbooks data
+  const lookRows = createLookRows(lookbooks);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading lookbooks...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pt-20">
@@ -150,7 +115,7 @@ export default function LookbookPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8">
           <h1 className="text-lg font-light text-gray-900 mb-4 text-center">
-            WOMEN FALL 25 LOOKS
+            {lookbooks.length > 0 ? `${lookbooks[0].category.toUpperCase()} LOOKBOOK` : 'LOOKBOOK'}
           </h1>
         </div>
       </div>
@@ -160,7 +125,7 @@ export default function LookbookPage() {
         <div className="space-y-25">
           {lookRows.map((row, rowIndex) => (
             <div key={rowIndex} className="flex flex-wrap -mx-2 justify-center gap-10">
-              {row.map((look, index) => {
+              {row.map((lookbook, index) => {
                 let containerStyle = {};
                 let elementStyle = {};
                 
@@ -194,19 +159,19 @@ export default function LookbookPage() {
                 
                 return (
                   <div 
-                    key={look.id}
+                    key={lookbook.id}
                     className="px-2 w-full md:w-[40%]"
                     style={containerStyle}
                   >
-                    <Link href={`/lookbook/${look.id}`}>
+                    <Link href={`/lookbook/${lookbook.handle}`}>
                       <div 
                         className="relative group cursor-pointer overflow-hidden w-1/2"
                         style={elementStyle}
                       >
                         <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
                           <img
-                            src={look.image}
-                            alt={look.title}
+                            src={lookbook.imageUrl}
+                            alt={lookbook.name}
                             className="w-full h-full object-cover transition-transform duration-500"
                           />
                           
@@ -229,7 +194,7 @@ export default function LookbookPage() {
                           
                           {/* Look info overlay on hover */}
                           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 className="text-sm font-medium">{look.title}</h3>
+                            <h3 className="text-sm font-medium">{lookbook.name}</h3>
                             <p className="text-xs text-gray-200">View Look</p>
                           </div>
                         </div>
