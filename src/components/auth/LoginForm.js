@@ -22,8 +22,12 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
     setIsSubmitting(true);
 
     try {
-      // Verify reCAPTCHA
-      await validateFormSubmission(executeRecaptcha, 'login');
+      // Verify reCAPTCHA (with fallback if not available)
+      // if (executeRecaptcha) {
+      //   await validateFormSubmission(executeRecaptcha, 'login');
+      // } else {
+      //   console.warn('reCAPTCHA not available, skipping verification');
+      // }
 
       const result = await login(email, password);
       if (result.success) {
@@ -40,7 +44,7 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

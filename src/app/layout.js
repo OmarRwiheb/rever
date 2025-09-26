@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RecaptchaProvider>
+        {/* <RecaptchaProvider> */}
           <NavbarProvider>
             <UserProvider>
               <CartProvider>
@@ -40,9 +40,9 @@ export default function RootLayout({ children }) {
               </CartProvider>
             </UserProvider>
           </NavbarProvider>
-        </RecaptchaProvider>
-        <NewsletterPopup />
-        <WhatsAppSupport />
+          <NewsletterPopup />
+          <WhatsAppSupport />
+        {/* </RecaptchaProvider> */}
       </body>
     </html>
   );

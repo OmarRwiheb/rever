@@ -7,6 +7,7 @@ export default function RecaptchaProvider({ children }) {
 
   if (!siteKey) {
     console.warn('reCAPTCHA site key not found. Please add NEXT_PUBLIC_RECAPTCHA_SITE_KEY to your environment variables.');
+    console.warn('Forms will work without reCAPTCHA verification.');
     return children;
   }
 
