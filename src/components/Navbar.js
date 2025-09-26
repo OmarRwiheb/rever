@@ -3,7 +3,7 @@
 import { useState, useContext, createContext, useMemo, useCallback, useEffect } from 'react';
 import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { shopifyService } from '@/services/shopify/shopify';
+import navbarCacheService from '@/lib/navbarCache';
 import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
 import CartDropdown from './CartDropdown';
@@ -259,7 +259,7 @@ export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // NEW: dynamic nav links from Shopify
+  // NEW: dynamic nav links from Shopify with caching
   const [navLinks, setNavLinks] = useState([]);
   const [menuLoaded, setMenuLoaded] = useState(false);
 
@@ -270,12 +270,13 @@ export default function Navbar() {
     setIsClient(true);
   }, []);
 
-  // Load menu from Shopify (handle: 'main-menu' — change if yours differs)
+  // Load menu from Shopify with caching (handle: 'main-menu' — change if yours differs)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const links = await shopifyService.getNavLinks('main-menu');
+        // Use cached data with automatic refresh if needed
+        const links = await navbarCacheService.getNavbarData('main-menu');
         if (mounted) {
           setNavLinks(links);
           setMenuLoaded(true);
@@ -301,6 +302,7 @@ export default function Navbar() {
       [linkName]: !prev[linkName]
     }));
   }, []);
+
 
   const handleMouseEnter = useCallback((linkName) => {
     if (hoverTimeout) {
