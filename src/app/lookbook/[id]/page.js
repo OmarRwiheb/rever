@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { shopifyService } from '../../../services/shopify/shopify';
 import ProductCard from '../../../components/productsGrid/ProductCard';
+import Footer from '../../../components/Footer';
 
 export default function OutfitDetailPage() {
   const params = useParams();
@@ -80,13 +81,13 @@ export default function OutfitDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white relative pt-20">
+    <div className="min-h-screen bg-white pt-20">
       {/* Main Content */}
-      <div className="flex h-full justify-center">
+      <div className="flex justify-center">
         <div className="max-w-7xl w-full flex mx-4 md:mx-16 my-4 md:my-16 gap-4 md:gap-20 flex-col lg:flex-row">
           {/* Left Side - Large Outfit Photo */}
-          <div className="relative w-full lg:w-1/2 h-1/2 lg:h-full">
-            <div className="w-full h-full">
+          <div className="relative w-full lg:w-1/2">
+            <div className="aspect-[4/5] w-full">
               <img
                 src={lookbook.imageUrl}
                 alt={lookbook.name}
@@ -96,12 +97,11 @@ export default function OutfitDetailPage() {
           </div>
 
           {/* Right Side - Product Grid */}
-          <div className="w-full lg:w-1/2 h-1/2 lg:h-full bg-white">
+          <div className="w-full lg:w-1/2 bg-white">
             <div className="space-y-4 md:space-y-8">
               {/* Lookbook Title */}
               <div className="mb-6">
                 <h1 className="text-2xl font-light text-gray-900 mb-2">{lookbook.name}</h1>
-                <p className="text-sm text-gray-600 capitalize">{lookbook.category}</p>
               </div>
               
               {/* Product Grid */}
@@ -125,6 +125,9 @@ export default function OutfitDetailPage() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 } 

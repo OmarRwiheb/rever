@@ -49,7 +49,16 @@ export default function CartDropdown({ isOpen, onClose }) {
   const loadVariants = async (productId) => {
     try {
       const variants = await getProductVariants(productId);
-      setAvailableVariants(prev => ({ ...prev, [productId]: variants }));
+      
+      // Filter variants to only show in-stock ones
+      const inStockVariants = variants.filter(variant => 
+        variant.availableForSale && 
+        (variant.quantityAvailable === null || 
+         variant.quantityAvailable === undefined || 
+         variant.quantityAvailable > 0)
+      );
+      
+      setAvailableVariants(prev => ({ ...prev, [productId]: inStockVariants }));
     } catch (error) {
       console.error('Failed to load variants:', error);
     }
@@ -133,8 +142,15 @@ export default function CartDropdown({ isOpen, onClose }) {
         {/* Variant Editing */}
         {editingItem?.id === item.id ? (
           <div className="mt-2 space-y-2">
-            {/* Color Selection */}
-            {availableVariants[item.product.id] && (
+            {/* Check if any variants are available */}
+            {availableVariants[item.product.id] && availableVariants[item.product.id].length === 0 ? (
+              <div className="text-xs text-red-600 bg-red-50 p-2 rounded">
+                No variants available in stock
+              </div>
+            ) : (
+              <>
+                {/* Color Selection */}
+                {availableVariants[item.product.id] && availableVariants[item.product.id].length > 0 && (
               <div className="flex items-center space-x-2">
                 <label className="text-xs text-gray-600">Color:</label>
                 <select
@@ -157,7 +173,7 @@ export default function CartDropdown({ isOpen, onClose }) {
             )}
             
             {/* Size Selection */}
-            {availableVariants[item.product.id] && (
+            {availableVariants[item.product.id] && availableVariants[item.product.id].length > 0 && (
               <div className="flex items-center space-x-2">
                 <label className="text-xs text-gray-600">Size:</label>
                 <select
@@ -184,6 +200,7 @@ export default function CartDropdown({ isOpen, onClose }) {
               <button
                 onClick={() => handleVariantChange(item.id)}
                 className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                disabled={availableVariants[item.product.id] && availableVariants[item.product.id].length === 0}
               >
                 Update
               </button>
@@ -194,6 +211,8 @@ export default function CartDropdown({ isOpen, onClose }) {
                 Cancel
               </button>
             </div>
+              </>
+            )}
           </div>
         ) : (
           <button
