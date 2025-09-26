@@ -94,23 +94,23 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
             <button 
               onClick={handleQuickAdd}
               disabled={isAddingToCart || !firstVariant}
-              className={`p-2 rounded-full shadow-lg transition-all duration-300 m-2 pointer-events-auto ${
+              className={`p-2 rounded-full transition-all duration-300 m-2 pointer-events-auto ${
                 isAddingToCart
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'text-gray-500 cursor-not-allowed'
                   : isInCart
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-white text-gray-900 hover:bg-gray-100'
+                  ? 'text-black hover:text-green-600'
+                  : 'text-black hover:text-gray-600'
               }`}
               title={isInCart ? 'Already in cart' : 'Quick add to cart'}
             >
               {isAddingToCart ? (
                 <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
               ) : isInCart ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               )}

@@ -65,9 +65,9 @@ export default function WishlistButton({ product, size = 'default', showText = f
           font-medium
           transition-colors
           ${isWishlisted 
-            ? 'bg-red-500 text-white hover:bg-red-600' 
+            ? 'text-red-500 hover:text-red-600' 
             : borderless 
-              ? 'bg-white/80 text-gray-900 hover:bg-white hover:text-gray-700' 
+              ? 'text-black hover:text-gray-600' 
               : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
           }
           ${isToggling ? 'opacity-50 cursor-not-allowed' : ''}
@@ -78,7 +78,7 @@ export default function WishlistButton({ product, size = 'default', showText = f
           <div className={`${iconSizeClasses[size]} border-2 border-current border-t-transparent rounded-full animate-spin`}></div>
         ) : (
           <svg 
-            className={iconSizeClasses[size]} 
+            className={`${iconSizeClasses[size]} drop-shadow-lg`} 
             fill={isWishlisted ? 'currentColor' : 'none'} 
             stroke="currentColor" 
             viewBox="0 0 24 24"
