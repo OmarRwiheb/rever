@@ -9,6 +9,7 @@ import {
   createCustomerAccessToken, 
   getCustomer, 
   validateCustomerData,
+  subscribeToNewsletter,
   getWishlistFromCustomer,
   updateCustomerWishlist,
   addToWishlist,
@@ -35,6 +36,7 @@ export const shopifyService = {
   createCustomerAccessToken,
   getCustomer,
   validateCustomerData,
+  subscribeToNewsletter,
   // Wishlist functions
   getWishlistFromCustomer,
   updateCustomerWishlist,

@@ -270,6 +270,18 @@ export const shopifyCustomerService = {
 
     } catch (error) {
       console.error('Error creating customer:', error);
+      
+      // Check if this is a GraphQL error response (not a network error)
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+        return {
+          success: false,
+          errors: errors,
+          message: errors[0]?.message || 'Customer creation failed'
+        };
+      }
+      
+      // For actual network/connection errors
       return {
         success: false,
         message: 'An error occurred while creating the customer account',
@@ -669,6 +681,92 @@ export const shopifyCustomerService = {
         error: error.message
       };
     }
+  },
+
+  /**
+   * Generate a random password for newsletter subscribers
+   * @returns {string} - Random password
+   */
+  generateRandomPassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  },
+
+  /**
+   * Subscribe email to newsletter (creates customer or updates existing customer)
+   * @param {string} email - Email address to subscribe
+   * @returns {Promise<Object>} - Newsletter subscription result
+   */
+  async subscribeToNewsletter(email) {
+    try {
+      // First, try to create a new customer
+      const generatePassword = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+          password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+      };
+
+      const customerData = {
+        firstName: 'Newsletter',
+        lastName: 'Subscriber',
+        email: email,
+        password: generatePassword(),
+        acceptsMarketing: true
+      };
+
+      const result = await this.createCustomer(customerData);
+      
+      // If customer creation was successful, return the result
+      if (result.success) {
+        return result;
+      }
+
+      // Handle different types of errors
+      if (result.errors && result.errors.length > 0) {
+        const error = result.errors[0];
+        
+        // If customer already exists (TAKEN error)
+        if (error.code === 'TAKEN') {
+          return {
+            success: false,
+            message: 'This email is already registered. Please log in to your account to update your newsletter preferences.',
+            alreadyExists: true,
+            customer: {
+              email: email
+            }
+          };
+        }
+        
+        // If rate limited
+        if (error.code === 'THROTTLED') {
+          return {
+            success: false,
+            message: 'Too many requests. Please try again in a few minutes.',
+            rateLimited: true
+          };
+        }
+        
+        // For other errors, return the original result
+        return result;
+      }
+
+      // If no specific errors but still failed, return the result
+      return result;
+    } catch (error) {
+      console.error('Error subscribing to newsletter:', error);
+      return {
+        success: false,
+        message: 'An error occurred while subscribing to newsletter',
+        error: error.message
+      };
+    }
   }
 };
 
@@ -678,6 +776,7 @@ export const createCustomerAccessToken = shopifyCustomerService.createCustomerAc
 export const getCustomer = shopifyCustomerService.getCustomer;
 export const updateCustomer = shopifyCustomerService.updateCustomer;
 export const validateCustomerData = shopifyCustomerService.validateCustomerData;
+export const subscribeToNewsletter = shopifyCustomerService.subscribeToNewsletter;
 export const getWishlistFromCustomer = shopifyCustomerService.getWishlistFromCustomer;
 export const updateCustomerWishlist = shopifyCustomerService.updateCustomerWishlist;
 export const addToWishlist = shopifyCustomerService.addToWishlist;

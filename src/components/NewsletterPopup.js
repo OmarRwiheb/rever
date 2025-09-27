@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { validateFormSubmission } from '@/lib/recaptcha';
+import { shopifyService } from '@/services/shopify/shopify';
 
 export default function NewsletterPopup() {
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Check if user has already seen the popup
@@ -26,28 +26,62 @@ export default function NewsletterPopup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email.trim()) return;
+
+    setIsLoading(true);
+    setError('');
 
     try {
-      // Verify reCAPTCHA
-      await validateFormSubmission(executeRecaptcha, 'newsletter_popup');
+      // Call Shopify API directly
+      const result = await shopifyService.subscribeToNewsletter(email.trim());
       
-      // Here you would typically send the email to your backend
-      console.log('Newsletter signup:', email);
-      setIsSubmitted(true);
-      localStorage.setItem('newsletter-popup-seen', 'true');
-      
-      // Close popup after 3 seconds
-      setTimeout(() => {
-        setIsAnimating(false);
+      if (result.success) {
+        setIsSubmitted(true);
+        localStorage.setItem('newsletter-popup-seen', 'true');
+        
+        // Close popup after 3 seconds
         setTimeout(() => {
-          setIsOpen(false);
-          setIsSubmitted(false);
-          setEmail('');
-        }, 300);
-      }, 3000);
+          setIsAnimating(false);
+          setTimeout(() => {
+            setIsOpen(false);
+            setIsSubmitted(false);
+            setEmail('');
+          }, 300);
+        }, 3000);
+      } else {
+        // Handle different error cases
+        if (result.alreadyExists) {
+          setError(
+            <div className="text-sm">
+              <p className="mb-2">{result.message}</p>
+              <p className="text-gray-600">
+                You can update your newsletter preferences in your{' '}
+                <a
+                  href="/account/profile"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  account settings
+                </a>
+                .
+              </p>
+            </div>
+          );
+        } else if (result.rateLimited) {
+          setError(
+            <div className="text-sm text-orange-600">
+              <p className="mb-2">{result.message}</p>
+              <p className="text-gray-600">Please wait a moment and try again.</p>
+            </div>
+          );
+        } else {
+          setError(result.message || 'Failed to subscribe to newsletter');
+        }
+      }
     } catch (error) {
       console.error('Newsletter popup signup error:', error);
+      setError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -135,11 +169,19 @@ export default function NewsletterPopup() {
                   {/* Enhanced submit button */}
                   <button
                     type="submit"
-                    className="w-full bg-black text-white py-3 px-6 rounded-xl hover:bg-gray-800 active:bg-gray-900 transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+                    disabled={isLoading}
+                    className="w-full bg-black text-white py-3 px-6 rounded-xl hover:bg-gray-800 active:bg-gray-900 transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                    Subscribe Now
+                    {isLoading ? 'Subscribing...' : 'Subscribe Now'}
                   </button>
                 </form>
+
+                {/* Error message */}
+                {error && (
+                  <div className="mt-4 text-center">
+                    <p className="text-red-500 text-sm">{error}</p>
+                  </div>
+                )}
 
                 {/* Enhanced footer with better typography */}
                 <div className="mt-6 text-center">

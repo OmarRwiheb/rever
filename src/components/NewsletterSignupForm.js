@@ -1,40 +1,65 @@
 'use client';
 
 import { useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { validateFormSubmission } from '@/lib/recaptcha';
+import { shopifyService } from '@/services/shopify/shopify';
 
 export default function NewsletterSignupForm() {
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email.trim()) return;
 
     setIsLoading(true);
+    setError('');
     
     try {
-      // Verify reCAPTCHA
-      await validateFormSubmission(executeRecaptcha, 'newsletter');
+      // Call Shopify API directly
+      const result = await shopifyService.subscribeToNewsletter(email.trim());
       
-      // Here you would typically send the email to your backend
-      console.log('Footer newsletter signup:', email);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setIsSubmitted(true);
-      setEmail('');
-      
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 3000);
+      if (result.success) {
+        setIsSubmitted(true);
+        setEmail('');
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
+      } else {
+        // Handle different error cases
+        if (result.alreadyExists) {
+          setError(
+            <div className="text-sm">
+              <p className="mb-2">{result.message}</p>
+              <p className="text-gray-600">
+                You can update your newsletter preferences in your{' '}
+                <a
+                  href="/account/profile"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  account settings
+                </a>
+                .
+              </p>
+            </div>
+          );
+        } else if (result.rateLimited) {
+          setError(
+            <div className="text-sm text-orange-600">
+              <p className="mb-2">{result.message}</p>
+              <p className="text-gray-600">Please wait a moment and try again.</p>
+            </div>
+          );
+        } else {
+          setError(result.message || 'Failed to subscribe to newsletter');
+        }
+      }
     } catch (error) {
       console.error('Newsletter signup error:', error);
+      setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -70,6 +95,12 @@ export default function NewsletterSignupForm() {
             </svg>
             <span>Thank you for subscribing!</span>
           </div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="mt-3 text-center">
+          <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
       
