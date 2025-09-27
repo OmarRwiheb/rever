@@ -17,13 +17,18 @@ export function WishlistProvider({ children }) {
       setIsLoading(true);
       
       if (isAuthenticated && user?.id) {
+        // Clear wishlist immediately when user becomes authenticated
+        setWishlistItems([]);
+        // Clear localStorage when user becomes authenticated
+        localStorage.removeItem('wishlist');
         try {
           // Load from Shopify for logged-in users (don't touch localStorage)
           
           // Get access token from shopifyTokenManager
           const token = shopifyTokenManager.getToken();
           if (!token) {
-            loadFromLocalStorage();
+            // If no token, keep empty state instead of loading localStorage
+            setWishlistItems([]);
             return;
           }
           
@@ -54,10 +59,12 @@ export function WishlistProvider({ children }) {
             const validItems = wishlistItems.filter(item => item !== null);
             setWishlistItems(validItems);
           } else {
-            loadFromLocalStorage();
+            // If Shopify fails, keep empty state instead of loading localStorage
+            setWishlistItems([]);
           }
         } catch (error) {
-          loadFromLocalStorage();
+          // If any error occurs, keep empty state instead of loading localStorage
+          setWishlistItems([]);
         }
       } else {
         // Load from localStorage for guests
