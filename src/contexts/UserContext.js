@@ -197,6 +197,54 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const requestPasswordReset = async (email) => {
+    setIsLoading(true);
+    try {
+      const result = await shopifyCustomerService.requestPasswordReset(email);
+      return result;
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      return { success: false, error: 'An unexpected error occurred while requesting password reset' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetPassword = async (resetUrl, password) => {
+    setIsLoading(true);
+    try {
+      const result = await shopifyCustomerService.resetPassword(resetUrl, password);
+      
+      if (result.success) {
+        // Store the token and set user as authenticated
+        shopifyTokenManager.storeToken(
+          result.accessToken.accessToken,
+          result.accessToken.expiresAt
+        );
+        
+        setUser(result.customer);
+        setIsAuthenticated(true);
+        
+        // Associate cart with customer if cart exists
+        try {
+          if (cartService.hasCart()) {
+            await cartService.updateCartBuyerIdentity(result.accessToken.accessToken);
+            console.log('Cart successfully associated with customer after password reset');
+          }
+        } catch (cartError) {
+          console.warn('Failed to associate cart with customer after password reset:', cartError);
+        }
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Password reset error:', error);
+      return { success: false, error: 'An unexpected error occurred while resetting password' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -204,7 +252,9 @@ export const UserProvider = ({ children }) => {
     login,
     signup,
     logout,
-    updateProfile
+    updateProfile,
+    requestPasswordReset,
+    resetPassword
   };
 
   return (

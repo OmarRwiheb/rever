@@ -126,12 +126,12 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
               Remember me
             </label>
           </div>
-          <button
-            type="button"
+          <a
+            href="/auth/forgot-password"
             className="text-sm text-gray-900 hover:text-gray-700 font-medium"
           >
             Forgot password?
-          </button>
+          </a>
         </div>
 
         <button

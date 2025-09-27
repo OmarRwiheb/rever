@@ -85,6 +85,42 @@ const CUSTOMER_WISHLIST_UPDATE_MUTATION = `
   }
 `;
 
+// GraphQL mutation for customer password reset request
+const CUSTOMER_RECOVER_MUTATION = `
+  mutation customerRecover($email: String!) {
+    customerRecover(email: $email) {
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
+// GraphQL mutation for customer password reset
+const CUSTOMER_RESET_MUTATION = `
+  mutation customerResetByUrl($resetUrl: URL!, $password: String!) {
+    customerResetByUrl(resetUrl: $resetUrl, password: $password) {
+      customer {
+        id
+        firstName
+        lastName
+        email
+      }
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
 // GraphQL query to get customer data
 const CUSTOMER_QUERY = `
   query getCustomer($customerAccessToken: String!) {
@@ -451,6 +487,94 @@ export const shopifyCustomerService = {
   async removeFromWishlist(customerId, productId, currentWishlist = []) {
     const updatedWishlist = currentWishlist.filter(id => id !== productId);
     return await this.updateCustomerWishlist(customerId, updatedWishlist);
+  },
+
+  /**
+   * Request password reset for a customer
+   * @param {string} email - Customer's email address
+   * @returns {Promise<Object>} - Password reset request result
+   */
+  async requestPasswordReset(email) {
+    try {
+      const variables = {
+        email: email
+      };
+
+      const response = await apiClient.graphql(CUSTOMER_RECOVER_MUTATION, variables);
+      
+      if (response?.customerRecover?.customerUserErrors?.length > 0) {
+        const errors = response.customerRecover.customerUserErrors;
+        return {
+          success: false,
+          errors: errors,
+          message: errors[0]?.message || 'Password reset request failed'
+        };
+      }
+
+      return {
+        success: true,
+        message: 'Password reset instructions have been sent to your email address'
+      };
+
+    } catch (error) {
+      console.error('Error requesting password reset:', error);
+      return {
+        success: false,
+        message: 'An error occurred while requesting password reset',
+        error: error.message
+      };
+    }
+  },
+
+  /**
+   * Reset customer password using reset URL
+   * @param {string} resetUrl - Password reset URL from email
+   * @param {string} password - New password
+   * @returns {Promise<Object>} - Password reset result
+   */
+  async resetPassword(resetUrl, password) {
+    try {
+      const variables = {
+        resetUrl: resetUrl,
+        password: password
+      };
+
+      const response = await apiClient.graphql(CUSTOMER_RESET_MUTATION, variables);
+      
+      if (response?.customerResetByUrl?.customerUserErrors?.length > 0) {
+        const errors = response.customerResetByUrl.customerUserErrors;
+        return {
+          success: false,
+          errors: errors,
+          message: errors[0]?.message || 'Password reset failed'
+        };
+      }
+
+      const customer = response?.customerResetByUrl?.customer;
+      const accessToken = response?.customerResetByUrl?.customerAccessToken;
+
+      if (customer && accessToken) {
+        return {
+          success: true,
+          customer: customer,
+          accessToken: accessToken,
+          message: 'Password reset successfully'
+        };
+      }
+
+      return {
+        success: false,
+        message: 'Password reset failed - no customer data returned'
+      };
+
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      return {
+        success: false,
+        message: 'An error occurred while resetting password',
+        error: error.message
+      };
+    }
   }
 };
 
@@ -463,3 +587,5 @@ export const getWishlistFromCustomer = shopifyCustomerService.getWishlistFromCus
 export const updateCustomerWishlist = shopifyCustomerService.updateCustomerWishlist;
 export const addToWishlist = shopifyCustomerService.addToWishlist;
 export const removeFromWishlist = shopifyCustomerService.removeFromWishlist;
+export const requestPasswordReset = shopifyCustomerService.requestPasswordReset;
+export const resetPassword = shopifyCustomerService.resetPassword;
