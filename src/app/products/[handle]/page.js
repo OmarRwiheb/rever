@@ -6,7 +6,7 @@ import { useParams, usePathname } from 'next/navigation';
 import ProductImage from '../../../components/product/ProductImage';
 import ProductInfo from '../../../components/product/ProductInfo';
 import ProductHighlights from '../../../components/product/ProductHighlights';
-import ProductRecommendationGrid from '../../../components/product/ProductRecommendationGrid';
+import RelatedProducts from '../../../components/product/RelatedProducts';
 import Footer from '../../../components/Footer';
 
 import { shopifyService } from '@/services/shopify/shopify'; // make sure this re-exports getProductByHandle/getProductById
@@ -137,9 +137,9 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Recommendations */}
+      {/* Related Products */}
       <div className="w-full px-4 lg:px-8 py-8">
-        <ProductRecommendationGrid productId={product.id} />
+        <RelatedProducts product={product} />
       </div>
 
       <Footer />

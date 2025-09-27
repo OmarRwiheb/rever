@@ -19,6 +19,12 @@ const PRODUCT_FIELDS = `
     minVariantPrice { amount currencyCode }
     maxVariantPrice { amount currencyCode }
   }
+   metafields(identifiers: [
+          {namespace: "custom", key: "related_products"}
+        ]) {
+          key
+          value
+        }
   options { name values }
   variants(first: 50) {
     edges {
@@ -209,6 +215,8 @@ const transformProduct = (p) => {
     discountPercentage: maxDiscount,
     // Full variants data for cart operations
     variants: fullVariants,
+    // Metafields data
+    metafields: p.metafields || [],
     // Useful extras your UI might want:
     availability: {
       hasAnyAvailable: variants.some((v) => v.availableForSale),
