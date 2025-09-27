@@ -54,6 +54,35 @@ export default function ClientWrapper({
   useEffect(() => {
     if (!mounted || !containerRef.current || panelsRef.current.length === 0) return;
 
+    // Prevent pull-to-refresh on mobile only when at first panel
+    const preventPullRefresh = (e) => {
+      if (currentIndexRef.current <= 0) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // Add touch event listeners for mobile pull-to-refresh prevention
+    const handleTouchStart = (e) => {
+      if (currentIndexRef.current <= 0 && e.touches[0].clientY > 50) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (currentIndexRef.current <= 0) {
+        e.preventDefault();
+      }
+    };
+
+    // Add event listeners only to the container, not the entire document
+    if (containerRef.current) {
+      containerRef.current.addEventListener('touchstart', handleTouchStart, { passive: false });
+      containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
+      containerRef.current.addEventListener('gesturestart', preventPullRefresh, { passive: false });
+    }
+
     // Small delay to ensure all panels are rendered
     const initTimeout = setTimeout(() => {
       // Position panels
@@ -81,6 +110,8 @@ export default function ClientWrapper({
         tolerance: 10,
         allowClicks: true,
         lockAxis: true,
+        ignoreInertia: true,
+        dragMinimum: 10,
         onUp: () => {
           console.log("Scroll up detected, current index:", currentIndexRef.current);
           
@@ -152,6 +183,12 @@ export default function ClientWrapper({
       if (tween.current) {
         tween.current.kill();
       }
+      // Remove event listeners from container
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('touchstart', handleTouchStart);
+        containerRef.current.removeEventListener('touchmove', handleTouchMove);
+        containerRef.current.removeEventListener('gesturestart', preventPullRefresh);
+      }
     };
   }, [mounted, updateNavbarSection, kids.length]);
 
@@ -176,6 +213,14 @@ export default function ClientWrapper({
       style={{ 
         contain: "layout paint size",
         background: "transparent",
+        overscrollBehavior: "none",
+        touchAction: "pan-y",
+        WebkitOverflowScrolling: "touch",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       }}
     >
       {kids.map((Child, i) => {
