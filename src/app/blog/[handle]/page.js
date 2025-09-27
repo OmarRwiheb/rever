@@ -1,90 +1,80 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, User, Tag, ArrowLeft } from 'lucide-react';
-
-// Mock data - this will be replaced with actual Shopify API calls
-const mockArticles = [
-  {
-    id: '1',
-    title: 'The Art of Minimalist Fashion',
-    excerpt: 'Discover how to build a timeless wardrobe with essential pieces that never go out of style.',
-    content: 'Full article content here...',
-    author: 'Sarah Johnson',
-    publishedAt: '2024-01-15T10:00:00Z',
-    tags: ['Fashion', 'Minimalism', 'Style'],
-    featuredImage: '/img/lookbook.jpg',
-    handle: 'art-of-minimalist-fashion'
-  },
-  {
-    id: '2',
-    title: 'Sustainable Fashion: A Guide to Ethical Shopping',
-    excerpt: 'Learn about sustainable fashion practices and how to make conscious choices when shopping.',
-    content: 'Full article content here...',
-    author: 'Emma Davis',
-    publishedAt: '2024-01-10T14:30:00Z',
-    tags: ['Sustainability', 'Ethical Fashion', 'Shopping'],
-    featuredImage: '/img/women.jpg',
-    handle: 'sustainable-fashion-guide'
-  },
-  {
-    id: '3',
-    title: 'Building Your Capsule Wardrobe',
-    excerpt: 'Step-by-step guide to creating a versatile capsule wardrobe that works for every occasion.',
-    content: 'Full article content here...',
-    author: 'Michael Chen',
-    publishedAt: '2024-01-05T09:15:00Z',
-    tags: ['Capsule Wardrobe', 'Organization', 'Style'],
-    featuredImage: '/img/placeholder.js',
-    handle: 'building-capsule-wardrobe'
-  },
-  {
-    id: '4',
-    title: 'The Psychology of Color in Fashion',
-    excerpt: 'Understanding how colors affect mood and perception in fashion choices.',
-    content: 'Full article content here...',
-    author: 'Lisa Rodriguez',
-    publishedAt: '2024-01-01T16:45:00Z',
-    tags: ['Color Theory', 'Psychology', 'Fashion'],
-    featuredImage: '/img/men.jpg',
-    handle: 'psychology-color-fashion'
-  },
-  {
-    id: '5',
-    title: 'Seasonal Style Transitions',
-    excerpt: 'Tips for seamlessly transitioning your wardrobe between seasons.',
-    content: 'Full article content here...',
-    author: 'David Kim',
-    publishedAt: '2023-12-28T11:20:00Z',
-    tags: ['Seasonal', 'Transitions', 'Style Tips'],
-    featuredImage: '/img/product-test.jpg',
-    handle: 'seasonal-style-transitions'
-  },
-  {
-    id: '6',
-    title: 'Fashion Trends vs. Timeless Style',
-    excerpt: 'Finding the balance between following trends and maintaining timeless elegance.',
-    content: 'Full article content here...',
-    author: 'Anna Thompson',
-    publishedAt: '2023-12-25T13:10:00Z',
-    tags: ['Trends', 'Timeless', 'Style Philosophy'],
-    featuredImage: '/img/zoom.jpg',
-    handle: 'fashion-trends-vs-timeless'
-  }
-];
+import { shopifyService } from '../../../services/shopify/shopify';
 
 export default function ArticlePage({ params }) {
-  const { handle } = params;
-  
-  // Find the article by handle
-  const article = mockArticles.find(article => article.handle === handle);
-  
-  if (!article) {
+  const { handle: articleId } = params; // Rename to articleId for clarity
+  const [article, setArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch article and related articles on component mount
+  useEffect(() => {
+    fetchArticle();
+  }, [articleId]);
+
+  const fetchArticle = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Decode the global ID from the URL
+      const decodedId = decodeURIComponent(articleId);
+      const fetchedArticle = await shopifyService.getArticleById(decodedId);
+      setArticle(fetchedArticle);
+      
+      // Fetch related articles
+      const related = await shopifyService.getRelatedArticles(
+        fetchedArticle.id, 
+        3
+      );
+      setRelatedArticles(related);
+    } catch (err) {
+      console.error('Error fetching article:', err);
+      setError('Article not found or failed to load.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-4 py-6">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Blog
+            </Link>
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading article...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state or article not found
+  if (error || !article) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-light text-gray-900 mb-4">Article Not Found</h1>
+          <h1 className="text-2xl font-light text-gray-900 mb-4">
+            {error || 'Article Not Found'}
+          </h1>
           <Link href="/blog" className="text-gray-600 hover:text-gray-900">
             ← Back to Blog
           </Link>
@@ -92,11 +82,6 @@ export default function ArticlePage({ params }) {
       </div>
     );
   }
-
-  // Get related articles (exclude current article)
-  const relatedArticles = mockArticles
-    .filter(a => a.id !== article.id)
-    .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-white">
@@ -159,7 +144,7 @@ export default function ArticlePage({ params }) {
         <div className="relative aspect-[16/9] overflow-hidden">
           <Image
             src={article.featuredImage}
-            alt={article.title}
+            alt={article.imageAlt || article.title}
             fill
             className="object-cover"
           />
@@ -168,28 +153,10 @@ export default function ArticlePage({ params }) {
 
       {/* Article Content */}
       <div className="max-w-3xl mx-auto px-4 pb-16">
-        <div className="prose prose-lg max-w-none">
-          <p className="text-xl text-gray-600 leading-relaxed mb-8">
-            {article.excerpt}
-          </p>
-          
-          <div className="text-gray-900 leading-relaxed space-y-6">
-            <p>
-              This is where the full article content would be displayed. In a real implementation, 
-              this would come from the Shopify API and contain the complete article text, images, 
-              and formatting.
-            </p>
-            
-            <p>
-              The content would be properly formatted with headings, paragraphs, lists, and other 
-              rich text elements as provided by the Shopify blog system.
-            </p>
-            
-            <p>
-              For now, this is placeholder content to demonstrate the layout and styling of the 
-              blog article page.
-            </p>
-          </div>
+        <div className="blog-content">
+          <div 
+            dangerouslySetInnerHTML={{ __html: article.content }}
+          />
         </div>
       </div>
 
@@ -202,13 +169,13 @@ export default function ArticlePage({ params }) {
             <div className="grid md:grid-cols-3 gap-8">
               {relatedArticles.map((relatedArticle) => (
                 <article key={relatedArticle.id} className="group">
-                  <Link href={`/blog/${relatedArticle.handle}`}>
+                  <Link href={`/blog/${relatedArticle.encodedId}`}>
                     <div className="space-y-4">
                       {/* Article Image */}
                       <div className="relative aspect-[4/3] overflow-hidden">
                         <Image
                           src={relatedArticle.featuredImage}
-                          alt={relatedArticle.title}
+                          alt={relatedArticle.imageAlt || relatedArticle.title}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
                         />

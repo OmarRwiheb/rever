@@ -3,6 +3,7 @@ import { getNavLinks } from './shopifyMenu';
 import { getCollectionProductsByHandle } from './shopifyCollection';
 import { cartService } from './shopifyCart';
 import { getLookbooks, getLookbookByHandle } from './shopifyLookbook';
+import { getArticles, getArticleByHandle, getArticleById, getBlogArticles, getRelatedArticles } from './shopifyBlog';
 
 // ---------- Public service ----------
 export const shopifyService = {
@@ -13,6 +14,11 @@ export const shopifyService = {
   getCollectionProductsByHandle,
   getLookbooks,
   getLookbookByHandle,
+  getArticles,
+  getArticleByHandle,
+  getArticleById,
+  getBlogArticles,
+  getRelatedArticles,
   cart: cartService,
 };
 

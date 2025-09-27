@@ -49,6 +49,55 @@ body {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
+/* Blog content styling */
+.blog-content {
+  line-height: 1.7;
+}
+
+.blog-content h1 {
+  @apply text-3xl font-light text-gray-900 mb-6 mt-8;
+}
+
+.blog-content h2 {
+  @apply text-2xl font-light text-gray-900 mb-4 mt-6;
+}
+
+.blog-content h3 {
+  @apply text-xl font-light text-gray-900 mb-3 mt-5;
+}
+
+.blog-content p {
+  @apply text-gray-900 mb-4 leading-relaxed;
+}
+
+.blog-content ul, .blog-content ol {
+  @apply mb-4 pl-6;
+}
+
+.blog-content li {
+  @apply mb-2 text-gray-900;
+}
+
+.blog-content img {
+  @apply max-w-full h-auto rounded-lg shadow-sm my-6;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic text-gray-700 my-6;
+}
+
+.blog-content a {
+  @apply text-gray-900 underline hover:text-gray-700 transition-colors;
+}
+
+.blog-content strong {
+  @apply font-medium text-gray-900;
+}
+
+.blog-content em {
+  @apply italic text-gray-900;
+}
+
 /* Smooth transitions for filter options */
 .filter-option-enter {
   opacity: 0;
