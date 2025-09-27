@@ -61,8 +61,11 @@ export default function RelatedProducts({ product }) {
     }
   }, [product]);
 
+  if (recommendations.length === 0) {
+    return null;
+  }
+
   return (
-    recommendations.length > 0 && ( 
     <div className="space-y-6 mt-20">
       <h2 className="text-xs text-gray-900 max-w-7xl">
         YOU MAY BE INTERESTED IN
@@ -70,5 +73,5 @@ export default function RelatedProducts({ product }) {
       
       <ProductGrid products={recommendations} viewMode="grid-6" />
     </div>
-  ));
+  );
 }

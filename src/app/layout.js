@@ -80,6 +80,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning> 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         {/* <RecaptchaProvider> */}
           <NavbarProvider>
@@ -95,6 +96,25 @@ export default function RootLayout({ children }) {
           <NewsletterPopup />
           <WhatsAppSupport />
         {/* </RecaptchaProvider> */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Remove browser extension attributes that cause hydration mismatches
+              if (typeof window !== 'undefined') {
+                const body = document.body;
+                if (body) {
+                  // Remove common browser extension attributes
+                  body.removeAttribute('data-new-gr-c-s-check-loaded');
+                  body.removeAttribute('data-gr-ext-installed');
+                  body.removeAttribute('data-gramm');
+                  body.removeAttribute('data-gramm_editor');
+                  body.removeAttribute('data-gramm_editor_plugin');
+                  body.removeAttribute('data-gramm_editor_plugin_grammarly');
+                }
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

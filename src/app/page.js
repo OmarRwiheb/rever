@@ -1,22 +1,22 @@
-import FullPageScroll from "@/components/home/layout/FullPageScroll";
+// src/app/page.js
 import HeroSection from "@/components/home/sections/Hero";
 import WomenSection from "@/components/home/sections/Women";
 import MenSection from "@/components/home/sections/Men";
 import Footer from "@/components/Footer";
 import SecondVideo from "@/components/home/sections/SecondVideo";
+import ClientWrapper from "@/components/ClientWrapper";
 
 export default function HomePage() {
   return (
-    <>
-      <FullPageScroll
+    <ClientWrapper 
       mountRadius={1}
-      >
-        <HeroSection key="hero" />
-        <WomenSection key="women" />
-        <MenSection key="men" />
-        <SecondVideo key="second-video" />
-        <Footer key="footer" fullPage />
-      </FullPageScroll>
-    </>
+      sectionNames={["hero", "women", "men", "second-video", "footer"]}
+    >
+      <HeroSection />
+      <WomenSection />
+      <MenSection />
+      <SecondVideo />
+      <Footer fullPage />
+    </ClientWrapper>
   );
 }

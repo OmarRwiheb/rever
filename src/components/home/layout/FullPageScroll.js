@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useRef, useCallback, useState, useMemo } from "react";
+import React, { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { useNavbar } from "@/components/Navbar";
@@ -15,6 +15,7 @@ export default function FullPageScroll({
   const panelsRef = useRef([]);
   const currentIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const tween = useRef(null);
   const lastScrollTime = useRef(0);
   const lastSectionUpdate = useRef(0);
@@ -25,9 +26,13 @@ export default function FullPageScroll({
   const { setCurrentSection } = useNavbar();
 
   const kids = useMemo(() => {
-    // robust way to normalize children
     return React.Children.toArray(children).filter(Boolean);
   }, [children]);
+
+  // Only run after mount to avoid hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const setPanelRef = (el, index) => {
     if (el) panelsRef.current[index] = el;
@@ -35,29 +40,32 @@ export default function FullPageScroll({
 
   const updateNavbarSection = useCallback(
     (index) => {
+      if (!mounted) return;
       const t = now();
       if (t - lastSectionUpdate.current < SECTION_UPDATE_COOLDOWN) return;
       setCurrentSection(sectionNames[index] || "hero");
       lastSectionUpdate.current = t;
     },
-    [setCurrentSection, sectionNames]
+    [setCurrentSection, sectionNames, mounted]
   );
 
-  useLayoutEffect(() => {
-    if (!containerRef.current) return;
+  useEffect(() => {
+    if (!mounted || !containerRef.current) return;
 
-    // Position shells immediately
+    // Position panels after mount
     panelsRef.current.forEach((panel, i) => {
-      gsap.set(panel, {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        yPercent: i === 0 ? 0 : 100,
-        zIndex: 10 + i,
-        willChange: "transform",
-      });
+      if (panel) {
+        gsap.set(panel, {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          yPercent: i === 0 ? 0 : 100,
+          zIndex: 10 + i,
+          willChange: "transform",
+        });
+      }
     });
 
     updateNavbarSection(0);
@@ -79,15 +87,17 @@ export default function FullPageScroll({
           return;
 
         const next = panelsRef.current[currentIndexRef.current + 1];
-        tween.current = gsap.to(next, {
-          yPercent: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          onComplete: () => setActiveIndex((i) => i + 1),
-        });
-        currentIndexRef.current++;
-        updateNavbarSection(currentIndexRef.current);
-        lastScrollTime.current = now();
+        if (next) {
+          tween.current = gsap.to(next, {
+            yPercent: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            onComplete: () => setActiveIndex((i) => i + 1),
+          });
+          currentIndexRef.current++;
+          updateNavbarSection(currentIndexRef.current);
+          lastScrollTime.current = now();
+        }
       },
       onDown: () => {
         if (
@@ -98,15 +108,17 @@ export default function FullPageScroll({
           return;
 
         const current = panelsRef.current[currentIndexRef.current];
-        tween.current = gsap.to(current, {
-          yPercent: 100,
-          duration: 0.6,
-          ease: "power3.out",
-          onComplete: () => setActiveIndex((i) => i - 1),
-        });
-        currentIndexRef.current--;
-        updateNavbarSection(currentIndexRef.current);
-        lastScrollTime.current = now();
+        if (current) {
+          tween.current = gsap.to(current, {
+            yPercent: 100,
+            duration: 0.6,
+            ease: "power3.out",
+            onComplete: () => setActiveIndex((i) => i - 1),
+          });
+          currentIndexRef.current--;
+          updateNavbarSection(currentIndexRef.current);
+          lastScrollTime.current = now();
+        }
       },
     });
 
@@ -114,7 +126,16 @@ export default function FullPageScroll({
       if (obs && obs.kill) obs.kill();
       if (tween.current && tween.current.kill) tween.current.kill();
     };
-  }, [updateNavbarSection, kids.length]);
+  }, [mounted, updateNavbarSection, kids.length]);
+
+  // Show loading state until mounted
+  if (!mounted) {
+    return (
+      <div className="relative w-screen h-screen overflow-hidden pt-20 bg-black">
+        <div className="w-full h-full animate-pulse bg-neutral-900/50" />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -134,7 +155,7 @@ export default function FullPageScroll({
             style={{
               zIndex: 10 + i,
               width: "100vw",
-              height: "calc(100vh - 5rem)", // matches pt-20 header space
+              height: "calc(100vh - 5rem)",
               overflow: "hidden",
               contentVisibility: i === activeIndex ? "visible" : "auto",
               contain: "content",
