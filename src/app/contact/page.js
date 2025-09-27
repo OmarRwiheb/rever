@@ -42,21 +42,32 @@ export default function ContactPage() {
       }
 
       // Verify reCAPTCHA
-      await validateFormSubmission(executeRecaptcha, 'contact');
+      // await validateFormSubmission(executeRecaptcha, 'contact');
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setSubmitMessage('Thank you for your message. We will get back to you within 24 hours.');
-
-      // Reset form
-      setFormData({
-        name: user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
-        email: user?.email || '',
-        subject: '',
-        message: '',
-        website: ''
+      // Submit to API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitMessage(result.message);
+        // Reset form
+        setFormData({
+          name: user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
+          email: user?.email || '',
+          subject: '',
+          message: '',
+          website: ''
+        });
+      } else {
+        setSubmitMessage(result.error || 'There was an error sending your message. Please try again.');
+      }
     } catch (error) {
       console.error('Contact form submission error:', error);
       setSubmitMessage('There was an error sending your message. Please try again or contact us directly.');
