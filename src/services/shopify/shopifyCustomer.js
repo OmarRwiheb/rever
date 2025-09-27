@@ -121,6 +121,30 @@ const CUSTOMER_RESET_MUTATION = `
   }
 `;
 
+// GraphQL mutation for updating customer profile (Storefront API)
+const CUSTOMER_UPDATE_MUTATION = `
+  mutation customerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {
+    customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
+      customer {
+        id
+        firstName
+        lastName
+        email
+        phone
+        acceptsMarketing
+      }
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+      customerUserErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
 // GraphQL query to get customer data
 const CUSTOMER_QUERY = `
   query getCustomer($customerAccessToken: String!) {
@@ -575,6 +599,76 @@ export const shopifyCustomerService = {
         error: error.message
       };
     }
+  },
+
+  /**
+   * Update customer profile information
+   * @param {string} accessToken - Customer access token
+   * @param {Object} customerData - Customer data to update
+   * @param {string} [customerData.firstName] - Customer's first name
+   * @param {string} [customerData.lastName] - Customer's last name
+   * @param {string} [customerData.email] - Customer's email address
+   * @param {string} [customerData.phone] - Customer's phone number
+   * @param {boolean} [customerData.acceptsMarketing] - Whether customer accepts marketing emails
+   * @returns {Promise<Object>} - Customer update result
+   */
+  async updateCustomer(accessToken, customerData) {
+    try {
+      const variables = {
+        customerAccessToken: accessToken,
+        customer: {}
+      };
+
+      // Only include fields that are provided
+      if (customerData.firstName !== undefined) {
+        variables.customer.firstName = customerData.firstName;
+      }
+      if (customerData.lastName !== undefined) {
+        variables.customer.lastName = customerData.lastName;
+      }
+      if (customerData.email !== undefined) {
+        variables.customer.email = customerData.email;
+      }
+      if (customerData.phone !== undefined) {
+        variables.customer.phone = customerData.phone;
+      }
+      if (customerData.acceptsMarketing !== undefined) {
+        variables.customer.acceptsMarketing = customerData.acceptsMarketing;
+      }
+
+      const response = await apiClient.graphql(CUSTOMER_UPDATE_MUTATION, variables);
+      
+      if (response?.customerUpdate?.customerUserErrors?.length > 0) {
+        const errors = response.customerUpdate.customerUserErrors;
+        return {
+          success: false,
+          errors: errors,
+          message: errors[0]?.message || 'Customer update failed'
+        };
+      }
+
+      const updatedCustomer = response?.customerUpdate?.customer;
+      if (updatedCustomer) {
+        return {
+          success: true,
+          customer: updatedCustomer,
+          message: 'Customer updated successfully'
+        };
+      }
+
+      return {
+        success: false,
+        message: 'Customer update failed - no customer data returned'
+      };
+
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      return {
+        success: false,
+        message: 'An error occurred while updating customer profile',
+        error: error.message
+      };
+    }
   }
 };
 
@@ -582,6 +676,7 @@ export const shopifyCustomerService = {
 export const createCustomer = shopifyCustomerService.createCustomer;
 export const createCustomerAccessToken = shopifyCustomerService.createCustomerAccessToken;
 export const getCustomer = shopifyCustomerService.getCustomer;
+export const updateCustomer = shopifyCustomerService.updateCustomer;
 export const validateCustomerData = shopifyCustomerService.validateCustomerData;
 export const getWishlistFromCustomer = shopifyCustomerService.getWishlistFromCustomer;
 export const updateCustomerWishlist = shopifyCustomerService.updateCustomerWishlist;

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { shopifyCustomerService } from '@/services/shopify/shopifyCustomer';
+import { shopifyCustomerService, updateCustomer } from '@/services/shopify/shopifyCustomer';
 import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
 import { cartService } from '@/services/shopify/shopifyCart';
 
@@ -19,6 +19,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
   // Check authentication status on app load
   useEffect(() => {
@@ -173,27 +174,45 @@ export const UserProvider = ({ children }) => {
   const updateProfile = async (updates) => {
     if (!user) return { success: false, error: 'Not authenticated' };
     
-    setIsLoading(true);
+    setIsUpdatingProfile(true);
     try {
-      // For now, we'll just update the local state
-      // TODO: Implement customer update mutation when needed
-      const updatedUser = { ...user, ...updates };
-      setUser(updatedUser);
+      // Get the access token from storage using token manager
+      const accessToken = shopifyTokenManager.getToken();
       
-      // Store updated user data in localStorage for persistence
-      try {
-        localStorage.setItem('shopify_customer_data', JSON.stringify(updatedUser));
-        sessionStorage.setItem('shopify_customer_data', JSON.stringify(updatedUser));
-      } catch (storageError) {
-        console.warn('Could not save user data to storage:', storageError);
+      if (!accessToken) {
+        return { success: false, error: 'No access token found. Please log in again.' };
       }
+
+      // Call Shopify Storefront API to update customer profile
+      const result = await updateCustomer(accessToken, updates);
       
-      return { success: true, message: 'Profile updated successfully' };
+      if (result.success) {
+        // Update local state with the updated customer data from Shopify
+        const updatedUser = { ...user, ...result.customer };
+        setUser(updatedUser);
+        
+        // Store updated user data in localStorage for persistence
+        try {
+          localStorage.setItem('shopify_customer_data', JSON.stringify(updatedUser));
+          sessionStorage.setItem('shopify_customer_data', JSON.stringify(updatedUser));
+        } catch (storageError) {
+          console.warn('Could not save user data to storage:', storageError);
+        }
+        
+        return { success: true, message: result.message || 'Profile updated successfully' };
+      } else {
+        // Return the error from Shopify API
+        return {
+          success: false,
+          error: result.message || 'Failed to update profile',
+          errors: result.errors
+        };
+      }
     } catch (error) {
       console.error('Profile update error:', error);
       return { success: false, error: 'An unexpected error occurred while updating profile' };
     } finally {
-      setIsLoading(false);
+      setIsUpdatingProfile(false);
     }
   };
 
@@ -249,6 +268,7 @@ export const UserProvider = ({ children }) => {
     user,
     isAuthenticated,
     isLoading,
+    isUpdatingProfile,
     login,
     signup,
     logout,
