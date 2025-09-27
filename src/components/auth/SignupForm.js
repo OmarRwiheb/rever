@@ -134,7 +134,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
                   placeholder="First name"
                 />
             </div>
@@ -155,7 +155,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
                   required
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
                   placeholder="Last name"
                 />
             </div>
@@ -177,7 +177,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
               required
               value={formData.email}
               onChange={handleChange}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
               placeholder="Enter your email"
             />
           </div>
@@ -197,7 +197,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
               type="tel"
               value={formData.phone}
               onChange={handleChange}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
               placeholder="+1 (555) 123-4567"
             />
           </div>
@@ -218,7 +218,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
               required
               value={formData.password}
               onChange={handleChange}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
               placeholder="Create a password"
             />
             <button
@@ -251,7 +251,7 @@ export default function SignupForm({ onSwitchToLogin, onClose }) {
               required
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
             />
             <button
               type="button"

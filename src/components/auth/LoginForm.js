@@ -78,7 +78,7 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
                 placeholder="Enter your email"
               />
           </div>
@@ -98,7 +98,7 @@ export default function LoginForm({ onSwitchToSignup, onClose }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-gray-900"
                 placeholder="Enter your password"
               />
             <button
