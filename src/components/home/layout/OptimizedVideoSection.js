@@ -2,24 +2,41 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export default function VideoSection({ src, mobileSrc }) {
+export default function OptimizedVideoSection({ 
+  src, 
+  poster, 
+  mobileSrc, 
+  priority = false,
+  className = "w-full h-full object-cover"
+}) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
+  const [hasError, setHasError] = useState(false);
   const videoRef = useRef(null);
-  const [isInView, setIsInView] = useState(false);
+  const [isInView, setIsInView] = useState(priority); // Load immediately if priority
   const containerRef = useRef(null);
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading (skip if priority)
   useEffect(() => {
+    if (priority) {
+      console.log('Priority video, loading immediately:', src);
+      setIsInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          console.log('Video entering viewport:', src);
           setIsInView(true);
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '50px' // Start loading 50px before entering viewport
+      }
     );
 
     if (containerRef.current) {
@@ -27,11 +44,13 @@ export default function VideoSection({ src, mobileSrc }) {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [priority, src]);
 
   const handleLoadStart = () => {
+    console.log('Video load started:', src);
     setIsLoading(true);
     setLoadProgress(0);
+    setHasError(false);
   };
 
   const handleProgress = () => {
@@ -48,13 +67,21 @@ export default function VideoSection({ src, mobileSrc }) {
   };
 
   const handleCanPlay = () => {
+    console.log('Video can play:', src);
     setIsLoaded(true);
     setIsLoading(false);
+    // Force play the video
+    if (videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.error('Error playing video:', err);
+      });
+    }
   };
 
   const handleError = () => {
     setIsLoading(false);
-    console.error('Video failed to load');
+    setHasError(true);
+    console.error('Video failed to load:', src);
   };
 
   // Determine which video source to use based on screen size
@@ -65,10 +92,16 @@ export default function VideoSection({ src, mobileSrc }) {
     return src;
   };
 
+  // Preload strategy based on priority
+  const getPreloadStrategy = () => {
+    if (priority) return 'auto';
+    return 'metadata';
+  };
+
   return (
     <div ref={containerRef} className="relative w-full h-full">
       {/* Loading overlay */}
-      {isLoading && (
+      {isLoading && !hasError && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
           <div className="text-white text-center">
             <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -83,16 +116,26 @@ export default function VideoSection({ src, mobileSrc }) {
         </div>
       )}
 
+      {/* Error state */}
+      {hasError && (
+        <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-10">
+          <div className="text-white text-center">
+            <div className="text-4xl mb-2">⚠️</div>
+            <div className="text-sm">Video unavailable</div>
+          </div>
+        </div>
+      )}
+
       {/* Video element */}
-      {isInView && (
+      {isInView && !hasError && (
         <video
           ref={videoRef}
-          className="w-full h-full object-cover"
+          className={className}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload={getPreloadStrategy()}
           onLoadStart={handleLoadStart}
           onProgress={handleProgress}
           onCanPlay={handleCanPlay}
@@ -110,6 +153,16 @@ export default function VideoSection({ src, mobileSrc }) {
             <p>Video not supported</p>
           </div>
         </video>
+      )}
+
+      {/* Placeholder when no poster and video not loaded */}
+      {(!isLoaded || hasError) && !poster && (
+        <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="w-16 h-16 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="text-sm">Loading...</div>
+          </div>
+        </div>
       )}
     </div>
   );

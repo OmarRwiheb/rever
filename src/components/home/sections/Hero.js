@@ -1,7 +1,11 @@
-import VideoSection from "../layout/VideoSction";
+import OptimizedVideoSection from "../layout/OptimizedVideoSection";
 
 export default function Hero() {
     return (
-        <VideoSection src="/vid/main_desktop.mp4" />
+        <OptimizedVideoSection 
+            src="/vid/main_desktop.mp4" 
+            mobileSrc="/vid/main.mp4"
+            priority={true} // Hero video loads immediately
+        />
     );
 }
