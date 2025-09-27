@@ -351,22 +351,15 @@ export const shopifyCustomerService = {
         customerAccessToken: accessToken
       };
 
-      console.log('getCustomer - variables:', variables);
-      console.log('getCustomer - CUSTOMER_QUERY:', CUSTOMER_QUERY);
-
       const response = await apiClient.graphql(CUSTOMER_QUERY, variables);
       
-      console.log('getCustomer - response:', response);
-      
       if (response?.customer) {
-        console.log('getCustomer - customer found:', response.customer);
         return {
           success: true,
           customer: response.customer
         };
       }
 
-      console.log('getCustomer - no customer in response');
       return {
         success: false,
         message: 'Failed to retrieve customer data',

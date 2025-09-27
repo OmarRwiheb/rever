@@ -31,9 +31,9 @@ export const UserProvider = ({ children }) => {
           // Token exists and is valid, fetch customer data
           const result = await shopifyCustomerService.getCustomer(token);
           
-          if (result.success) {
-            setUser(result.customer);
-            setIsAuthenticated(true);
+        if (result.success) {
+          setUser(result.customer);
+          setIsAuthenticated(true);
             
             // Associate cart with customer if cart exists
             try {

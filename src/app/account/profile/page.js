@@ -2,22 +2,36 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@/contexts/UserContext';
-import { User, Mail, Phone, Save, Edit2, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Save, Edit2, Loader2, Bell } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, updateProfile, isUpdatingProfile } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    email: user?.email || '',
-    phone: user?.phone || ''
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    acceptsMarketing: false
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // Sync form data with user data when user changes
+  // Initialize form data when user data is available
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        acceptsMarketing: user.acceptsMarketing || false
+      });
+    }
+  }, [user]);
+
+  // Sync form data with user data when user changes (only when not editing)
   useEffect(() => {
     if (user && !isEditing) {
       // Only update form data when not in edit mode to avoid conflicts
@@ -25,10 +39,12 @@ export default function ProfilePage() {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        acceptsMarketing: user.acceptsMarketing || false
       });
     }
   }, [user, isEditing]);
+
 
   // Monitor error state changes (disabled in strict mode to prevent double execution)
   // useEffect(() => {
@@ -40,10 +56,10 @@ export default function ProfilePage() {
   // }, [error]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
     
     // Clear field error when user starts typing
@@ -66,7 +82,8 @@ export default function ProfilePage() {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        acceptsMarketing: user.acceptsMarketing || false
       });
     }
   };
@@ -92,6 +109,9 @@ export default function ProfilePage() {
     }
     if (formData.phone !== user?.phone) {
       changes.phone = formData.phone;
+    }
+    if (formData.acceptsMarketing !== user?.acceptsMarketing) {
+      changes.acceptsMarketing = formData.acceptsMarketing;
     }
 
     // Check if there are any changes
@@ -170,7 +190,8 @@ export default function ProfilePage() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      phone: user?.phone || ''
+      phone: user?.phone || '',
+      acceptsMarketing: user?.acceptsMarketing || false
     });
     setIsEditing(true);
     setError('');
@@ -337,6 +358,34 @@ export default function ProfilePage() {
             </div>
             {fieldErrors.phone && (
               <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="acceptsMarketing" className="block text-sm font-medium text-gray-700 mb-2">
+              Email Preferences
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Bell className="h-5 w-5 text-gray-400" />
+              </div>
+              <div className="flex items-center pl-10">
+                <input
+                  type="checkbox"
+                  name="acceptsMarketing"
+                  id="acceptsMarketing"
+                  disabled={!isEditing}
+                  checked={formData.acceptsMarketing || false}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                <label htmlFor="acceptsMarketing" className="ml-3 text-sm text-gray-700">
+                  I want to receive marketing emails and newsletters
+                </label>
+              </div>
+            </div>
+            {fieldErrors.acceptsMarketing && (
+              <p className="mt-1 text-sm text-red-600">{fieldErrors.acceptsMarketing}</p>
             )}
           </div>
 
