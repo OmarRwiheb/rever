@@ -1,13 +1,15 @@
 'use client';
 
 import { useUser } from '@/contexts/UserContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { User, Package, MapPin, RotateCcw, Settings, LogOut } from 'lucide-react';
 
 export default function AccountLayout({ children }) {
   const { user, isAuthenticated, isLoading } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -41,9 +43,9 @@ export default function AccountLayout({ children }) {
           <aside className="py-6 px-2 sm:px-6 lg:col-span-3">
             <nav className="space-y-1">
               {navigation.map((item) => {
-                const isActive = typeof window !== 'undefined' && window.location.pathname === item.href;
+                const isActive = pathname === item.href;
                 return (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
@@ -58,7 +60,7 @@ export default function AccountLayout({ children }) {
                       }`}
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 );
               })}
             </nav>
