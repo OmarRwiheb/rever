@@ -3,10 +3,27 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { MapPin, Plus, Edit2, Trash2, Star, Loader2 } from 'lucide-react';
+import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
+import { 
+  getCustomerAddresses, 
+  createCustomerAddress, 
+  updateCustomerAddress, 
+  deleteCustomerAddress, 
+  setDefaultAddress,
+  validateAddressData 
+} from '@/services/shopify/shopifyAddress';
+import { getCountriesForSelect } from '@/services/shopify/shopifyCountries';
+import { getProvincesForCountry, getProvinceFieldName, shouldHideProvince } from '@/services/shopify/shopifyProvinces';
 
 export default function AddressesPage() {
-  const { user, updateProfile } = useUser();
-  const [addresses, setAddresses] = useState(user?.addresses?.edges?.map(edge => edge.node) || []);
+  const { user, isAuthenticated } = useUser();
+  const [addresses, setAddresses] = useState([]);
+  const [defaultAddressId, setDefaultAddressId] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [provinceFieldName, setProvinceFieldName] = useState('Province');
+  const [hideProvince, setHideProvince] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,25 +33,80 @@ export default function AddressesPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    company: '',
     address1: '',
     address2: '',
     city: '',
     province: '',
     zip: '',
-    country: 'US',
-    phone: '',
-    isDefault: false
+    country: '',
+    phone: ''
   });
 
-  // Sync addresses when user data changes
+  // Get access token from token manager
+  const accessToken = shopifyTokenManager.getToken();
+
+  // Load addresses and countries on component mount
   useEffect(() => {
-    if (user?.addresses?.edges) {
-      setAddresses(user.addresses.edges.map(edge => edge.node));
+    const loadData = async () => {
+      // Load countries first (doesn't require authentication)
+      const countriesData = await getCountriesForSelect();
+      setCountries(countriesData);
+      
+      if (isAuthenticated && accessToken) {
+        await loadAddresses();
+      } else {
+        setIsLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [isAuthenticated, accessToken]);
+
+  const loadAddresses = async () => {
+    if (!accessToken) {
+      setIsLoading(false);
+      return;
     }
-  }, [user]);
+
+    try {
+      setIsLoading(true);
+      const result = await getCustomerAddresses(accessToken);
+      
+      if (result.success) {
+        setAddresses(result.addresses);
+        setDefaultAddressId(result.defaultAddress?.id || null);
+      } else {
+        setError(result.message || 'Failed to load addresses');
+      }
+    } catch (err) {
+      console.error('Error loading addresses:', err);
+      setError('An error occurred while loading addresses');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Handle country change to update provinces
+    if (name === 'country') {
+      const countryData = getProvincesForCountry(value);
+      if (countryData) {
+        setProvinces(countryData.options);
+        setProvinceFieldName(countryData.fieldName);
+        setHideProvince(countryData.hideProvince || false);
+        // Clear province when country changes
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+          province: ''
+        }));
+        return;
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -48,37 +120,31 @@ export default function AddressesPage() {
     setIsSubmitting(true);
 
     try {
-      let updatedAddresses;
+      // Validate address data
+      const validation = validateAddressData(formData);
+      if (!validation.isValid) {
+        setError(validation.errors[0].message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      let result;
       if (editingId) {
-        // Edit existing address
-        updatedAddresses = addresses.map(addr => 
-          addr.id === editingId ? { ...addr, ...formData } : addr
-        );
+        // Update existing address
+        result = await updateCustomerAddress(accessToken, editingId, formData);
       } else {
-        // Add new address
-        const newAddress = {
-          id: Date.now().toString(),
-          ...formData
-        };
-        updatedAddresses = [...addresses, newAddress];
+        // Create new address
+        result = await createCustomerAddress(accessToken, formData);
       }
 
-      // If this is set as default, unset others
-      if (formData.isDefault) {
-        updatedAddresses = updatedAddresses.map(addr => ({
-          ...addr,
-          isDefault: addr.id === (editingId || newAddress.id)
-        }));
-      }
-
-      const result = await updateProfile({ addresses: updatedAddresses });
       if (result.success) {
-        setAddresses(updatedAddresses);
         setSuccess(editingId ? 'Address updated successfully!' : 'Address added successfully!');
         resetForm();
+        // Reload addresses to get updated data
+        await loadAddresses();
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError(result.error || 'Failed to save address');
+        setError(result.message || 'Failed to save address');
       }
     } catch (err) {
       setError('An unexpected error occurred');
@@ -88,7 +154,30 @@ export default function AddressesPage() {
   };
 
   const handleEdit = (address) => {
-    setFormData(address);
+    // Pre-fill with user data, but allow editing
+    setFormData({
+      firstName: address.firstName || user?.firstName || '',
+      lastName: address.lastName || user?.lastName || '',
+      company: address.company || '',
+      address1: address.address1 || '',
+      address2: address.address2 || '',
+      city: address.city || '',
+      province: address.province || '',
+      zip: address.zip || '',
+      country: address.country || '',
+      phone: address.phone || user?.phone || ''
+    });
+    
+    // Load province data for the selected country
+    if (address.country) {
+      const countryData = getProvincesForCountry(address.country);
+      if (countryData) {
+        setProvinces(countryData.options);
+        setProvinceFieldName(countryData.fieldName);
+        setHideProvince(countryData.hideProvince || false);
+      }
+    }
+    
     setEditingId(address.id);
     setIsAdding(true);
     setError('');
@@ -99,14 +188,29 @@ export default function AddressesPage() {
     if (!confirm('Are you sure you want to delete this address?')) return;
 
     try {
-      const updatedAddresses = addresses.filter(addr => addr.id !== addressId);
-      const result = await updateProfile({ addresses: updatedAddresses });
+      const result = await deleteCustomerAddress(accessToken, addressId);
       if (result.success) {
-        setAddresses(updatedAddresses);
         setSuccess('Address deleted successfully!');
+        // Reload addresses to get updated data
+        await loadAddresses();
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError(result.error || 'Failed to delete address');
+        setError(result.message || 'Failed to delete address');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    }
+  };
+
+  const handleSetDefault = async (addressId) => {
+    try {
+      const result = await setDefaultAddress(accessToken, addressId);
+      if (result.success) {
+        setDefaultAddressId(addressId);
+        setSuccess('Default address updated successfully!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError(result.message || 'Failed to set default address');
       }
     } catch (err) {
       setError('An unexpected error occurred');
@@ -115,28 +219,79 @@ export default function AddressesPage() {
 
   const resetForm = () => {
     setFormData({
-      firstName: '',
-      lastName: '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      company: '',
       address1: '',
       address2: '',
       city: '',
       province: '',
       zip: '',
-      country: 'US',
-      phone: '',
-      isDefault: false
+      country: '',
+      phone: user?.phone || ''
     });
+    setProvinces([]);
+    setProvinceFieldName('Province');
+    setHideProvince(false);
     setEditingId(null);
     setIsAdding(false);
   };
 
   const startAdding = () => {
-    setIsAdding(true);
-    setEditingId(null);
-    resetForm();
     setError('');
     setSuccess('');
+    setEditingId(null);
+    
+    // Pre-fill form with user data
+    setFormData({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      company: '',
+      address1: '',
+      address2: '',
+      city: '',
+      province: '',
+      zip: '',
+      country: '',
+      phone: user?.phone || ''
+    });
+    
+    setIsAdding(true);
   };
+
+  // Check if user is authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-white shadow rounded-lg">
+        <div className="px-4 py-5 sm:p-6 text-center">
+          <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900">Please log in</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            You need to be logged in to manage your addresses.
+          </p>
+          <div className="mt-6">
+            <a
+              href="/account"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
+            >
+              Go to Login
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="bg-white shadow rounded-lg">
+        <div className="px-4 py-5 sm:p-6 text-center">
+          <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900">Loading addresses...</h3>
+        </div>
+      </div>
+    );
+  }
 
   if (addresses.length === 0 && !isAdding) {
     return (
@@ -199,15 +354,18 @@ export default function AddressesPage() {
       {isAdding && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">
+            <h4 className="text-lg font-medium text-gray-900 mb-2">
               {editingId ? 'Edit Address' : 'Add New Address'}
             </h4>
+            <p className="text-sm text-gray-600 mb-4">
+              {editingId ? 'Update your address information below.' : 'Your name and phone number have been pre-filled from your profile. You can edit them if needed.'}
+            </p>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                    First Name
+                    First Name *
                   </label>
                   <input
                     type="text"
@@ -216,13 +374,13 @@ export default function AddressesPage() {
                     required
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                   />
                 </div>
 
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                    Last Name
+                    Last Name *
                   </label>
                   <input
                     type="text"
@@ -231,14 +389,29 @@ export default function AddressesPage() {
                     required
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                   />
                 </div>
               </div>
 
               <div>
+                <label htmlFor="company" className="block text-sm font-medium text-gray-500">
+                  Company (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  id="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  placeholder="Company name"
+                  className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                />
+              </div>
+
+              <div>
                 <label htmlFor="address1" className="block text-sm font-medium text-gray-700">
-                  Address Line 1
+                  Address *
                 </label>
                 <input
                   type="text"
@@ -247,13 +420,14 @@ export default function AddressesPage() {
                   required
                   value={formData.address1}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                  placeholder="Street address"
+                  className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                 />
               </div>
 
               <div>
-                <label htmlFor="address2" className="block text-sm font-medium text-gray-700">
-                  Address Line 2 (Optional)
+                <label htmlFor="address2" className="block text-sm font-medium text-gray-500">
+                  Apartment, suite, etc. (Optional)
                 </label>
                 <input
                   type="text"
@@ -261,14 +435,15 @@ export default function AddressesPage() {
                   id="address2"
                   value={formData.address2}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                  placeholder="Apartment, suite, etc."
+                  className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                 />
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className={`grid grid-cols-1 gap-4 ${hideProvince ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
                 <div>
                   <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                    City
+                    City *
                   </label>
                   <input
                     type="text"
@@ -277,28 +452,50 @@ export default function AddressesPage() {
                     required
                     value={formData.city}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                    placeholder="City"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="province" className="block text-sm font-medium text-gray-700">
-                    State/Province
-                  </label>
-                  <input
-                    type="text"
-                    name="province"
-                    id="province"
-                    required
-                    value={formData.province}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
-                  />
-                </div>
+                {!hideProvince && (
+                  <div>
+                    <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+                      {provinceFieldName} *
+                    </label>
+                    {provinces.length > 0 ? (
+                      <select
+                        name="province"
+                        id="province"
+                        required
+                        value={formData.province}
+                        onChange={handleChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                      >
+                        <option value="">Select {provinceFieldName.toLowerCase()}</option>
+                        {provinces.map((province) => (
+                          <option key={province.value} value={province.value}>
+                            {province.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        name="province"
+                        id="province"
+                        required
+                        value={formData.province}
+                        onChange={handleChange}
+                        placeholder={`Enter ${provinceFieldName.toLowerCase()}`}
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                      />
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label htmlFor="zip" className="block text-sm font-medium text-gray-700">
-                    ZIP/Postal Code
+                    ZIP/Postal Code *
                   </label>
                   <input
                     type="text"
@@ -307,7 +504,8 @@ export default function AddressesPage() {
                     required
                     value={formData.zip}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                    placeholder="ZIP or Postal Code"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -315,7 +513,7 @@ export default function AddressesPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                    Country
+                    Country *
                   </label>
                   <select
                     name="country"
@@ -323,12 +521,18 @@ export default function AddressesPage() {
                     required
                     value={formData.country}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
                   >
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="AU">Australia</option>
+                    <option value="">Select a country</option>
+                    {countries.length > 0 ? (
+                      countries.map((country) => (
+                        <option key={country.isoCode} value={country.isoCode}>
+                          {country.label}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Loading countries...</option>
+                    )}
                   </select>
                 </div>
 
@@ -342,37 +546,23 @@ export default function AddressesPage() {
                     id="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
                   />
                 </div>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="isDefault"
-                  id="isDefault"
-                  checked={formData.isDefault}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
-                />
-                <label htmlFor="isDefault" className="ml-2 block text-sm text-gray-700">
-                  Set as default shipping address
-                </label>
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
+                  className="px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                  className="inline-flex items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 >
                   {isSubmitting ? (
                     <>
@@ -397,7 +587,7 @@ export default function AddressesPage() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-5 w-5 text-gray-400" />
-                  {address.isDefault && (
+                  {address.id === defaultAddressId && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       <Star className="w-3 h-3 mr-1" />
                       Default
@@ -408,12 +598,23 @@ export default function AddressesPage() {
                   <button
                     onClick={() => handleEdit(address)}
                     className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    title="Edit address"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
+                  {address.id !== defaultAddressId && (
+                    <button
+                      onClick={() => handleSetDefault(address.id)}
+                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                      title="Set as default"
+                    >
+                      <Star className="w-4 h-4" />
+                    </button>
+                  )}
                   <button
                     onClick={() => handleDelete(address.id)}
                     className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                    title="Delete address"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -424,12 +625,15 @@ export default function AddressesPage() {
                 <p className="text-sm font-medium text-gray-900">
                   {address.firstName} {address.lastName}
                 </p>
+                {address.company && (
+                  <p className="text-sm text-gray-600">{address.company}</p>
+                )}
                 <p className="text-sm text-gray-600">{address.address1}</p>
                 {address.address2 && (
                   <p className="text-sm text-gray-600">{address.address2}</p>
                 )}
                 <p className="text-sm text-gray-600">
-                  {address.city}, {address.province} {address.zip}
+                  {address.city}{address.province ? `, ${address.province}` : ''} {address.zip}
                 </p>
                 <p className="text-sm text-gray-600">{address.country}</p>
                 {address.phone && (
