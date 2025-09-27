@@ -128,17 +128,6 @@ export default function WishlistPage() {
                     {item.name}
                   </h3>
                 </Link>
-
-                <div className="flex flex-col items-start">
-                  {item.originalPrice && (
-                    <span className="text-xs text-gray-500 line-through mb-1">
-                      {item.originalPrice}
-                    </span>
-                  )}
-                  <span className="text-xs font-medium text-gray-900">
-                    {item.price}
-                  </span>
-                </div>
               </div>
             </div>
           ))}

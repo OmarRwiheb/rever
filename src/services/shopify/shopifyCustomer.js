@@ -40,6 +40,51 @@ const CUSTOMER_ACCESS_TOKEN_CREATE_MUTATION = `
   }
 `;
 
+// GraphQL mutation for updating customer wishlist metafield using MetafieldsSet
+const METAFIELDS_SET_MUTATION = `
+  mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+    metafieldsSet(metafields: $metafields) {
+      metafields {
+        id
+        key
+        namespace
+        value
+        type
+      }
+      userErrors {
+        field
+        message
+        code
+      }
+    }
+  }
+`;
+
+// GraphQL mutation for updating customer wishlist metafield (legacy)
+const CUSTOMER_WISHLIST_UPDATE_MUTATION = `
+  mutation customerUpdate($input: CustomerInput!) {
+    customerUpdate(input: $input) {
+      customer {
+        id
+        metafield(key: "wishlist", namespace: "custom") {
+          id
+          key
+          namespace
+          value
+          type
+          createdAt
+          updatedAt
+        }
+      }
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
 // GraphQL query to get customer data
 const CUSTOMER_QUERY = `
   query getCustomer($customerAccessToken: String!) {
@@ -52,6 +97,15 @@ const CUSTOMER_QUERY = `
       acceptsMarketing
       createdAt
       updatedAt
+      metafield(key: "wishlist", namespace: "custom") {
+        id
+        key
+        namespace
+        value
+        type
+        createdAt
+        updatedAt
+      }
       addresses(first: 10) {
         edges {
           node {
@@ -225,18 +279,26 @@ export const shopifyCustomerService = {
         customerAccessToken: accessToken
       };
 
+      console.log('getCustomer - variables:', variables);
+      console.log('getCustomer - CUSTOMER_QUERY:', CUSTOMER_QUERY);
+
       const response = await apiClient.graphql(CUSTOMER_QUERY, variables);
       
+      console.log('getCustomer - response:', response);
+      
       if (response?.customer) {
+        console.log('getCustomer - customer found:', response.customer);
         return {
           success: true,
           customer: response.customer
         };
       }
 
+      console.log('getCustomer - no customer in response');
       return {
         success: false,
-        message: 'Failed to retrieve customer data'
+        message: 'Failed to retrieve customer data',
+        response: response
       };
 
     } catch (error) {
@@ -285,5 +347,119 @@ export const shopifyCustomerService = {
       isValid: errors.length === 0,
       errors: errors
     };
+  },
+
+  /**
+   * Get customer wishlist from metafield
+   * @param {Object} customer - Customer object with metafield
+   * @returns {Array} - Array of product IDs
+   */
+  getWishlistFromCustomer(customer) {
+    try {
+      if (customer?.metafield?.value) {
+        return JSON.parse(customer.metafield.value);
+      }
+      return [];
+    } catch (error) {
+      console.error('Error parsing wishlist:', error);
+      return [];
+    }
+  },
+
+  /**
+   * Update customer wishlist metafield using MetafieldsSet mutation
+   * @param {string} customerId - Customer ID (GID format)
+   * @param {Array} productIds - Array of product IDs
+   * @returns {Promise<Object>} - Update result
+   */
+  async updateCustomerWishlist(customerId, productIds) {
+    try {
+      // Ensure customerId is in GID format
+      const customerGid = customerId.startsWith('gid://') ? customerId : `gid://shopify/Customer/${customerId}`;
+      
+      // Convert product IDs to GID format
+      const productGids = productIds.map(id => 
+        id.startsWith('gid://') ? id : `gid://shopify/Product/${id}`
+      );
+
+      const variables = {
+        metafields: [
+          {
+            ownerId: customerGid,
+            namespace: "custom",
+            key: "wishlist",
+            type: "list.product_reference",
+            value: JSON.stringify(productGids)
+          }
+        ]
+      };
+
+      const response = await apiClient.adminGraphql(METAFIELDS_SET_MUTATION, variables);
+      
+      if (response?.metafieldsSet?.userErrors?.length > 0) {
+        const errors = response.metafieldsSet.userErrors;
+        return {
+          success: false,
+          errors: errors,
+          message: errors[0]?.message || 'Failed to update wishlist'
+        };
+      }
+
+      return {
+        success: true,
+        wishlist: productIds, // Return the original product IDs
+        message: 'Wishlist updated successfully'
+      };
+
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+      return {
+        success: false,
+        message: 'An error occurred while updating wishlist',
+        error: error.message
+      };
+    }
+  },
+
+  /**
+   * Add product to customer wishlist
+   * @param {string} customerId - Customer ID
+   * @param {string} productId - Product ID to add
+   * @param {Array} currentWishlist - Current wishlist array
+   * @returns {Promise<Object>} - Update result
+   */
+  async addToWishlist(customerId, productId, currentWishlist = []) {
+    if (currentWishlist.includes(productId)) {
+      return {
+        success: true,
+        message: 'Product already in wishlist',
+        wishlist: currentWishlist
+      };
+    }
+
+    const updatedWishlist = [...currentWishlist, productId];
+    return await this.updateCustomerWishlist(customerId, updatedWishlist);
+  },
+
+  /**
+   * Remove product from customer wishlist
+   * @param {string} customerId - Customer ID
+   * @param {string} productId - Product ID to remove
+   * @param {Array} currentWishlist - Current wishlist array
+   * @returns {Promise<Object>} - Update result
+   */
+  async removeFromWishlist(customerId, productId, currentWishlist = []) {
+    const updatedWishlist = currentWishlist.filter(id => id !== productId);
+    return await this.updateCustomerWishlist(customerId, updatedWishlist);
   }
 };
+
+// Export individual functions for easier importing
+export const createCustomer = shopifyCustomerService.createCustomer;
+export const createCustomerAccessToken = shopifyCustomerService.createCustomerAccessToken;
+export const getCustomer = shopifyCustomerService.getCustomer;
+export const validateCustomerData = shopifyCustomerService.validateCustomerData;
+export const getWishlistFromCustomer = shopifyCustomerService.getWishlistFromCustomer;
+export const updateCustomerWishlist = shopifyCustomerService.updateCustomerWishlist;
+export const addToWishlist = shopifyCustomerService.addToWishlist;
+export const removeFromWishlist = shopifyCustomerService.removeFromWishlist;

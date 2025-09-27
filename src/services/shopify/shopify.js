@@ -4,6 +4,16 @@ import { getCollectionProductsByHandle } from './shopifyCollection';
 import { cartService } from './shopifyCart';
 import { getLookbooks, getLookbookByHandle } from './shopifyLookbook';
 import { getArticles, getArticleByHandle, getArticleById, getBlogArticles, getRelatedArticles } from './shopifyBlog';
+import { 
+  createCustomer, 
+  createCustomerAccessToken, 
+  getCustomer, 
+  validateCustomerData,
+  getWishlistFromCustomer,
+  updateCustomerWishlist,
+  addToWishlist,
+  removeFromWishlist
+} from './shopifyCustomer';
 
 // ---------- Public service ----------
 export const shopifyService = {
@@ -20,6 +30,16 @@ export const shopifyService = {
   getBlogArticles,
   getRelatedArticles,
   cart: cartService,
+  // Customer functions
+  createCustomer,
+  createCustomerAccessToken,
+  getCustomer,
+  validateCustomerData,
+  // Wishlist functions
+  getWishlistFromCustomer,
+  updateCustomerWishlist,
+  addToWishlist,
+  removeFromWishlist,
 };
 
 export default shopifyService;
