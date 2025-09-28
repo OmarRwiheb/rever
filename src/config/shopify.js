@@ -9,8 +9,8 @@ export const shopifyConfig = {
   // Store domain (e.g., 'your-store.myshopify.com')
   storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'your-store.myshopify.com',
   
-  // Storefront API access token
-  storefrontAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
+  // Storefront API access token (server-side only)
+  storefrontAccessToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
   
   // Storefront API version
   apiVersion: process.env.NEXT_PUBLIC_SHOPIFY_API_VERSION || '2024-01',
@@ -45,9 +45,9 @@ export const shopifyConfig = {
 /**
  * Environment Variables Required:
  * 
- * # Storefront API (public - available in browser)
+ * # Storefront API (server-side only for security)
  * NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
- * NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_storefront_access_token
+ * SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_storefront_access_token
  * NEXT_PUBLIC_SHOPIFY_API_VERSION=2024-01
  * 
  * # Admin API (server-side only - NOT public)
@@ -56,7 +56,7 @@ export const shopifyConfig = {
  * SHOPIFY_ADMIN_GRAPHQL_ENDPOINT=https://your-store.myshopify.com/admin/api/2024-01/graphql.json
  * 
  * Note: NEXT_PUBLIC_ prefix makes variables available in the browser
- * Admin API variables are server-side only for security
+ * Storefront and Admin API tokens are server-side only for security
  */
 
 /**
