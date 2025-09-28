@@ -107,7 +107,7 @@ function transformMenuToNavLinks(menu) {
   });
 }
 
-export async function getNavLinks(handle = 'main-menu') {
+export async function getNavLinks(handle = 'main-menu-1') {
   const data = await apiClient.graphql(MENU_QUERY, { handle });
   if (!data?.menu) return [];
   return transformMenuToNavLinks(data.menu);
