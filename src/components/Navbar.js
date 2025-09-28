@@ -332,7 +332,7 @@ export default function Navbar() {
   return (
     <nav className={navClassName}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16 lg:h-20 z-20 relative" >
+        <div className="flex items-center h-16 lg:h-20 z-20 relative justify-between" >
           {/* Left Navigation Links - Fixed Width */}
           <div className="hidden lg:flex items-center justify-start gap-10 w-1/3">
             {(menuLoaded ? navLinks : []).map((link) => (
@@ -367,7 +367,7 @@ export default function Navbar() {
           </div>
 
           {/* Brand Logo - Center Section */}
-          <div className="flex justify-center items-center w-1/3">
+          <div className="flex justify-center items-center w-1/4">
             <a href="/" className="text-center">
               <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
                 REVER
@@ -376,7 +376,7 @@ export default function Navbar() {
           </div>
 
           {/* Right side - Blog, About, Wishlist, Shopping Cart and User Account - Fixed Width */}
-          <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
+          <div className="hidden lg:flex items-center justify-end w-2/5 space-x-4">
           <a
               href="/lookbook"
               className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
@@ -384,18 +384,24 @@ export default function Navbar() {
               Lookbook
             </a>
             {/* Blog Link */}
-            <a
+            {/* <a
               href="/blog"
               className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               Blog
-            </a>
+            </a> */}
             {/* About Link */}
             <a
               href="/about"
               className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
-              About
+              About Us
+            </a>
+            <a
+              href="/contact"
+              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+            >
+              Contact Us
             </a>
             {isAuthenticated ? (
               <UserDropdown styles={styles} />
@@ -604,18 +610,25 @@ export default function Navbar() {
                     >
                       Lookbook
                     </a>
-                    <a
+                    {/* <a
                       href="/blog"
                       className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       Blog
-                    </a>
+                    </a> */}
                     {/* About Link for Mobile */}
                     <a
                       href="/about"
                       className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
-                      About
+                      About Us
+                    </a>
+
+                    <a
+                      href="/contact"
+                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                    >
+                      Contact Us
                     </a>
                   </div>
                 </div>
