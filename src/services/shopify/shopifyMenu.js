@@ -63,15 +63,15 @@ function toHref(url, resource) {
 }
 
 /**
- * Output:
+ * Output (2-layer structure):
  * [
  *   { name, href, hasDropdown: false } |
- *   { name, href, hasDropdown: true, dropdownItems: [{ title, href, links: []|[...] }] }
+ *   { name, href, hasDropdown: true, dropdownItems: [{ name, href }] }
  * ]
  *
  * Rule:
- * - 2nd layer WITH children → { title, href, links:[...] }
- * - 2nd layer WITHOUT children → { title, href, links: [] }
+ * - Flatten all children and grandchildren into a single dropdown level
+ * - Each dropdown item is directly clickable
  */
 function transformMenuToNavLinks(menu) {
   const roots = Array.isArray(menu?.items) ? menu.items : [];
@@ -84,18 +84,26 @@ function transformMenuToNavLinks(menu) {
       return { name: root.title, href: rootHref, hasDropdown: false };
     }
 
-    const dropdownItems = children.map((section) => {
+    // Flatten all children and grandchildren into a single level
+    const dropdownItems = [];
+    
+    children.forEach((section) => {
       const sectionHref = toHref(section.url, section.resource);
       const grandchildren = Array.isArray(section.items) ? section.items : [];
 
-      return {
-        title: section.title,
-        href: sectionHref, // second-layer is clickable
-        links: grandchildren.map((leaf) => ({
+      // Add the section itself as a dropdown item
+      dropdownItems.push({
+        name: section.title,
+        href: sectionHref,
+      });
+
+      // Add all grandchildren as dropdown items
+      grandchildren.forEach((leaf) => {
+        dropdownItems.push({
           name: leaf.title,
           href: toHref(leaf.url, leaf.resource),
-        })), // [] if none
-      };
+        });
+      });
     });
 
     return {

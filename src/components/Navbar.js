@@ -107,34 +107,13 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
         <div className="px-8 w-full flex justify-start gap-20">
           {items.map((item, index) => (
             <div key={index} className="min-w-[200px]">
-              {item.title && (
-                <div className="mb-6">
-                  {/* Section title is always clickable */}
-                  <a
-                    href={item.href}
-                    className="text-xs font-bold uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 block"
-                  >
-                    {item.title}
-                  </a>
-                </div>
-              )}
               <div className="space-y-3">
-                {item.links && item.links.length > 0 ? (
-                  item.links.map((link, linkIndex) => (
-                    <a
-                      key={linkIndex}
-                      href={link.href}
-                      className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
-                    >
-                      {link.name}
-                    </a>
-                  ))
-                ) : (
-                  /* If no links, show a subtle indicator that this is just a clickable section */
-                  <div className="text-xs text-gray-400 italic">
-                    Click title to view
-                  </div>
-                )}
+                <a
+                  href={item.href}
+                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
+                >
+                  {item.name}
+                </a>
               </div>
             </div>
           ))}
@@ -167,34 +146,13 @@ const MobileDropdownMenu = ({ items, styles, isOpen, onToggle }) => {
       <div className="space-y-1">
         {items.map((item, index) => (
           <div key={index} className="mb-3 last:mb-0">
-            {item.title && (
-              <div className="mb-2">
-                {/* Section title is always clickable */}
-                <a
-                  href={item.href}
-                  className="text-xs font-semibold uppercase tracking-wider text-gray-600 hover:text-gray-800 transition-colors duration-200 block"
-                >
-                  {item.title}
-                </a>
-              </div>
-            )}
             <div className="space-y-1">
-              {item.links && item.links.length > 0 ? (
-                item.links.map((link, linkIndex) => (
-                  <a
-                    key={linkIndex}
-                    href={link.href}
-                    className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
-                  >
-                    {link.name}
-                  </a>
-                ))
-              ) : (
-                /* If no links, show a subtle indicator */
-                <div className="text-xs text-gray-400 italic pl-2">
-                  Click title to view
-                </div>
-              )}
+              <a
+                href={item.href}
+                className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
+              >
+                {item.name}
+              </a>
             </div>
           </div>
         ))}
