@@ -2,6 +2,6 @@ import ImageSection from "../layout/ImageSection";
 
 export default function Men() {
     return (
-        <ImageSection src="/img/men.jpg" alt="Men" />
+        <ImageSection src="/img/men.webp" alt="Men" />
     );
 }
