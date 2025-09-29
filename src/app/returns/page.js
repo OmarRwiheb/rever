@@ -14,6 +14,7 @@ export default function ReturnsPage() {
     items: [{ itemId: '', quantity: 1 }],
     reason: '',
     additionalInfo: '',
+    instapay: '',
     // Honeypot field - should remain empty
     website: ''
   });
@@ -26,7 +27,6 @@ export default function ReturnsPage() {
     { value: 'not_as_described', label: 'Item not as described', icon: '📝' },
     { value: 'wrong_size', label: 'Wrong size', icon: '📏' },
     { value: 'defective', label: 'Defective/Damaged item', icon: '⚠️' },
-    { value: 'changed_mind', label: 'Changed mind', icon: '💭' },
     { value: 'quality_issues', label: 'Quality issues', icon: '🔍' },
     { value: 'fit_issues', label: 'Not satisfied with fit', icon: '👕' },
     { value: 'other', label: 'Other', icon: '❓' }
@@ -89,6 +89,7 @@ export default function ReturnsPage() {
         items: formData.items,
         reason: formData.reason,
         additionalInfo: formData.additionalInfo,
+        instapay: formData.instapay,
         // recaptchaToken
       };
 
@@ -118,6 +119,7 @@ export default function ReturnsPage() {
         items: [{ itemId: '', quantity: 1 }],
         reason: '',
         additionalInfo: '',
+        instapay: '',
         website: ''
       });
     } catch (error) {
@@ -188,7 +190,23 @@ export default function ReturnsPage() {
                 onChange={handleInputChange}
                 required
                 className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+201123456789"
+              />
+            </div>
+
+            {/* Instapay Field */}
+            <div>
+              <label htmlFor="instapay" className="block text-sm font-medium text-gray-900 mb-2">
+                Instapay Phone Number
+              </label>
+              <input
+                type="text"
+                id="instapay"
+                name="instapay"
+                value={formData.instapay}
+                onChange={handleInputChange}
+                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                 placeholder="+201123456789"
               />
             </div>
 
@@ -353,12 +371,13 @@ export default function ReturnsPage() {
           <div className="mt-16 pt-8 border-t border-gray-200">
             <h4 className="text-sm font-medium text-gray-900 mb-4">Return Policy</h4>
             <div className="text-sm text-gray-600 space-y-2">
-              <p>• Returns must be requested within 30 days of delivery</p>
+              <p>• Returns must be requested within 10 days of delivery</p>
               <p>• Items must be in original condition with tags attached</p>
               <p>• Refunds will be processed within 5-7 business days after approval</p>
               <p>• Return shipping costs may apply depending on the reason for return</p>
               <p>• Custom or personalized items cannot be returned</p>
               <p>• We'll contact you within 1-2 business days to confirm your request</p>
+              <p>• Refunds will be processed through Instapay only</p>
             </div>
           </div>
         </div>
