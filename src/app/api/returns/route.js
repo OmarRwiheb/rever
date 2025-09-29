@@ -135,12 +135,24 @@ Submitted on: ${new Date().toLocaleString()}
 
   // Send email
   try {
-    await transporter.sendMail({
+    const mailData = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: email,
       subject: `Return Request Confirmation - Order ${orderNumber}`,
       text: emailText,
       html: emailHtml,
+    };
+
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailData, (err, info) => {
+        if (err) {
+          console.error('Email sending error:', err);
+          reject(err);
+        } else {
+          console.log('Email sent successfully to:', email);
+          resolve(info);
+        }
+      });
     });
   } catch (emailError) {
     throw new Error(`Failed to send email: ${emailError.message}`);

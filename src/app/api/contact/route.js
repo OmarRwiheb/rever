@@ -189,15 +189,26 @@ IP Address: ${ip}
 
     // Send email
     try {
-      await transporter.sendMail({
+      const mailData = {
         from: sanitizedData.email, // Use the user's email as the sender
         to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
         replyTo: sanitizedData.email,
         subject: `Contact Form: ${sanitizedData.subject}`,
         text: emailText,
         html: emailHtml,
+      };
+
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(mailData, (err, info) => {
+          if (err) {
+            console.error('Email sending error:', err);
+            reject(err);
+          } else {
+            console.log('Email sent successfully to:', process.env.CONTACT_EMAIL || process.env.SMTP_USER);
+            resolve(info);
+          }
+        });
       });
-      console.log('Email sent successfully to:', process.env.CONTACT_EMAIL || process.env.SMTP_USER);
     } catch (emailError) {
       console.error('Email sending error:', emailError);
       throw new Error(`Failed to send email: ${emailError.message}`);
