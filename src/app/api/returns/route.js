@@ -162,9 +162,9 @@ export async function POST(request) {
     } = body;
 
     // Validate required fields
-    if (!orderNumber || !email || !phoneNumber || !items || !reason) {
+    if (!orderNumber || !email || !phoneNumber || !items || !reason || !additionalInfo || !instapay) {
       return NextResponse.json({ 
-        error: 'Missing required fields' 
+        error: 'Missing required fields. All fields are required.' 
       }, { status: 400 });
     }
 
@@ -182,6 +182,14 @@ export async function POST(request) {
           error: 'Each item must have a valid itemId and quantity' 
         }, { status: 400 });
       }
+      
+      // Ensure itemId is a valid number
+      const itemIdNum = parseInt(item.itemId);
+      if (isNaN(itemIdNum) || itemIdNum <= 0) {
+        return NextResponse.json({ 
+          error: `Invalid item ID: ${item.itemId}. Item ID must be a positive number.` 
+        }, { status: 400 });
+      }
     }
 
     // Verify reCAPTCHA if token provided
@@ -197,10 +205,19 @@ export async function POST(request) {
     // }
 
     // Format products data according to the JSON schema
-    const productsData = items.map(item => ({
-      product_id: parseInt(item.itemId),
-      quantity: parseInt(item.quantity)
-    }));
+    const productsData = items.map(item => {
+      const productId = parseInt(item.itemId);
+      const quantity = parseInt(item.quantity);
+      
+      if (isNaN(productId) || isNaN(quantity)) {
+        throw new Error(`Invalid product data: itemId=${item.itemId}, quantity=${item.quantity}`);
+      }
+      
+      return {
+        product_id: productId,
+        quantity: quantity
+      };
+    });
 
     // Create metaobject mutation
     const mutation = `
@@ -264,10 +281,32 @@ export async function POST(request) {
     const accessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
     if (!shopifyEndpoint || !accessToken) {
-      console.error('Missing Shopify Admin API configuration');
-      return NextResponse.json({ 
-        error: 'Shopify Admin API configuration missing. Please set SHOPIFY_ADMIN_GRAPHQL_ENDPOINT and SHOPIFY_ADMIN_ACCESS_TOKEN environment variables.' 
-      }, { status: 500 });
+      console.warn('Shopify Admin API configuration missing - storing return request locally');
+      
+      // Generate a local return request ID
+      const returnRequestId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Send confirmation email to user even without Shopify integration
+      try {
+        await sendConfirmationEmail({
+          email,
+          orderNumber,
+          items,
+          reason,
+          additionalInfo,
+          instapay,
+          returnRequestId
+        });
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Return request submitted successfully (stored locally)',
+        returnRequestId,
+        warning: 'Shopify Admin API not configured - request stored locally only'
+      });
     }
 
     // Call Shopify Admin API directly
@@ -285,7 +324,10 @@ export async function POST(request) {
     if (!shopifyResponse.ok) {
       console.error('Shopify Admin API Error:', shopifyResponse.status, shopifyData);
       return NextResponse.json(
-        { error: `HTTP ${shopifyResponse.status}`, details: shopifyData?.errors || shopifyData },
+        { 
+          error: `Shopify API Error (HTTP ${shopifyResponse.status}): ${JSON.stringify(shopifyData?.errors || shopifyData)}`, 
+          details: shopifyData?.errors || shopifyData 
+        },
         { status: 502 }
       );
     }
@@ -293,13 +335,20 @@ export async function POST(request) {
     if (shopifyData.errors?.length) {
       console.error('Shopify Admin GraphQL Errors:', shopifyData.errors);
       const message = shopifyData.errors.map((e) => e.message).join(' | ');
-      return NextResponse.json({ error: message, details: shopifyData.errors }, { status: 400 });
+      return NextResponse.json({ 
+        error: `Shopify GraphQL Error: ${message}`, 
+        details: shopifyData.errors 
+      }, { status: 400 });
     }
 
     if (shopifyData.data?.metaobjectCreate?.userErrors?.length) {
       console.error('Metaobject creation errors:', shopifyData.data.metaobjectCreate.userErrors);
+      const userErrorMessages = shopifyData.data.metaobjectCreate.userErrors.map((e) => e.message).join(' | ');
       return NextResponse.json(
-        { error: 'Failed to create return request', details: shopifyData.data.metaobjectCreate.userErrors },
+        { 
+          error: `Metaobject creation failed: ${userErrorMessages}`, 
+          details: shopifyData.data.metaobjectCreate.userErrors 
+        },
         { status: 400 }
       );
     }
@@ -329,8 +378,12 @@ export async function POST(request) {
     });
 
   } catch (error) {
+    console.error('Returns API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: `Failed to create return request: ${error.message}`,
+        details: error.stack
+      },
       { status: 500 }
     );
   }

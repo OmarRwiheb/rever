@@ -44,7 +44,10 @@ export default function ReturnsPage() {
     setFormData(prev => ({
       ...prev,
       items: prev.items.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
+        i === index ? { 
+          ...item, 
+          [field]: field === 'itemId' ? parseInt(value) || '' : value 
+        } : item
       )
     }));
   };
@@ -78,6 +81,20 @@ export default function ReturnsPage() {
         return;
       }
 
+      // Validate all required fields
+      if (!formData.orderNumber || !formData.email || !formData.phoneNumber || !formData.instapay || !formData.reason || !formData.additionalInfo) {
+        setSubmitMessage('Please fill in all required fields.');
+        return;
+      }
+
+      // Validate items
+      for (const item of formData.items) {
+        if (!item.itemId || !item.quantity || item.quantity < 1) {
+          setSubmitMessage('Please fill in all item details with valid values.');
+          return;
+        }
+      }
+
       // Verify reCAPTCHA
       // const recaptchaToken = await executeRecaptcha('returns');
 
@@ -106,10 +123,20 @@ export default function ReturnsPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to submit return request');
+        // Include details in error message if available
+        let errorMsg = result.error || 'Failed to submit return request';
+        if (result.details) {
+          errorMsg += `\n\nDetails: ${JSON.stringify(result.details, null, 2)}`;
+        }
+        throw new Error(errorMsg);
       }
       
-      setSubmitMessage('Your return request has been submitted successfully. We will review your request and contact you within 1-2 business days.');
+      // Show success message with any warnings
+      let successMessage = 'Your return request has been submitted successfully. We will review your request and contact you within 1-2 business days.';
+      if (result.warning) {
+        successMessage += ` (Note: ${result.warning})`;
+      }
+      setSubmitMessage(successMessage);
       
       // Reset form
       setFormData({
@@ -124,7 +151,11 @@ export default function ReturnsPage() {
       });
     } catch (error) {
       console.error('Returns form submission error:', error);
-      setSubmitMessage('There was an error submitting your request. Please try again or contact customer service.');
+      
+      // Show the actual error message to help with debugging
+      let errorMessage = `Error: ${error.message}`;
+      
+      setSubmitMessage(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -197,7 +228,7 @@ export default function ReturnsPage() {
             {/* Instapay Field */}
             <div>
               <label htmlFor="instapay" className="block text-sm font-medium text-gray-900 mb-2">
-                Instapay Phone Number
+                Instapay Phone Number *
               </label>
               <input
                 type="text"
@@ -205,6 +236,7 @@ export default function ReturnsPage() {
                 name="instapay"
                 value={formData.instapay}
                 onChange={handleInputChange}
+                required
                 className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
                  placeholder="+201123456789"
               />
@@ -250,7 +282,9 @@ export default function ReturnsPage() {
                           Item ID (from invoice) *
                         </label>
                         <input
-                          type="text"
+                          type="number"
+                          min="1"
+                          step="1"
                           value={item.itemId}
                           onChange={(e) => handleItemChange(index, 'itemId', e.target.value)}
                           required
@@ -313,7 +347,7 @@ export default function ReturnsPage() {
             {/* Additional Information */}
             <div>
               <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-900 mb-2">
-                Additional Information
+                Additional Information *
               </label>
               <textarea
                 id="additionalInfo"
@@ -321,6 +355,7 @@ export default function ReturnsPage() {
                 value={formData.additionalInfo}
                 onChange={handleInputChange}
                 rows={4}
+                required
                 className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500"
                 placeholder="Please provide any additional details about your return request..."
               />
@@ -347,7 +382,7 @@ export default function ReturnsPage() {
                   ? 'text-green-700'
                   : 'text-red-700'
               }`}>
-                <p className="text-sm">{submitMessage}</p>
+                <div className="text-sm whitespace-pre-wrap">{submitMessage}</div>
               </div>
             )}
 
