@@ -6,7 +6,7 @@ export default function WhatsAppSupport() {
 
   const handleWhatsAppClick = () => {
     // Replace with your actual WhatsApp number (include country code without +)
-    const phoneNumber = '1234567890'; // Example: '1234567890' for US number
+    const phoneNumber = '+201159384961'; // Example: '1234567890' for US number
     const message = encodeURIComponent('Hello! I need help with my order.');
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
     

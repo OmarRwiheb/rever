@@ -12,9 +12,7 @@ export default function Footer({ fullPage = false  }) {
             <div>
               <h3 className="text-sm font-semibold mb-4">About</h3>
               <ul className="space-y-2 text-sm text-gray-300">
-                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Our Story</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
+                <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
               </ul>
             </div>
 
