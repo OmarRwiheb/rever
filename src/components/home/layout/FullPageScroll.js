@@ -23,8 +23,8 @@ export default function FullPageScroll({
   const rafRef = useRef(null);
   const isSafari = useRef(false);
 
-  const SCROLL_COOLDOWN = 1100; // Extra buffer for Safari
-  const DURATION = 0.45;
+  const SCROLL_COOLDOWN = 1100;
+  const DURATION = 0.4; // Faster = better on iOS
 
   const { setCurrentSection } = useNavbar?.() || { setCurrentSection: () => {} };
   
@@ -33,33 +33,42 @@ export default function FullPageScroll({
     if (el) panelsRef.current[i] = el; 
   }, []);
 
-  // Detect Safari
+  // Detect Safari and iOS version
   useEffect(() => {
     isSafari.current = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    const isIOS26 = /OS 26_/i.test(navigator.userAgent);
+    if (isIOS26 && containerRef.current) {
+      containerRef.current.style.webkitPerspective = "1000px";
+      containerRef.current.style.perspective = "1000px";
+    }
   }, []);
 
-  // Safari-optimized GSAP config
+  // Aggressive GSAP optimization
   useEffect(() => {
     gsap.config({
-      force3D: "auto", // Let GSAP decide for Safari
+      force3D: "auto",
       nullTargetWarn: false,
       autoSleep: 60,
     });
-    
-    // Safari needs lag smoothing disabled
     gsap.ticker.lagSmoothing(0);
     
-    // Force initial render in Safari
     if (isSafari.current) {
       gsap.ticker.fps(60);
     }
+  }, []);
+
+  // Dynamic will-change management - CRITICAL for performance
+  const setWillChange = useCallback((panel, enable) => {
+    if (!panel) return;
+    panel.style.willChange = enable ? "transform" : "auto";
   }, []);
 
   useEffect(() => {
     if (!containerRef.current || kids.length === 0) return;
 
     ctxRef.current = gsap.context(() => {
-      // Safari needs explicit z-index and positioning
+      // Initial setup - NO will-change yet
       panelsRef.current.forEach((panel, i) => {
         const initialY = i === 0 ? 0 : window.innerHeight;
         gsap.set(panel, { 
@@ -68,7 +77,11 @@ export default function FullPageScroll({
           visibility: i === 0 ? "visible" : "hidden",
         });
         
-        // Safari: Force repaint after set
+        // Only set will-change on adjacent panels
+        if (i <= 1) {
+          setWillChange(panel, true);
+        }
+        
         if (isSafari.current) {
           void panel.offsetHeight;
         }
@@ -91,11 +104,13 @@ export default function FullPageScroll({
         }
         gsap.killTweensOf([currentPanel, nextPanel]);
 
-        // Show next panel before animating (Safari fix)
+        // Enable will-change ONLY on animating panels
+        setWillChange(currentPanel, true);
+        setWillChange(nextPanel, true);
+
         gsap.set(nextPanel, { visibility: "visible" });
 
         if (dir > 0) {
-          // Scrolling down
           const startY = window.innerHeight;
           gsap.set(nextPanel, { y: startY });
           
@@ -105,20 +120,29 @@ export default function FullPageScroll({
             ease: isSafari.current ? "power2.out" : "expo.out",
             force3D: true,
             onUpdate: isSafari.current ? function() {
-              // Safari: Force repaint during animation
               if (this.progress() % 0.1 < 0.02) {
                 void nextPanel.offsetHeight;
               }
             } : undefined,
             onComplete: () => {
               gsap.set(currentPanel, { visibility: "hidden", y: window.innerHeight });
+              
+              // REMOVE will-change after animation
+              setWillChange(currentPanel, false);
+              setWillChange(nextPanel, false);
+              
+              // Add will-change to NEW adjacent panels
+              const prevPanel = panelsRef.current[nextIndex - 1];
+              const nextNextPanel = panelsRef.current[nextIndex + 1];
+              if (prevPanel) setWillChange(prevPanel, true);
+              if (nextNextPanel) setWillChange(nextNextPanel, true);
+              
               isAnimatingRef.current = false;
               idxRef.current = nextIndex;
               setActiveIndex(nextIndex);
               setCurrentSection(sectionNames[nextIndex] || "hero");
               manageVideos(nextIndex);
               
-              // Safari: Force final repaint
               if (isSafari.current) {
                 void nextPanel.offsetHeight;
                 void currentPanel.offsetHeight;
@@ -126,7 +150,6 @@ export default function FullPageScroll({
             },
           });
         } else {
-          // Scrolling up
           tweenRef.current = gsap.to(currentPanel, {
             y: window.innerHeight,
             duration: DURATION,
@@ -139,6 +162,15 @@ export default function FullPageScroll({
             } : undefined,
             onComplete: () => {
               gsap.set(currentPanel, { visibility: "hidden" });
+              
+              setWillChange(currentPanel, false);
+              setWillChange(nextPanel, false);
+              
+              const prevPanel = panelsRef.current[nextIndex - 1];
+              const nextNextPanel = panelsRef.current[nextIndex + 1];
+              if (prevPanel) setWillChange(prevPanel, true);
+              if (nextNextPanel) setWillChange(nextNextPanel, true);
+              
               isAnimatingRef.current = false;
               idxRef.current = nextIndex;
               setActiveIndex(nextIndex);
@@ -162,18 +194,15 @@ export default function FullPageScroll({
             if (!video) return;
             
             if (i === activeIdx) {
-              // Safari needs this sequence
               video.currentTime = 0;
               const playPromise = video.play();
               if (playPromise?.catch) {
                 playPromise.catch(() => {
-                  // Retry once for Safari
                   setTimeout(() => video.play().catch(() => {}), 100);
                 });
               }
             } else {
               video.pause();
-              // Safari: ensure video is actually paused
               if (isSafari.current) {
                 video.currentTime = 0;
               }
@@ -191,7 +220,6 @@ export default function FullPageScroll({
         wheelSpeed: -1,
         preventDefault: true,
         dragMinimum: 25,
-        // Safari specific: ignore if animation running
         ignore: () => isAnimatingRef.current,
         onUp: () => {
           const now = Date.now();
@@ -211,7 +239,6 @@ export default function FullPageScroll({
 
       ctxRef.current._obs = obs;
       
-      // Initial video with delay for Safari
       if (isSafari.current) {
         setTimeout(() => manageVideos(0), 100);
       } else {
@@ -226,7 +253,7 @@ export default function FullPageScroll({
       ctxRef.current?.revert();
       isAnimatingRef.current = false;
     };
-  }, [kids.length, sectionNames, setCurrentSection, setPanelRef]);
+  }, [kids.length, sectionNames, setCurrentSection, setPanelRef, setWillChange]);
 
   return (
     <div
@@ -243,8 +270,9 @@ export default function FullPageScroll({
         WebkitUserSelect: "none",
         userSelect: "none",
         touchAction: "none",
-        // Safari: prevent rubber banding
         WebkitOverflowScrolling: "touch",
+        // Container does NOT need will-change
+        contain: "strict",
       }}
     >
       {kids.map((Child, i) => {
@@ -262,7 +290,7 @@ export default function FullPageScroll({
               height: "100%",
               zIndex: 10 + i,
               pointerEvents: i === activeIndex ? "auto" : "none",
-              // Safari: explicit transform for GPU
+              // will-change managed dynamically in JS
               WebkitTransform: "translate3d(0,0,0)",
               transform: "translate3d(0,0,0)",
               WebkitBackfaceVisibility: "hidden",
@@ -302,7 +330,6 @@ export default function FullPageScroll({
         }
         
         video {
-          /* Safari video optimization */
           -webkit-user-select: none;
           user-select: none;
           pointer-events: none;

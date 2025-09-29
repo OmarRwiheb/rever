@@ -36,8 +36,8 @@ export default function ImageSection({ src, alt, priority = false }) {
           WebkitTransform: "translate3d(0,0,0)",
           transform: "translate3d(0,0,0)",
         }}
-        // Prevent layout shifts
-        loading={priority ? "eager" : "lazy"}
+        // CRITICAL: NO lazy loading during scroll animations
+        loading="eager"
         // Disable optimization for better Safari compatibility
         unoptimized={false}
       />
