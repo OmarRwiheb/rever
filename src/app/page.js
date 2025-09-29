@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <ClientWrapper 
       mountRadius={1}
-      sectionNames={["women", "women", "men", "second-video", "footer"]}
+      sectionNames={["hero", "women", "men", "footer"]}
     >
       <HeroSection />
       <WomenSection link="/collections/fall-2025" />
