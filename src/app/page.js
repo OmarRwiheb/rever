@@ -9,9 +9,10 @@ export default function HomePage() {
   return (
     <ClientWrapper 
       mountRadius={1}
-      sectionNames={["hero", "women", "men", "second-video", "footer"]}
+      sectionNames={["women", "women", "men", "second-video", "footer"]}
     >
-      <HeroSection />
+      {/* <HeroSection /> */}
+      <WomenSection />
       <WomenSection />
       <MenSection />
       <Footer fullPage />
