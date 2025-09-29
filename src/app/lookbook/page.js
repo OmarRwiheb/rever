@@ -286,7 +286,7 @@ export default function LookbookPage() {
                           />
                           
                           {/* Plus icon overlay - Add All to Cart */}
-                          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute top-4 right-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -322,7 +322,7 @@ export default function LookbookPage() {
                           </div>
                           
                           {/* Look info overlay on hover */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                             <h3 className="text-sm font-medium">{lookbook.name}</h3>
                             <p className="text-xs text-gray-200">View Look</p>
                           </div>
