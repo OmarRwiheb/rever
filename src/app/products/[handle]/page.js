@@ -132,7 +132,7 @@ export default function ProductDetailPage() {
               selectedColor={selectedColor}
               onColorChange={handleColorChange}
             />
-            <ProductHighlights />
+            {/* <ProductHighlights /> */}
           </div>
         </div>
       </div>

@@ -209,7 +209,7 @@ const transformProduct = (p) => {
     description: p.description,
     color: (primaryColor || '').toString().toUpperCase(),
     colors: colors.map((c) => c.toString().toUpperCase()),
-    reference: `REF. ${p.id.split('/').pop()}`, // still show short ref if you like
+    reference: `ID. ${p.id.split('/').pop()}`, // still show short ref if you like
     sizes,
     modelInfo: '',
     discountPercentage: maxDiscount,

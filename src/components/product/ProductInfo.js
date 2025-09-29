@@ -217,12 +217,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
                 {size}
               </button>
             ))}
-            {/* Info icon next to L */}
-            <button className="text-xs text-gray-500 hover:text-gray-700">
-              <div className="w-4 h-4 border border-gray-300 flex items-center justify-center">
-                <span className="text-xs">i</span>
-              </div>
-            </button>
+            
           </div>
           
           {/* Model Info */}
@@ -304,7 +299,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         </div>
 
         {/* Additional Links */}
-        <div className="space-y-4 text-xs">
+        {/* <div className="space-y-4 text-xs">
           <div className="flex justify-between">
             <button 
               onClick={() => setIsMeasurementPopupOpen(true)}
@@ -313,7 +308,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
               SEE MEASUREMENT TABLE
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Measurement Table Popup */}
