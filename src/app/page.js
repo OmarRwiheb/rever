@@ -11,10 +11,9 @@ export default function HomePage() {
       mountRadius={1}
       sectionNames={["women", "women", "men", "second-video", "footer"]}
     >
-      {/* <HeroSection /> */}
-      <WomenSection link="/collections/women" />
-      <WomenSection link="/collections/women" />
-      <MenSection link="/collections/fall-2025" />
+      <HeroSection />
+      <WomenSection link="/collections/fall-2025" />
+      <MenSection link="/lookbook" />
       <Footer fullPage />
     </ClientWrapper>
   );
