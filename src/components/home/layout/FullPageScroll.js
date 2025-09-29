@@ -1,205 +1,157 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useNavbar } from "@/components/Navbar";
 
-export default function VanillaFullPageScroll({
+export default function CSSScrollSnap({
   children,
   mountRadius = 1,
   sectionNames = ["hero", "women", "men", "second-video", "footer"],
 }) {
   const containerRef = useRef(null);
-  const panelsRef = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const isAnimatingRef = useRef(false);
-  const lastScrollRef = useRef(0);
-  const touchStartRef = useRef(0);
-
-  const SCROLL_COOLDOWN = 1100;
-  const ANIMATION_DURATION = 400;
+  const observerRef = useRef(null);
+  const sectionRefs = useRef([]);
 
   const { setCurrentSection } = useNavbar?.() || { setCurrentSection: () => {} };
   
   const kids = useMemo(() => React.Children.toArray(children).filter(Boolean), [children]);
 
-  const animateToSection = useCallback((nextIndex) => {
-    if (
-      isAnimatingRef.current ||
-      nextIndex < 0 ||
-      nextIndex >= panelsRef.current.length
-    ) {
-      return;
-    }
-
-    isAnimatingRef.current = true;
-    const currentPanel = panelsRef.current[activeIndex];
-    const nextPanel = panelsRef.current[nextIndex];
-
-    if (!currentPanel || !nextPanel) return;
-
-    const direction = nextIndex > activeIndex ? 1 : -1;
-
-    // Show next panel
-    nextPanel.style.visibility = "visible";
-    nextPanel.style.transform = `translateY(${direction * 100}%)`;
-
-    // Force reflow
-    void nextPanel.offsetHeight;
-
-    // Start animation
-    if (direction > 0) {
-      // Scrolling down: move next panel up
-      nextPanel.style.transition = `transform ${ANIMATION_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-      nextPanel.style.transform = "translateY(0)";
-    } else {
-      // Scrolling up: move current panel down
-      currentPanel.style.transition = `transform ${ANIMATION_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-      currentPanel.style.transform = "translateY(100%)";
-    }
-
-    setTimeout(() => {
-      // Hide old panel
-      currentPanel.style.visibility = "hidden";
-      currentPanel.style.transition = "none";
-      currentPanel.style.transform = `translateY(${direction > 0 ? "-100%" : "100%"})`;
-
-      // Reset next panel transition
-      nextPanel.style.transition = "none";
-
-      isAnimatingRef.current = false;
-      setActiveIndex(nextIndex);
-      setCurrentSection(sectionNames[nextIndex] || "hero");
-
-      // Manage videos
-      panelsRef.current.forEach((panel, i) => {
-        const video = panel?.querySelector?.("video");
-        if (!video) return;
-
-        if (i === nextIndex) {
-          video.currentTime = 0;
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      });
-    }, ANIMATION_DURATION);
-  }, [activeIndex, sectionNames, setCurrentSection]);
-
-  const handleWheel = useCallback((e) => {
-    e.preventDefault();
-
-    const now = Date.now();
-    if (now - lastScrollRef.current < SCROLL_COOLDOWN) return;
-
-    const delta = e.deltaY;
-    if (Math.abs(delta) < 10) return; // Ignore tiny scrolls
-
-    lastScrollRef.current = now;
-
-    if (delta > 0) {
-      // Scroll down
-      animateToSection(activeIndex + 1);
-    } else {
-      // Scroll up
-      animateToSection(activeIndex - 1);
-    }
-  }, [activeIndex, animateToSection]);
-
-  const handleTouchStart = useCallback((e) => {
-    touchStartRef.current = e.touches[0].clientY;
+  // Fix 100vh issue on iOS
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
   }, []);
 
-  const handleTouchEnd = useCallback((e) => {
-    const now = Date.now();
-    if (now - lastScrollRef.current < SCROLL_COOLDOWN) return;
-
-    const touchEnd = e.changedTouches[0].clientY;
-    const diff = touchStartRef.current - touchEnd;
-
-    if (Math.abs(diff) < 50) return; // Ignore small swipes
-
-    lastScrollRef.current = now;
-
-    if (diff > 0) {
-      // Swipe up = scroll down
-      animateToSection(activeIndex + 1);
-    } else {
-      // Swipe down = scroll up
-      animateToSection(activeIndex - 1);
-    }
-  }, [activeIndex, animateToSection]);
-
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    if (!containerRef.current) return;
 
-    // Initial setup
-    panelsRef.current.forEach((panel, i) => {
-      if (!panel) return;
-      panel.style.visibility = i === 0 ? "visible" : "hidden";
-      panel.style.transform = i === 0 ? "translateY(0)" : "translateY(100%)";
+    // Intersection Observer to track which section is active
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const index = sectionRefs.current.indexOf(entry.target);
+            if (index !== -1) {
+              setActiveIndex(index);
+              setCurrentSection(sectionNames[index] || "hero");
+              
+              // Manage videos with iOS autoplay optimization
+              sectionRefs.current.forEach((section, i) => {
+                const video = section?.querySelector?.("video");
+                if (!video) return;
+                
+                if (i === index) {
+                  video.currentTime = 0;
+                  const playPromise = video.play();
+                  
+                  if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                      // iOS blocks autoplay without user interaction
+                      // Try with muted video (muted videos can autoplay on iOS)
+                      video.muted = true;
+                      video.play().catch(() => {
+                        // Still failed, video will need user interaction
+                      });
+                    });
+                  }
+                } else {
+                  video.pause();
+                }
+              });
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.5,
+      }
+    );
+
+    // Observe all sections
+    sectionRefs.current.forEach((section) => {
+      if (section) observerRef.current.observe(section);
     });
 
-    // Add event listeners
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-
     return () => {
-      container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchend", handleTouchEnd);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
     };
-  }, [handleWheel, handleTouchStart, handleTouchEnd]);
+  }, [kids.length, sectionNames, setCurrentSection]);
 
   return (
     <div
       ref={containerRef}
       style={{
-        position: "fixed",
-        inset: 0,
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        backgroundColor: "#000",
-        touchAction: "none",
+        height: "100dvh", // Dynamic viewport height (modern browsers)
+        height: "var(--vh, 100vh)", // Fallback for older browsers
+        overflowY: "scroll",
+        scrollSnapType: "y mandatory",
+        scrollBehavior: "smooth",
+        
+        // iOS optimizations
+        WebkitOverflowScrolling: "touch",
+        transform: "translateZ(0)", // Force hardware acceleration
+        willChange: "scroll-position",
+        backfaceVisibility: "hidden",
+        
+        // Hide scrollbar
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
       }}
     >
       {kids.map((Child, i) => {
         const shouldMount = Math.abs(i - activeIndex) <= mountRadius;
-
+        
         return (
-          <div
+          <section
             key={i}
             ref={(el) => {
-              if (el) panelsRef.current[i] = el;
+              if (el) sectionRefs.current[i] = el;
             }}
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
+              height: "100dvh", // Dynamic viewport height
+              height: "var(--vh, 100vh)", // Fallback
+              scrollSnapAlign: "start",
+              position: "relative",
               width: "100%",
-              height: "100%",
-              zIndex: 10 + i,
-              willChange: Math.abs(i - activeIndex) <= 1 ? "transform" : "auto",
-              pointerEvents: i === activeIndex ? "auto" : "none",
             }}
           >
             {shouldMount && (
               <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                <div className="pt-20 w-full h-full">{Child}</div>
+                <div 
+                  className="w-full h-full"
+                  style={{
+                    paddingTop: "max(5rem, env(safe-area-inset-top))",
+                    paddingBottom: "env(safe-area-inset-bottom)",
+                    paddingLeft: "env(safe-area-inset-left)",
+                    paddingRight: "env(safe-area-inset-right)",
+                  }}
+                >
+                  {Child}
+                </div>
               </div>
             )}
-          </div>
+          </section>
         );
       })}
 
       <style jsx>{`
-        video, img, picture {
-          max-width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
+        div::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </div>
