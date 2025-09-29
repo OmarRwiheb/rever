@@ -7,6 +7,7 @@ const CREATE_CART_MUTATION = `
       cart {
         id
         checkoutUrl
+        note
         totalQuantity
         cost {
           subtotalAmount { amount currencyCode }
@@ -48,6 +49,7 @@ const ADD_TO_CART_MUTATION = `
       cart {
         id
         checkoutUrl
+        note
         totalQuantity
         cost {
           subtotalAmount { amount currencyCode }
@@ -89,6 +91,7 @@ const UPDATE_CART_LINE_MUTATION = `
       cart {
         id
         checkoutUrl
+        note
         totalQuantity
         cost {
           subtotalAmount { amount currencyCode }
@@ -130,6 +133,7 @@ const REMOVE_FROM_CART_MUTATION = `
       cart {
         id
         checkoutUrl
+        note
         totalQuantity
         cost {
           subtotalAmount { amount currencyCode }
@@ -171,6 +175,7 @@ const CART_BUYER_IDENTITY_UPDATE_MUTATION = `
       cart {
         id
         checkoutUrl
+        note
         totalQuantity
         cost {
           subtotalAmount { amount currencyCode }
@@ -206,11 +211,25 @@ const CART_BUYER_IDENTITY_UPDATE_MUTATION = `
   }
 `;
 
+const CART_NOTE_UPDATE_MUTATION = `
+  mutation CartNoteUpdate($cartId: ID!, $note: String!) {
+    cartNoteUpdate(cartId: $cartId, note: $note) {
+      cart { 
+        id 
+        note 
+      }
+      userErrors { field message }
+      warnings { code message }
+    }
+  }
+`;
+
 const GET_CART_QUERY = `
   query GetCart($cartId: ID!) {
     cart(id: $cartId) {
       id
       checkoutUrl
+      note
       totalQuantity
       cost {
         subtotalAmount { amount currencyCode }
@@ -666,6 +685,36 @@ class CartService {
     }
   }
 
+  // Update cart note
+  async updateCartNote(note) {
+    if (!this.cartId) {
+      throw new Error('No cart found');
+    }
+
+    try {
+      const res = await apiClient.graphql(CART_NOTE_UPDATE_MUTATION, {
+        cartId: this.cartId,
+        note: note || ''
+      });
+
+      const errs = res?.cartNoteUpdate?.userErrors || [];
+      if (errs.length) {
+        throw new Error(errs.map(e => e.message).join(' | '));
+      }
+
+      const cart = res?.cartNoteUpdate?.cart;
+      if (!cart) {
+        throw new Error('Failed to update cart note');
+      }
+
+      // Update the cart in storage with the new note
+      const updatedCart = await this.getCart();
+      return updatedCart;
+    } catch (error) {
+      console.error('Failed to update cart note:', error);
+      throw error;
+    }
+  }
 
 }
 

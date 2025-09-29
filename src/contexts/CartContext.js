@@ -198,6 +198,14 @@ export function CartProvider({ children }) {
     );
   }, [handleCartOperation]);
 
+  // Update cart note
+  const updateCartNote = useCallback(async (note) => {
+    return handleCartOperation(
+      () => cartService.updateCartNote(note),
+      'Failed to update cart note'
+    );
+  }, [handleCartOperation]);
+
   // Clear cart
   const clearCart = useCallback(async () => {
     try {
@@ -253,6 +261,7 @@ export function CartProvider({ children }) {
     changeVariant,
     getProductVariants,
     updateCartBuyerIdentity,
+    updateCartNote,
     ensureCartCustomerAssociation,
     clearCart,
     clearError,

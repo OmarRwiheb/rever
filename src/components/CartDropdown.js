@@ -5,11 +5,13 @@ import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
 import { shopifyTokenManager } from '@/services/shopify/shopifyTokenManager';
 import Image from 'next/image';
+import CustomerNotes from './CustomerNotes';
 
 export default function CartDropdown({ isOpen, onClose }) {
-  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart, getCustomerCheckoutUrl, updateCartBuyerIdentity, getCheckoutUrl } = useCart();
+  const { cart, loading, error, updateCartLine, removeFromCart, changeVariant, getProductVariants, clearCart, refreshCart, getCustomerCheckoutUrl, updateCartBuyerIdentity, getCheckoutUrl, updateCartNote } = useCart();
   const { user, isAuthenticated } = useUser();
   const dropdownRef = useRef(null);
+  const [currentNote, setCurrentNote] = useState('');
   const [editingItem, setEditingItem] = useState(null);
   const [availableVariants, setAvailableVariants] = useState({});
   const [selectedVariants, setSelectedVariants] = useState({});
@@ -310,9 +312,15 @@ export default function CartDropdown({ isOpen, onClose }) {
       return;
     }
 
-    // If user is logged in, ensure cart is associated with their account
-    if (isAuthenticated && user) {
-      try {
+    try {
+      // Save the customer note before checkout
+      if (currentNote !== cart.note) {
+        console.log('Saving customer note before checkout...');
+        await updateCartNote(currentNote);
+      }
+
+      // If user is logged in, ensure cart is associated with their account
+      if (isAuthenticated && user) {
         // Get the customer access token
         const accessToken = shopifyTokenManager.getToken();
         if (accessToken) {
@@ -321,20 +329,20 @@ export default function CartDropdown({ isOpen, onClose }) {
           await updateCartBuyerIdentity(accessToken);
           console.log('Cart buyer identity updated successfully');
         }
-      } catch (error) {
-        console.error('Failed to update cart buyer identity:', error);
-        // Continue with checkout even if this fails
       }
-    }
 
-    // Get the checkout URL (automatically includes customer token if logged in)
-    const checkoutUrl = await getCheckoutUrl();
-    
-    if (checkoutUrl) {
-      // Redirect to Shopify checkout
-      window.location.href = checkoutUrl;
-    } else {
-      alert('Unable to generate checkout URL');
+      // Get the checkout URL (automatically includes customer token if logged in)
+      const checkoutUrl = await getCheckoutUrl();
+      
+      if (checkoutUrl) {
+        // Redirect to Shopify checkout
+        window.location.href = checkoutUrl;
+      } else {
+        alert('Unable to generate checkout URL');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('There was an error processing your checkout. Please try again.');
     }
   };
 
@@ -405,6 +413,7 @@ export default function CartDropdown({ isOpen, onClose }) {
               <div className="space-y-4">
                 {cart.items.map(renderCartItem)}
                 {renderCartSummary()}
+                <CustomerNotes onNoteChange={setCurrentNote} />
                 {renderActionButtons()}
               </div>
             ) : (
