@@ -21,6 +21,9 @@ async function sendConfirmationEmail({ email, orderNumber, items, reason, additi
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      tls: {
+        ciphers: "SSLv3",
+    },
     });
   } catch (transporterError) {
     throw new Error(`Failed to create email transporter: ${transporterError.message}`);

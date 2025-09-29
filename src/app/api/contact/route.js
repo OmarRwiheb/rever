@@ -136,6 +136,9 @@ export async function POST(request) {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
+        tls: {
+          ciphers: "SSLv3",
+      },
       });
       console.log('Email transporter created successfully');
     } catch (transporterError) {
