@@ -3,7 +3,6 @@ import HeroSection from "@/components/home/sections/Hero";
 import WomenSection from "@/components/home/sections/Women";
 import MenSection from "@/components/home/sections/Men";
 import Footer from "@/components/Footer";
-import SecondVideo from "@/components/home/sections/SecondVideo";
 import ClientWrapper from "@/components/ClientWrapper";
 
 export default function HomePage() {
@@ -15,7 +14,6 @@ export default function HomePage() {
       <HeroSection />
       <WomenSection />
       <MenSection />
-      <SecondVideo />
       <Footer fullPage />
     </ClientWrapper>
   );
