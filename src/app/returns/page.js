@@ -11,7 +11,8 @@ export default function ReturnsPage() {
     orderNumber: '',
     email: '',
     phoneNumber: '',
-    items: [{ itemId: '', quantity: 1, reason: '' }],
+    items: [{ itemId: '', quantity: 1 }],
+    reason: '',
     additionalInfo: '',
     // Honeypot field - should remain empty
     website: ''
@@ -51,7 +52,7 @@ export default function ReturnsPage() {
   const handleAddItem = () => {
     setFormData(prev => ({
       ...prev,
-      items: [...prev.items, { itemId: '', quantity: 1, reason: '' }]
+      items: [...prev.items, { itemId: '', quantity: 1 }]
     }));
   };
 
@@ -78,10 +79,34 @@ export default function ReturnsPage() {
       }
 
       // Verify reCAPTCHA
-      await validateFormSubmission(executeRecaptcha, 'returns');
+      // const recaptchaToken = await executeRecaptcha('returns');
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Prepare data for API
+      const submitData = {
+        orderNumber: formData.orderNumber,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        items: formData.items,
+        reason: formData.reason,
+        additionalInfo: formData.additionalInfo,
+        // recaptchaToken
+      };
+
+      // Submit to API
+      console.log('Submitting to:', window.location.origin + '/api/returns');
+      const response = await fetch('/api/returns', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit return request');
+      }
       
       setSubmitMessage('Your return request has been submitted successfully. We will review your request and contact you within 1-2 business days.');
       
@@ -90,7 +115,8 @@ export default function ReturnsPage() {
         orderNumber: '',
         email: '',
         phoneNumber: '',
-        items: [{ itemId: '', quantity: 1, reason: '' }],
+        items: [{ itemId: '', quantity: 1 }],
+        reason: '',
         additionalInfo: '',
         website: ''
       });
@@ -199,7 +225,7 @@ export default function ReturnsPage() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Item ID */}
                       <div>
                         <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -230,38 +256,38 @@ export default function ReturnsPage() {
                         />
                       </div>
                     </div>
-
-                    {/* Reason for Return */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-4">
-                        Reason for Return *
-                      </label>
-                      <div className="space-y-3">
-                        {returnReasons.map((reason) => (
-                          <label
-                            key={reason.value}
-                            className={`flex items-start cursor-pointer transition-colors ${
-                              item.reason === reason.value 
-                                ? 'text-gray-900' 
-                                : 'text-gray-600 hover:text-gray-900'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name={`reason-${index}`}
-                              value={reason.value}
-                              checked={item.reason === reason.value}
-                              onChange={(e) => handleItemChange(index, 'reason', e.target.value)}
-                              className="h-4 w-4 text-gray-900 focus:ring-0 border-gray-300 mt-0.5 mr-3 flex-shrink-0 accent-gray-900"
-                            />
-                            <span className="text-sm leading-5">
-                              {reason.label}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Reason for Return */}
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-4">
+                Reason for Return *
+              </label>
+              <div className="space-y-3">
+                {returnReasons.map((reason) => (
+                  <label
+                    key={reason.value}
+                    className={`flex items-start cursor-pointer transition-colors ${
+                      formData.reason === reason.value 
+                        ? 'text-gray-900' 
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="reason"
+                      value={reason.value}
+                      checked={formData.reason === reason.value}
+                      onChange={(e) => setFormData(prev => ({ ...prev, reason: e.target.value }))}
+                      className="h-4 w-4 text-gray-900 focus:ring-0 border-gray-300 mt-0.5 mr-3 flex-shrink-0 accent-gray-900"
+                    />
+                    <span className="text-sm leading-5">
+                      {reason.label}
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
