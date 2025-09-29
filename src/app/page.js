@@ -12,9 +12,9 @@ export default function HomePage() {
       sectionNames={["women", "women", "men", "second-video", "footer"]}
     >
       {/* <HeroSection /> */}
-      <WomenSection />
-      <WomenSection />
-      <MenSection />
+      <WomenSection link="/collections/women" />
+      <WomenSection link="/collections/women" />
+      <MenSection link="/collections/fall-2025" />
       <Footer fullPage />
     </ClientWrapper>
   );

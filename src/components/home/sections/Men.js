@@ -1,7 +1,9 @@
 import ImageSection from "../layout/ImageSection";
-
-export default function Men() {
+import Link from "next/link";
+export default function Men(props) {
     return (
-        <ImageSection src="/img/men.webp" alt="Men" />
+        <Link href={props.link}>
+            <ImageSection src="/img/men.webp" alt="Men" />
+        </Link>
     );
 }
