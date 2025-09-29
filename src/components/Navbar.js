@@ -164,25 +164,42 @@ const MobileDropdownMenu = ({ items, styles, isOpen, onToggle }) => {
 // Memoized link components to prevent unnecessary re-renders
 const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMouseLeave }) => (
   <div className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-    <a
-      href={link.href}
-      className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
-    >
-      {link.name}
-      {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />}
-    </a>
+    {hasDropdown ? (
+      <div
+        className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1 cursor-pointer`}
+      >
+        {link.name}
+        <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+      </div>
+    ) : (
+      <a
+        href={link.href}
+        className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
+      >
+        {link.name}
+      </a>
+    )}
   </div>
 );
 
 const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) => (
   <div className="space-y-3">
     <div className="flex items-center justify-between">
-      <a
-        href={link.href}
-        className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
-      >
-        {link.name}
-      </a>
+      {hasDropdown ? (
+        <div
+          className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1 cursor-pointer"
+          onClick={onToggle}
+        >
+          {link.name}
+        </div>
+      ) : (
+        <a
+          href={link.href}
+          className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
+        >
+          {link.name}
+        </a>
+      )}
       {hasDropdown && (
         <button
           onClick={onToggle}
