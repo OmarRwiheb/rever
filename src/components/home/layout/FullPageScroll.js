@@ -18,82 +18,63 @@ export default function FullPageScroll({
   const [activeIndex, setActiveIndex] = useState(0);
   const tweenRef = useRef(null);
   const lastScrollRef = useRef(0);
-  const lastSectionUpdate = useRef(0);
   const ctxRef = useRef(null);
   const isAnimatingRef = useRef(false);
+  const rafRef = useRef(null);
+  const isSafari = useRef(false);
 
-  // iOS-optimized timings
-  const SCROLL_COOLDOWN = 900;
-  const SECTION_UPDATE_COOLDOWN = 150;
-  const DURATION = 0.5; // slightly faster feels better on iOS
+  const SCROLL_COOLDOWN = 1100; // Extra buffer for Safari
+  const DURATION = 0.45;
 
   const { setCurrentSection } = useNavbar?.() || { setCurrentSection: () => {} };
-  const prefersReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-
+  
   const kids = useMemo(() => React.Children.toArray(children).filter(Boolean), [children]);
-  const setPanelRef = (el, i) => { if (el) panelsRef.current[i] = el; };
+  const setPanelRef = useCallback((el, i) => { 
+    if (el) panelsRef.current[i] = el; 
+  }, []);
 
-  const updateNavbarSection = useCallback((i) => {
-    const now = Date.now();
-    if (now - lastSectionUpdate.current < SECTION_UPDATE_COOLDOWN) return;
-    setCurrentSection(sectionNames[i] || "hero");
-    lastSectionUpdate.current = now;
-  }, [setCurrentSection, sectionNames]);
-
-  // Enhanced GSAP config for iOS
+  // Detect Safari
   useEffect(() => {
-    gsap.ticker.fps(60);
-    gsap.ticker.useRAF(true);
-    gsap.ticker.lagSmoothing(500, 16);
-    
-    // Force hardware acceleration setup
+    isSafari.current = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  }, []);
+
+  // Safari-optimized GSAP config
+  useEffect(() => {
     gsap.config({
-      force3D: true,
+      force3D: "auto", // Let GSAP decide for Safari
       nullTargetWarn: false,
+      autoSleep: 60,
     });
+    
+    // Safari needs lag smoothing disabled
+    gsap.ticker.lagSmoothing(0);
+    
+    // Force initial render in Safari
+    if (isSafari.current) {
+      gsap.ticker.fps(60);
+    }
   }, []);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || kids.length === 0) return;
 
     ctxRef.current = gsap.context(() => {
-      // Initial setup with hardware acceleration
+      // Safari needs explicit z-index and positioning
       panelsRef.current.forEach((panel, i) => {
-        gsap.set(panel, {
-          position: "absolute",
-          inset: 0,
-          yPercent: i === 0 ? 0 : 100,
+        const initialY = i === 0 ? 0 : window.innerHeight;
+        gsap.set(panel, { 
+          y: initialY,
           zIndex: 10 + i,
-          force3D: true,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
-          perspective: 1000,
+          visibility: i === 0 ? "visible" : "hidden",
         });
+        
+        // Safari: Force repaint after set
+        if (isSafari.current) {
+          void panel.offsetHeight;
+        }
       });
 
-      updateNavbarSection(0);
-
-      if (prefersReducedMotion) return;
-
-      // iOS-safe video management
-      const syncVideos = (nextIndex) => {
-        requestAnimationFrame(() => {
-          panelsRef.current.forEach((p, i) => {
-            const v = p?.querySelector?.("video");
-            if (!v) return;
-            
-            if (i === nextIndex) {
-              v.currentTime = 0; // reset for smooth playback
-              const pr = v.play();
-              if (pr?.catch) pr.catch(() => {});
-            } else {
-              v.pause();
-            }
-          });
-        });
-      };
+      setCurrentSection(sectionNames[0] || "hero");
 
       const goTo = (nextIndex) => {
         if (!panelsRef.current[nextIndex] || isAnimatingRef.current) return;
@@ -104,55 +85,114 @@ export default function FullPageScroll({
 
         isAnimatingRef.current = true;
 
-        // Kill any running animation
-        if (tweenRef.current?.kill) tweenRef.current.kill();
+        // Kill existing tweens
+        if (tweenRef.current?.kill) {
+          tweenRef.current.kill();
+        }
+        gsap.killTweensOf([currentPanel, nextPanel]);
 
-        // Create timeline for smoother iOS performance
-        const tl = gsap.timeline({
-          onComplete: () => {
-            isAnimatingRef.current = false;
-            idxRef.current = nextIndex;
-            setActiveIndex(nextIndex);
-            updateNavbarSection(nextIndex);
-            syncVideos(nextIndex);
-            
-            // Clean up transform on inactive panels
-            if (dir > 0) {
-              gsap.set(currentPanel, { yPercent: 100 });
-            }
-          },
-        });
+        // Show next panel before animating (Safari fix)
+        gsap.set(nextPanel, { visibility: "visible" });
 
         if (dir > 0) {
-          // Scrolling down: move next panel up
-          tl.to(nextPanel, {
-            yPercent: 0,
+          // Scrolling down
+          const startY = window.innerHeight;
+          gsap.set(nextPanel, { y: startY });
+          
+          tweenRef.current = gsap.to(nextPanel, {
+            y: 0,
             duration: DURATION,
-            ease: "power2.out",
+            ease: isSafari.current ? "power2.out" : "expo.out",
             force3D: true,
+            onUpdate: isSafari.current ? function() {
+              // Safari: Force repaint during animation
+              if (this.progress() % 0.1 < 0.02) {
+                void nextPanel.offsetHeight;
+              }
+            } : undefined,
+            onComplete: () => {
+              gsap.set(currentPanel, { visibility: "hidden", y: window.innerHeight });
+              isAnimatingRef.current = false;
+              idxRef.current = nextIndex;
+              setActiveIndex(nextIndex);
+              setCurrentSection(sectionNames[nextIndex] || "hero");
+              manageVideos(nextIndex);
+              
+              // Safari: Force final repaint
+              if (isSafari.current) {
+                void nextPanel.offsetHeight;
+                void currentPanel.offsetHeight;
+              }
+            },
           });
         } else {
-          // Scrolling up: move current panel down
-          tl.to(currentPanel, {
-            yPercent: 100,
+          // Scrolling up
+          tweenRef.current = gsap.to(currentPanel, {
+            y: window.innerHeight,
             duration: DURATION,
-            ease: "power2.out",
+            ease: isSafari.current ? "power2.out" : "expo.out",
             force3D: true,
+            onUpdate: isSafari.current ? function() {
+              if (this.progress() % 0.1 < 0.02) {
+                void currentPanel.offsetHeight;
+              }
+            } : undefined,
+            onComplete: () => {
+              gsap.set(currentPanel, { visibility: "hidden" });
+              isAnimatingRef.current = false;
+              idxRef.current = nextIndex;
+              setActiveIndex(nextIndex);
+              setCurrentSection(sectionNames[nextIndex] || "hero");
+              manageVideos(nextIndex);
+              
+              if (isSafari.current) {
+                void nextPanel.offsetHeight;
+                void currentPanel.offsetHeight;
+              }
+            },
           });
         }
-
-        tweenRef.current = tl;
       };
 
-      // iOS-optimized Observer settings
+      const manageVideos = (activeIdx) => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(() => {
+          panelsRef.current.forEach((p, i) => {
+            const video = p?.querySelector?.("video");
+            if (!video) return;
+            
+            if (i === activeIdx) {
+              // Safari needs this sequence
+              video.currentTime = 0;
+              const playPromise = video.play();
+              if (playPromise?.catch) {
+                playPromise.catch(() => {
+                  // Retry once for Safari
+                  setTimeout(() => video.play().catch(() => {}), 100);
+                });
+              }
+            } else {
+              video.pause();
+              // Safari: ensure video is actually paused
+              if (isSafari.current) {
+                video.currentTime = 0;
+              }
+            }
+          });
+        });
+      };
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
       const obs = Observer.create({
         target: window,
-        type: "wheel,touch",
-        tolerance: 20, // higher tolerance for iOS
+        type: isMobile ? "touch" : "wheel,touch",
+        tolerance: isMobile ? 35 : 20,
         wheelSpeed: -1,
-        lockAxis: true,
-        preventDefault: true, // prevent iOS bounce
-        dragMinimum: 10,
+        preventDefault: true,
+        dragMinimum: 25,
+        // Safari specific: ignore if animation running
+        ignore: () => isAnimatingRef.current,
         onUp: () => {
           const now = Date.now();
           if (isAnimatingRef.current || now - lastScrollRef.current < SCROLL_COOLDOWN) return;
@@ -170,100 +210,104 @@ export default function FullPageScroll({
       });
 
       ctxRef.current._obs = obs;
-      syncVideos(0);
+      
+      // Initial video with delay for Safari
+      if (isSafari.current) {
+        setTimeout(() => manageVideos(0), 100);
+      } else {
+        manageVideos(0);
+      }
     }, containerRef);
 
     return () => {
-      ctxRef.current?.revert();
-      if (ctxRef.current?._obs?.kill) ctxRef.current._obs.kill();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (tweenRef.current?.kill) tweenRef.current.kill();
+      if (ctxRef.current?._obs?.kill) ctxRef.current._obs.kill();
+      ctxRef.current?.revert();
       isAnimatingRef.current = false;
     };
-  }, [kids.length, updateNavbarSection, prefersReducedMotion]);
+  }, [kids.length, sectionNames, setCurrentSection, setPanelRef]);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-screen overflow-hidden"
       style={{
-        height: "100dvh",
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        backgroundColor: "#000",
+        WebkitTapHighlightColor: "transparent",
+        WebkitTouchCallout: "none",
+        WebkitUserSelect: "none",
+        userSelect: "none",
+        touchAction: "none",
+        // Safari: prevent rubber banding
         WebkitOverflowScrolling: "touch",
-        transform: "translate3d(0,0,0)", // force GPU layer
-        willChange: "transform",
-        isolation: "isolate",
-        overscrollBehavior: "none",
-        touchAction: "pan-y pinch-zoom", // allow zoom but control pan
-        background: "black",
       }}
     >
       {kids.map((Child, i) => {
-        const shouldMount = Math.abs(i - activeIndex) <= mountRadius || i === 0;
+        const shouldMount = Math.abs(i - activeIndex) <= mountRadius;
+        
         return (
           <div
-            key={`panel-${i}`}
+            key={i}
             ref={(el) => setPanelRef(el, i)}
-            className="panel absolute inset-0"
             style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
               zIndex: 10 + i,
-              width: "100vw",
-              height: "100dvh",
-              overflow: "hidden",
-              visibility: Math.abs(i - activeIndex) <= 1 ? "visible" : "hidden",
-              background: "black",
+              pointerEvents: i === activeIndex ? "auto" : "none",
+              // Safari: explicit transform for GPU
+              WebkitTransform: "translate3d(0,0,0)",
               transform: "translate3d(0,0,0)",
+              WebkitBackfaceVisibility: "hidden",
               backfaceVisibility: "hidden",
             }}
           >
-            {shouldMount ? (
-              <PanelContent isActive={i === activeIndex}>
-                <div className="pt-20 w-full h-full">{Child}</div>
-              </PanelContent>
-            ) : (
-              <SkeletonShell />
+            {shouldMount && (
+              <div style={{ 
+                width: "100%", 
+                height: "100%", 
+                overflow: "hidden",
+                position: "relative",
+              }}>
+                <div style={{ 
+                  paddingTop: "5rem",
+                  width: "100%", 
+                  height: "100%",
+                }}>
+                  {Child}
+                </div>
+              </div>
             )}
           </div>
         );
       })}
-    </div>
-  );
-}
-
-function SkeletonShell() {
-  return (
-    <div className="w-full h-full relative bg-neutral-900/50">
-      <div className="absolute inset-0 animate-pulse bg-neutral-800/30" />
-    </div>
-  );
-}
-
-function PanelContent({ children, isActive }) {
-  return (
-    <div 
-      className="w-full h-full" 
-      style={{ 
-        overflow: "hidden",
-        transform: "translate3d(0,0,0)",
-      }}
-    >
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            .panel img, .panel video, .panel picture {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              display: block;
-              transform: translate3d(0,0,0);
-              backface-visibility: hidden;
-            }
-            .panel video {
-              -webkit-backface-visibility: hidden;
-              -webkit-transform: translate3d(0,0,0);
-            }
-          `,
-        }}
-      />
-      {children}
+      
+      <style jsx>{`
+        video, img, picture {
+          max-width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          -webkit-transform: translate3d(0,0,0);
+          transform: translate3d(0,0,0);
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+        }
+        
+        video {
+          /* Safari video optimization */
+          -webkit-user-select: none;
+          user-select: none;
+          pointer-events: none;
+        }
+      `}</style>
     </div>
   );
 }
