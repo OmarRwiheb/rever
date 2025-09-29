@@ -76,13 +76,13 @@ export default function NewsletterSignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
               required
-              className="w-full px-4 py-3 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-gray-500"
+              className="w-full px-4 py-3 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-gray-500 select-auto"
             />
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-3 bg-white text-black font-medium rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            className="px-6 py-3 bg-white text-black font-medium rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap select-auto"
           >
             {isLoading ? 'Subscribing...' : 'Subscribe'}
           </button>
