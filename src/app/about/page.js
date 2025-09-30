@@ -21,7 +21,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => (
       )}
     </button>
     {isOpen && (
-      <div className="mt-4 text-gray-600 font-light leading-relaxed">
+      <div className="mt-4 text-gray-800 font-light leading-relaxed">
         {answer}
       </div>
     )}
@@ -33,28 +33,24 @@ export default function AboutPage() {
 
   const faqData = [
     {
-      question: "What is Saint Laurent?",
-      answer: "Saint Laurent is a French luxury fashion house founded in 1961 by Yves Saint Laurent and Pierre Bergé. The brand is known for its modern elegance, innovative designs, and timeless sophistication that has influenced fashion for over six decades."
+      question: "What is Rever?",
+      answer: "Rever is a contemporary Arab luxury fashion house rooted in old-money elegance and timeless sophistication. Inspired by heritage yet designed for the modern world, Rever pieces embody modest refinement, fine craftsmanship, and effortless style."
     },
     {
-      question: "Where can I find Saint Laurent stores?",
-      answer: "Saint Laurent has boutiques worldwide in major cities including Paris, New York, London, Tokyo, and many others. You can find our complete store directory on our website or contact our client services for assistance."
-    },
-    {
-      question: "How can I book a personal appointment?",
-      answer: "You can book a personal appointment through our website's client services section, by calling our dedicated client service line, or by visiting any of our boutiques. Our personal stylists are available to provide expert guidance."
+      question: "Where can I find Rever collections?",
+      answer: "Rever is currently available exclusively online through our official website. Selected pieces will also be showcased through curated pop-ups in Cairo, and beyond."
     },
     {
       question: "What is your return policy?",
-      answer: "We accept returns within 30 days of purchase for items in their original condition with all tags attached. Please visit any Saint Laurent boutique or contact our client services for assistance with returns."
+      answer: "Each Rever piece is crafted with great care and attention. Returns are accepted within 7 days of delivery, provided items are unworn, in original condition, and accompanied by all tags and packaging."
     },
     {
       question: "Do you offer international shipping?",
-      answer: "Yes, we offer international shipping to most countries. Shipping times and costs vary by location. You can check shipping options and costs during the checkout process on our website."
+      answer: "Not yet. Rever currently ships only within Egypt and soon across select GCC countries. International shipping will be available very soon, and updates will be announced through our website and social media."
     },
     {
-      question: "How can I care for my Saint Laurent pieces?",
-      answer: "Each Saint Laurent piece comes with specific care instructions. We recommend professional cleaning for leather goods and delicate fabrics. Store items in a cool, dry place away from direct sunlight to maintain their quality."
+      question: "How can I care for my Rever pieces?",
+      answer: "Rever garments are made from delicate and luxurious fabrics that require special care. We recommend professional dry cleaning and proper storage to maintain the integrity of each piece."
     }
   ];
 
@@ -65,18 +61,19 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl lg:text-6xl font-serif mb-8 tracking-wider">
-                <span className="text-5xl lg:text-7xl">A</span>BOUT SAINT LAURENT
+              <h1 className="text-4xl lg:text-6xl font-serif mb-8 tracking-wider text-black">
+                <span className="text-5xl lg:text-7xl">A</span>BOUT REVER
               </h1>
-              <p className="text-lg text-gray-600 font-light leading-relaxed">
-                Since 1961, Saint Laurent has been synonymous with modern elegance and timeless sophistication. 
-                Our commitment to innovation and excellence continues to define luxury fashion for the contemporary world.
+              <p className="text-lg text-gray-800 font-light leading-relaxed">
+                Rever is not fashion, it is memory reawakened. A brand that reverses noise, trends, and urgency, 
+                bringing back timeless silhouettes and old-money elegance for the modern Arab world. It draws from 
+                emotion, not attention. From meaning, not trend.
               </p>
             </div>
             <div className="relative h-96 lg:h-[500px]">
               <Image
                 src="/img/lookbook.jpg"
-                alt="Saint Laurent Lookbook"
+                alt="Rever Lookbook"
                 fill
                 className="object-cover"
                 priority
@@ -93,30 +90,49 @@ export default function AboutPage() {
           <div className="mb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase">
+                <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase text-black">
                   Our Story
                 </h2>
-                <div className="space-y-6 text-gray-600 font-light leading-relaxed">
-                  <p>
-                    Founded by Yves Saint Laurent and Pierre Bergé in 1961, the house of Saint Laurent 
-                    revolutionized fashion with its modern approach to luxury. Yves Saint Laurent's vision 
-                    of empowering women through fashion continues to inspire our collections today.
+                <div className="space-y-6 text-gray-800 font-light leading-relaxed">
+                  <p className="text-lg font-medium text-black">
+                    Rever: The Dream in Reverse (Est. 2025)
                   </p>
                   <p>
-                    From the iconic Le Smoking tuxedo to the groundbreaking ready-to-wear collections, 
-                    Saint Laurent has consistently pushed boundaries while maintaining the highest standards 
-                    of craftsmanship and quality.
+                    In a world that moves too fast, Rever was born from the desire to go back.
+                    Not just to another time, but to a feeling.
                   </p>
                   <p>
-                    Today, under the creative direction of Anthony Vaccarello, the house continues to 
-                    evolve while staying true to its heritage of innovation and elegance.
+                    A feeling that lived in a whispered photo from 1961.
+                    A woman in lace gloves and pearls, waiting on the steps of someplace quiet.
+                    Her presence needed no words. Her elegance was memory itself.
+                  </p>
+                  <p>
+                    That moment never left us.
+                  </p>
+                  <p>
+                    Founded in 2025, Rever, from the French "to dream", and from reverse, is a return.
+                    A return to silhouettes that meant something.
+                    To fabrics that held stories.
+                    To a time when the way you dressed wasn't to be seen,
+                    but to belong quietly to something greater.
+                  </p>
+                  <p>
+                    Each Rever piece is a page from that world: crafted with intention, guided by memory, 
+                    and made for those who don't chase attention, they attract it.
+                  </p>
+                  <p className="text-lg font-medium text-black">
+                    We create not for trends, but for those who long for elegance that endures.
+                  </p>
+                  <p className="text-lg font-medium text-black">
+                    Rever is not fashion. It is memory. Reawakened.
+                    Because we don't follow time, we wear it.
                   </p>
                 </div>
               </div>
               <div className="relative h-80 lg:h-96">
                 <Image
                   src="/img/women.jpg"
-                  alt="Saint Laurent Women's Collection"
+                  alt="Rever Women's Collection"
                   fill
                   className="object-cover"
                 />
@@ -126,59 +142,62 @@ export default function AboutPage() {
 
           {/* Our Values */}
           <div>
-            <h2 className="text-3xl font-serif mb-12 tracking-wider uppercase text-center">
-              Our Values
+            <h2 className="text-3xl font-serif mb-12 tracking-wider uppercase text-center text-black">
+              Our Essence
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
                     src="/img/men.jpg"
-                    alt="Innovation in Fashion"
+                    alt="Reinterpretation in Fashion"
                     fill
                     className="object-cover"
                   />
                 </div>
                 <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
-                  Innovation
+                  Reinterpretation
                 </h3>
-                <p className="text-gray-600 font-light leading-relaxed">
-                  We continuously push the boundaries of fashion, creating pieces that are both 
-                  timeless and contemporary.
+                <p className="text-gray-800 font-light leading-relaxed">
+                  At Rever, innovation is not about the new, it is about reimagining what was always timeless. 
+                  We draw from cultural memory and enduring aesthetics to create designs that feel both familiar 
+                  and quietly modern.
                 </p>
               </div>
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
                     src="/img/product-test.jpg"
-                    alt="Craftsmanship Excellence"
+                    alt="Artistry Excellence"
                     fill
                     className="object-cover"
                   />
                 </div>
                 <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
-                  Craftsmanship
+                  Artistry
                 </h3>
-                <p className="text-gray-600 font-light leading-relaxed">
-                  Every Saint Laurent piece is crafted with the highest attention to detail, 
-                  using the finest materials and techniques.
+                <p className="text-gray-800 font-light leading-relaxed">
+                  Each Rever piece is crafted with intention, using premium fabrics and refined techniques. 
+                  True luxury lives in the details; the cut that flatters, the fabric that lingers, and the 
+                  finish that makes a garment endure.
                 </p>
               </div>
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
                     src="/img/lookbook.jpg"
-                    alt="Sustainable Luxury"
+                    alt="Conscious Elegance"
                     fill
                     className="object-cover"
                   />
                 </div>
                 <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
-                  Sustainability
+                  Conscious Elegance
                 </h3>
-                <p className="text-gray-600 font-light leading-relaxed">
-                  We are committed to responsible luxury, implementing sustainable practices 
-                  throughout our production process.
+                <p className="text-gray-800 font-light leading-relaxed">
+                  We believe luxury should last. By sourcing high-quality, enduring fabrics and producing in 
+                  limited quantities, we create garments meant to become part of your story, cherished, not replaced. 
+                  Sustainability for us is elegance that endures.
                 </p>
               </div>
             </div>
@@ -189,7 +208,7 @@ export default function AboutPage() {
       {/* FAQ Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-serif mb-12 text-center tracking-wider uppercase">
+          <h2 className="text-3xl font-serif mb-12 text-center tracking-wider uppercase text-black">
             Frequently Asked Questions
           </h2>
           <div className="space-y-0">
@@ -211,31 +230,25 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left">
-              <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase">
+              <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase text-black">
                 Get in Touch
               </h2>
-              <p className="text-lg text-gray-600 font-light leading-relaxed mb-8">
-                Have questions that aren't answered here? Our client services team is here to help.
+              <p className="text-lg text-gray-800 font-light leading-relaxed mb-8">
+                We'd love to hear from you. Whether you have a question, need guidance, or simply wish to share a thought, our team is here for you.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+              <div className="flex justify-center lg:justify-start">
                 <a
                   href="/contact"
                   className="inline-block px-8 py-3 border border-black text-black font-light uppercase tracking-wider hover:bg-black hover:text-white transition-colors duration-200"
                 >
                   Contact Us
                 </a>
-                <a
-                  href="/stores"
-                  className="inline-block px-8 py-3 border border-black text-black font-light uppercase tracking-wider hover:bg-black hover:text-white transition-colors duration-200"
-                >
-                  Find Stores
-                </a>
               </div>
             </div>
             <div className="relative h-80 lg:h-96">
               <Image
                 src="/img/men.jpg"
-                alt="Saint Laurent Boutique"
+                alt="Rever Boutique"
                 fill
                 className="object-cover"
               />
