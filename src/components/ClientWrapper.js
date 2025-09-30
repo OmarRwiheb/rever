@@ -4,6 +4,7 @@ import React, { useRef, useCallback, useState, useMemo, useEffect } from "react"
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { useNavbar } from "@/components/Navbar";
+import LoadingScreen from "./LoadingScreen";
 
 gsap.registerPlugin(Observer);
 
@@ -193,17 +194,7 @@ export default function ClientWrapper({
   }, [mounted, updateNavbarSection, kids.length]);
 
   if (!mounted) {
-    return (
-      <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
-        <div 
-          className="w-full animate-pulse bg-neutral-900/50" 
-          style={{
-            marginTop: "5rem",
-            height: "calc(100vh - 5rem)"
-          }}
-        />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

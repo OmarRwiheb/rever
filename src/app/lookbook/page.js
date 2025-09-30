@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { shopifyService } from '../../services/shopify/shopify';
 import { useCart } from '../../contexts/CartContext';
 import Footer from '../../components/Footer';
+import LoadingScreen from '../../components/LoadingScreen';
 
 // Function to dynamically create rows from lookbooks array
 const createLookRows = (lookbooksArray) => {
@@ -193,14 +194,7 @@ export default function LookbookPage() {
   const lookRows = createLookRows(lookbooks);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading lookbooks...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Loading lookbooks..." />;
   }
 
   if (error) {
@@ -322,7 +316,7 @@ export default function LookbookPage() {
                           </div>
                           
                           {/* Look info overlay on hover */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                             <h3 className="text-sm font-medium">{lookbook.name}</h3>
                             <p className="text-xs text-gray-200">View Look</p>
                           </div>

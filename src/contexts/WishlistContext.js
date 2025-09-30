@@ -92,9 +92,9 @@ export function WishlistProvider({ children }) {
   }, [isAuthenticated, user?.id]);
 
   // Save wishlist to localStorage when user is NOT authenticated (keep them separate)
-  // Only save if we have items or if we're intentionally clearing (empty array with previous items)
+  // Always save to localStorage for guests, including when clearing (empty array)
   useEffect(() => {
-    if (!isAuthenticated && wishlistItems.length > 0) {
+    if (!isAuthenticated) {
       localStorage.setItem('wishlist', JSON.stringify(wishlistItems));
     }
   }, [wishlistItems, isAuthenticated]);

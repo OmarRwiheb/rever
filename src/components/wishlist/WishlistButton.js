@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useWishlist } from '@/contexts/WishlistContext';
 
-export default function WishlistButton({ product, size = 'default', showText = false, variant = 'square', borderless = false, tooltipPosition = 'top', showTooltip = true }) {
+export default function WishlistButton({ product, size = 'default', showText = false, variant = 'square', borderless = false, tooltipPosition = 'top', showTooltip = true, context = 'product-page' }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [isToggling, setIsToggling] = useState(false);
   const [message, setMessage] = useState('');
@@ -17,7 +17,7 @@ export default function WishlistButton({ product, size = 'default', showText = f
     setMessage('');
 
     try {
-      const result = toggleWishlist(product);
+      const result = await toggleWishlist(product);
       
       if (result.success) {
         setMessage(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
@@ -65,10 +65,14 @@ export default function WishlistButton({ product, size = 'default', showText = f
           font-medium
           transition-colors
           ${isWishlisted 
-            ? 'text-red-500 hover:text-red-600' 
+            ? context === 'product-card' 
+              ? 'text-slate-50 hover:text-slate-50'
+              : 'text-gray-900 hover:text-gray-900'
             : borderless 
-              ? 'text-black hover:text-gray-600' 
-              : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+              ? context === 'product-card' 
+                ? 'text-slate-50 hover:text-slate-50'
+                : 'text-black hover:text-gray-600'
+              : 'bg-transparent text-gray-900'
           }
           ${isToggling ? 'opacity-50 cursor-not-allowed' : ''}
         `}

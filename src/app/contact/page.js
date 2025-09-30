@@ -202,10 +202,8 @@ export default function ContactPage() {
           <div className="mt-16 pt-8 border-t border-gray-200">
             <h4 className="text-sm font-medium text-gray-900 mb-4">Other Ways to Reach Us</h4>
             <div className="text-sm text-gray-600 space-y-2">
-              <p>• Email: support@tag.com</p>
-              <p>• Phone: +1 (555) 123-4567</p>
-              <p>• Business Hours: Monday - Friday, 9AM - 6PM EST</p>
-              <p>• Response Time: We typically respond within 24 hours</p>
+              <p>• Email: rever@apparel-eg.com</p>
+              <p>• Response Time: We typically respond within 48 hours</p>
             </div>
           </div>
         </div>

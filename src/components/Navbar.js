@@ -27,37 +27,31 @@ const NAVBAR_STYLES = {
   hero: {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-300',
     icon: '/img/whitelogo.png'
   },
   women: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-600',
     icon: '/img/logo.png'
   },
   men: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-300',
     icon: '/img/logo.png'
   },
   'second-video': {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-300',
     icon: '/img/whitelogo.png'
   },
   footer: {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-600',
     icon: '/img/whitelogo.png'
   },
   default: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-600',
     icon: '/img/logo.png'
   }
 };
@@ -66,7 +60,6 @@ const NAVBAR_STYLES = {
 const STATIC_NAVBAR_STYLES = {
   bg: 'bg-transparent',
   text: 'text-black',
-  hover: 'hover:text-gray-300',
   icon: '/img/logo.png'
 };
 
@@ -99,7 +92,7 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
 
   return (
     <div
-      className={`absolute top-0 left-0 w-full bg-gray-50/90 backdrop-blur-sm z-10 overflow-hidden`}
+      className={`absolute top-0 left-0 w-full bg-gray-50/50 backdrop-blur-sm z-10 overflow-hidden`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={{
@@ -117,7 +110,7 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
               <div className="space-y-3">
                 <a
                   href={item.href}
-                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-montserrat-regular"
+                  className="block text-sm uppercase tracking-widest text-black transition-colors duration-200 py-1 font-montserrat-regular"
                 >
                   {item.name}
                 </a>
@@ -149,14 +142,14 @@ const MobileDropdownMenu = ({ items, styles, isOpen, onToggle }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="pl-4 border-l border-gray-200 ml-4 mt-2">
+    <div className="pl-4 border-l border-gray-600 ml-4 mt-2">
       <div className="space-y-1">
         {items.map((item, index) => (
           <div key={index} className="mb-3 last:mb-0">
             <div className="space-y-1">
               <a
                 href={item.href}
-                className={`block text-sm ${styles.text} ${styles.hover} transition-colors duration-200 py-1 pl-2`}
+                className={`block text-sm ${styles.text} transition-colors duration-200 py-1 pl-2`}
               >
                 {item.name}
               </a>
@@ -173,7 +166,7 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
   <div className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     {hasDropdown ? (
       <div
-        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1 cursor-pointer`}
+        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} transition-all duration-500 ease-out flex items-center gap-1 cursor-pointer`}
       >
         {link.name}
         <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -181,7 +174,7 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
     ) : (
       <a
         href={link.href}
-        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
+        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} transition-all duration-500 ease-out flex items-center gap-1`}
       >
         {link.name}
       </a>
@@ -194,7 +187,7 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
     <div className="flex items-center justify-between">
       {hasDropdown ? (
         <div
-          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1 cursor-pointer"
+          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2 flex-1 cursor-pointer"
           onClick={onToggle}
         >
           {link.name}
@@ -202,7 +195,7 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
       ) : (
         <a
           href={link.href}
-          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
+          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2 flex-1"
         >
           {link.name}
         </a>
@@ -210,7 +203,7 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
       {hasDropdown && (
         <button
           onClick={onToggle}
-          className="text-black hover:text-gray-600 transition-colors duration-200 p-2 touch-manipulation"
+          className="text-black transition-colors duration-200 p-2 touch-manipulation"
           style={{ touchAction: 'manipulation' }}
         >
           <ChevronDown size={16} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -343,7 +336,6 @@ export default function Navbar() {
         return {
           ...baseStyles,
           text: 'text-black',
-          hover: 'hover:text-gray-600',
           icon: '/img/logo.png' // Use dark logo when dropdown is open
         };
       }
@@ -371,7 +363,7 @@ export default function Navbar() {
   }, [styles.icon, currentLogo]);
 
   return (
-    <nav className={navClassName}>
+    <nav key="navbar-no-hover" className={navClassName}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16 lg:h-20 z-20 relative justify-between" >
           {/* Left Navigation Links - Fixed Width */}
@@ -387,6 +379,13 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               />
             ))}
+            {/* Lookbook Link - Always render */}
+            <a
+              href="/lookbook"
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text || 'text-black'} transition-all duration-500 ease-out`}
+            >
+              Lookbook
+            </a>
           </div>
 
           {/* Mobile Menu Button - Only visible on mobile */}
@@ -396,7 +395,7 @@ export default function Navbar() {
                 e.stopPropagation();
                 toggleMobileMenu();
               }}
-              className={`${styles.text} ${styles.hover} transition-colors duration-200 touch-manipulation`}
+              className={`${styles.text} transition-colors duration-200 touch-manipulation`}
               style={{ touchAction: 'manipulation' }}
             >
               {isMobileMenuOpen ? (
@@ -408,7 +407,7 @@ export default function Navbar() {
           </div>
 
           {/* Brand Logo - Center Section */}
-          <div className="flex justify-center items-center w-1/4">
+          <div className="flex justify-center items-center w-1/3">
             <a href="/" className="text-center">
               <h1 className={`text-2xl lg:text-3xl font-awaken ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
                 <div className="relative">
@@ -425,30 +424,24 @@ export default function Navbar() {
           </div>
 
           {/* Right side - Blog, About, Wishlist, Shopping Cart and User Account - Fixed Width */}
-          <div className="hidden lg:flex items-center justify-end w-2/5 space-x-4">
-          <a
-              href="/lookbook"
-              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
-            >
-              Lookbook
-            </a>
+          <div className="hidden lg:flex items-center justify-end w-1/3 space-x-4">
             {/* Blog Link */}
             {/* <a
               href="/blog"
-              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} transition-all duration-500 ease-out`}
             >
               Blog
             </a> */}
             {/* About Link */}
             <a
               href="/about"
-              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} transition-all duration-500 ease-out`}
             >
               About Us
             </a>
             <a
               href="/contact"
-              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} transition-all duration-500 ease-out`}
             >
               Contact Us
             </a>
@@ -457,7 +450,7 @@ export default function Navbar() {
             ) : (
               <button 
                 onClick={() => setIsAuthModalOpen(true)}
-                className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center space-x-2`}
+                className={`${styles.text} transition-all duration-500 ease-out flex items-center space-x-2`}
               >
                 <User className="w-5 h-5" />
                 <span className="text-sm">Sign In</span>
@@ -466,7 +459,7 @@ export default function Navbar() {
             <WishlistIntegration styles={styles} />
             <button 
               onClick={() => setIsCartOpen(true)}
-              className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}
+              className={`${styles.text} transition-all duration-500 ease-out relative group`}
             >
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +476,7 @@ export default function Navbar() {
           <div className="lg:hidden flex justify-end w-1/3">
             <button 
               onClick={() => setIsCartOpen(true)}
-              className={`${styles.text} ${styles.hover} transition-all duration-500 ease-out relative group`}
+              className={`${styles.text} transition-all duration-500 ease-out relative group`}
             >
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -521,7 +514,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div 
-            className="lg:hidden fixed top-0 left-0 w-full h-full bg-gray-50/90 backdrop-blur-sm z-[9999] overflow-hidden"
+            className="lg:hidden fixed top-0 left-0 w-full h-full bg-gray-50/50 backdrop-blur-sm z-[9999] overflow-hidden"
             style={{
               animation: 'slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
             }}
@@ -540,7 +533,7 @@ export default function Navbar() {
                         e.stopPropagation();
                         toggleMobileMenu();
                       }}
-                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out touch-manipulation"
+                      className="text-black transition-all duration-500 ease-out touch-manipulation"
                       style={{ touchAction: 'manipulation' }}
                     >
                       <X size={24} />
@@ -561,7 +554,7 @@ export default function Navbar() {
                         setIsCartOpen(true);
                         setIsMobileMenuOpen(false);
                       }}
-                      className="text-black hover:text-gray-600 transition-all duration-500 ease-out relative group"
+                      className="text-black transition-all duration-500 ease-out relative group"
                     >
                       <div className="relative">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -591,7 +584,7 @@ export default function Navbar() {
                 <div className="p-6 space-y-8">
                   {/* User Account Section */}
                   <div className="space-y-6">
-                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-500 mb-4">
+                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-900 mb-4">
                       Account
                     </h3>
                     {isAuthenticated ? (
@@ -606,20 +599,20 @@ export default function Navbar() {
                             <p className="text-sm font-medium text-gray-900">
                               {user?.firstName} {user?.lastName}
                             </p>
-                            <p className="text-sm text-gray-500">{user?.email}</p>
+                            <p className="text-sm text-gray-900">{user?.email}</p>
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <a href="/account/profile" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/profile" className="block text-sm font-montserrat-regular text-gray-700 py-2">
                             Profile
                           </a>
-                          <a href="/account/orders" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/orders" className="block text-sm font-montserrat-regular text-gray-700 py-2">
                             Orders
                           </a>
-                          <a href="/account/addresses" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/addresses" className="block text-sm font-montserrat-regular text-gray-700 py-2">
                             Addresses
                           </a>
-                          <a href="/account/settings" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/settings" className="block text-sm font-montserrat-regular text-gray-700 py-2">
                             Settings
                           </a>
                         </div>
@@ -630,7 +623,7 @@ export default function Navbar() {
                           setIsAuthModalOpen(true);
                           setIsMobileMenuOpen(false);
                         }}
-                        className="w-full text-left text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2 flex items-center space-x-2"
+                        className="w-full text-left text-sm font-montserrat-regular text-gray-700 py-2 flex items-center space-x-2"
                       >
                         <User className="w-4 h-4" />
                         <span>Sign In / Sign Up</span>
@@ -639,14 +632,14 @@ export default function Navbar() {
                   </div>
 
                   <div className="space-y-6">
-                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-500 mb-4">
+                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-900 mb-4">
                       Collections
                     </h3>
                     {(menuLoaded ? navLinks : []).map((link) => (
                       <MobileNavLink 
                         key={link.name} 
                         link={link} 
-                        styles={{ text: 'text-black', hover: 'hover:text-gray-600' }}
+                        styles={{ text: 'text-black' }}
                         hasDropdown={link.hasDropdown}
                         isDropdownOpen={mobileDropdowns[link.name]}
                         onToggle={() => toggleMobileDropdown(link.name)}
@@ -655,27 +648,27 @@ export default function Navbar() {
                     {/* Blog Link for Mobile */}
                     <a
                       href="/lookbook"
-                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
                     >
                       Lookbook
                     </a>
                     {/* <a
                       href="/blog"
-                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
                     >
                       Blog
                     </a> */}
                     {/* About Link for Mobile */}
                     <a
                       href="/about"
-                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
                     >
                       About Us
                     </a>
 
                     <a
                       href="/contact"
-                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
                     >
                       Contact Us
                     </a>

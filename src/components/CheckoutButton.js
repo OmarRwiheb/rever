@@ -55,7 +55,7 @@ export default function CheckoutButton() {
     return (
       <button 
         disabled 
-        className="w-full bg-gray-400 text-white py-3 px-6 rounded-md font-medium"
+        className="w-full bg-gray-400 text-white py-3 px-6 rounded-md font-montserrat-bold"
       >
         {isUpdating ? 'Updating...' : 'Loading...'}
       </button>
@@ -72,7 +72,7 @@ export default function CheckoutButton() {
         <button
           onClick={handleCheckout}
           disabled={!cart || cart.items.length === 0}
-          className={`w-full py-3 px-6 rounded-md font-medium transition-colors ${
+          className={`w-full py-3 px-6 rounded-md font-montserrat-bold transition-colors ${
             cart && cart.items.length > 0
               ? 'bg-blue-600 hover:bg-blue-700 text-white'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -82,13 +82,13 @@ export default function CheckoutButton() {
         </button>
         
         {isAuthenticated && (
-          <p className="text-xs text-gray-600 text-center">
+          <p className="text-xs font-montserrat-regular text-gray-600 text-center">
             Checkout with your account info: {user?.firstName} {user?.lastName}
           </p>
         )}
         
         {!isAuthenticated && (
-          <p className="text-xs text-gray-600 text-center">
+          <p className="text-xs font-montserrat-regular text-gray-600 text-center">
             Checkout as a guest (no account required)
           </p>
         )}

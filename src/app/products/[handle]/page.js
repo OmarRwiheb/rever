@@ -8,6 +8,7 @@ import ProductInfo from '../../../components/product/ProductInfo';
 import ProductHighlights from '../../../components/product/ProductHighlights';
 import RelatedProducts from '../../../components/product/RelatedProducts';
 import Footer from '../../../components/Footer';
+import LoadingScreen from '../../../components/LoadingScreen';
 
 import { shopifyService } from '@/services/shopify/shopify'; // make sure this re-exports getProductByHandle/getProductById
 
@@ -97,11 +98,7 @@ export default function ProductDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-sm text-gray-500">
-        Loading…
-      </div>
-    );
+    return <LoadingScreen message="Loading product..." />;
   }
 
   if (err || !product) {
@@ -132,7 +129,7 @@ export default function ProductDetailPage() {
               selectedColor={selectedColor}
               onColorChange={handleColorChange}
             />
-            {/* <ProductHighlights /> */}
+            <ProductHighlights product={product} />
           </div>
         </div>
       </div>

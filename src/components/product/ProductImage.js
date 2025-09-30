@@ -23,19 +23,19 @@ export default function ProductImage({ product }) {
         {/* Custom scrollbar styles */}
         <style jsx>{`
           .custom-scrollbar::-webkit-scrollbar {
-            width: 2px;
+            width: 4px;
           }
           .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #000000;
+            background: #512123;
             border-radius: 3px;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #333333;
+            background:#512123;
           }
-        `}</style>
+`}</style>
         
         {/* Two-column layout on 2XL screens: Text on left, Images on right */}
         <div className="flex h-full">
@@ -43,7 +43,7 @@ export default function ProductImage({ product }) {
           {/* Brand Name Section - Left side (2XL only) */}
           <div className="hidden 2xl:block w-1/2 h-full bg-gray-50 relative">
             <div className="absolute inset-0 flex items-center justify-center">
-              <h1 className="text-6xl font-light text-gray-900 tracking-wider">
+              <h1 className="text-6xl font-light text-gray-900 tracking-wider font-awaken">
                 REVER
               </h1>
             </div>
@@ -56,26 +56,21 @@ export default function ProductImage({ product }) {
               {productImages.map((image, index) => (
                 <div 
                   key={index} 
-                  className="relative h-screen lg:h-screen cursor-pointer hover:opacity-90 transition-opacity"
+                  className="relative min-h-screen lg:min-h-screen cursor-pointer hover:opacity-90 transition-opacity lg:flex lg:items-center lg:justify-center bg-gray-50"
                   onClick={() => openModal(index)}
                 >
                   <Image
                     src={image}
                     alt={`${product.name} - Image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1536px) 60vw, 30vw"
+                    width={1200}
+                    height={1800}
+                    className="object-cover lg:object-contain h-screen! md:h-full!"
                     priority={index === 0}
                   />
                 </div>
               ))}
             </div>
           </div>
-        </div>
-        
-        {/* Massimo Dutti Logo */}
-        <div className="absolute bottom-8 left-8">
-          <span className="text-black font-semibold text-lg">Rever</span>
         </div>
       </div>
 

@@ -106,7 +106,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         </div>
 
         {/* Pricing */}
-        <div className="space-y-2">
+        <div className="space-y-2 mt-4 mb-0">
           {product.isSale && (
             <div className="space-y-2">
               <div className="text-sm text-gray-500 line-through">
@@ -120,7 +120,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             </div>
           )}
           {!product.isSale && (
-            <div className="text-2xl font-medium text-gray-900">
+            <div className="text-md font-montserrat-regular text-gray-900">
               {product.price}
             </div>
           )}
@@ -134,7 +134,7 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         )}
 
         {/* Divider */}
-        <div className="border-t border-gray-200"></div>
+        <div className="border-t border-gray-900"></div>
 
         {/* Description */}
         {product.description && (
@@ -264,9 +264,11 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
         {addToCartMessage && (
           <div className={`p-3 rounded-md text-sm ${
             addToCartMessage.includes('successfully') 
-              ? 'bg-green-50 text-green-700 border border-green-200'
+              ? 'text-white border'
               : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
+          }`}
+          style={addToCartMessage.includes('successfully') ? { backgroundColor: '#353C3D', borderColor: '#353C3D' } : {}}
+          >
             {addToCartMessage}
           </div>
         )}
@@ -278,11 +280,12 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             disabled={isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0}
             className={`flex-1 font-medium py-3 px-6 transition-colors ${
               isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-gray-300 text-slate-50 cursor-not-allowed'
                 : isInCart
-                ? 'bg-green-600 text-white hover:bg-green-700'
-                : 'bg-white border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+                ? 'text-white hover:opacity-90'
+                : 'bg-white border border-gray-900 text-slate-50 hover:bg-gray-900 hover:text-white'
             }`}
+            style={isInCart ? { backgroundColor: '#353C3D' } : {}}
           >
             {isAddingToCart 
               ? 'ADDING...' 

@@ -3,6 +3,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import Footer from '@/components/Footer';
 
 export default function WishlistPage() {
   const { wishlistItems, clearWishlist, removeFromWishlist } = useWishlist();
@@ -33,7 +34,8 @@ export default function WishlistPage() {
 
   if (wishlistItems.length === 0) {
     return (
-      <div className="min-h-screen bg-white pt-18">
+      <>
+      <div className="bg-white pt-18">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
@@ -45,20 +47,17 @@ export default function WishlistPage() {
             <p className="text-black mb-8 max-w-md mx-auto">
               Start building your wishlist by adding items you love. You can save products for later and easily find them here.
             </p>
-            <Link 
-              href="/collections/all"
-              className="inline-flex items-center px-6 py-3 border border-black text-white font-medium hover:bg-black hover:text-white transition-colors"
-            >
-              Start Shopping
-            </Link>
           </div>
         </div>
       </div>
+      <Footer />
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+    <div className=" bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -132,17 +131,9 @@ export default function WishlistPage() {
             </div>
           ))}
         </div>
-
-        {/* Continue Shopping */}
-        <div className="mt-12 text-center">
-          <Link 
-            href="/collections/all"
-            className="inline-flex items-center px-8 py-3 border border-black text-white font-medium hover:bg-black hover:text-white transition-colors"
-          >
-            Continue Shopping
-          </Link>
-        </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

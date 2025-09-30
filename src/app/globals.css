@@ -575,6 +575,10 @@ nav div.hover\:text-gray-600:hover {
   color: #512123 !important;
 }
 
+[class*="bg-gray-50/50"] {
+  background-color: #f4eae8c9 !important;
+}
+
 /* More specific navbar overrides to ensure they take precedence */
 nav * {
   color: inherit !important;

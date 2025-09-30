@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function ProductHighlights() {
+export default function ProductHighlights({ product }) {
   const [expandedSections, setExpandedSections] = useState({});
 
   const toggleSection = (section) => {
@@ -11,18 +11,21 @@ export default function ProductHighlights() {
     }));
   };
 
-  const sections = [
-    {
+  // Only show fabric and care section if there's content
+  const sections = [];
+  
+  if (product?.fabricAndCare) {
+    sections.push({
       id: 'fabric',
       title: 'FABRIC AND CARE',
-      content: 'Made from 100% cotton with a flowing fabric that drapes beautifully. Machine wash cold, tumble dry low.'
-    },
-    {
-      id: 'shipping',
-      title: 'SHIPPING, EXCHANGES AND RETURNS',
-      content: 'Free shipping on orders over EGP 1,000. Easy returns within 30 days. Exchange available for different sizes.'
-    }
-  ];
+      content: product.fabricAndCare
+    });
+  }
+
+  // Don't render anything if no sections
+  if (sections.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-8 space-y-6 lg:px-40 lg:pb-32">

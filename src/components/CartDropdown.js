@@ -129,15 +129,15 @@ export default function CartDropdown({ isOpen, onClose }) {
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-gray-900 truncate">
+        <h4 className="text-sm font-montserrat-bold text-gray-900 truncate">
           {item.product.title}
         </h4>
         {item.options.length > 0 && (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs font-montserrat-regular text-gray-600 mt-1">
             {item.options.map(opt => `${opt.name}: ${opt.value}`).join(', ')}
           </p>
         )}
-        <p className="text-sm font-medium text-gray-900 mt-1">
+        <p className="text-sm font-montserrat-bold text-gray-900 mt-1">
           {item.price}
         </p>
         
@@ -154,7 +154,7 @@ export default function CartDropdown({ isOpen, onClose }) {
                 {/* Color Selection */}
                 {availableVariants[item.product.id] && availableVariants[item.product.id].length > 0 && (
               <div className="flex items-center space-x-2">
-                <label className="text-xs text-gray-600">Color:</label>
+                <label className="text-xs font-montserrat-bold text-gray-900">Color:</label>
                 <select
                   value={selectedVariants[item.id]?.color || ''}
                   onChange={(e) => setSelectedVariants(prev => ({
@@ -177,7 +177,7 @@ export default function CartDropdown({ isOpen, onClose }) {
             {/* Size Selection */}
             {availableVariants[item.product.id] && availableVariants[item.product.id].length > 0 && (
               <div className="flex items-center space-x-2">
-                <label className="text-xs text-gray-600">Size:</label>
+                <label className="text-xs font-montserrat-bold text-gray-900">Size:</label>
                 <select
                   value={selectedVariants[item.id]?.size || ''}
                   onChange={(e) => setSelectedVariants(prev => ({
@@ -201,7 +201,7 @@ export default function CartDropdown({ isOpen, onClose }) {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleVariantChange(item.id)}
-                className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                className="text-xs bg-gray-900 text-white px-2 py-1 rounded hover:bg-gray-800"
                 disabled={availableVariants[item.product.id] && availableVariants[item.product.id].length === 0}
               >
                 Update
@@ -219,7 +219,7 @@ export default function CartDropdown({ isOpen, onClose }) {
         ) : (
           <button
             onClick={() => startEditing(item)}
-            className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+            className="text-xs text-gray-900 hover:text-gray-800 mt-1"
           >
             Edit Variant
           </button>
@@ -265,22 +265,14 @@ export default function CartDropdown({ isOpen, onClose }) {
       
       {/* Shipping Information */}
       <div className="mb-4 text-center">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs font-montserrat-regular text-gray-600">
           Estimated shipping: 3-5 business days
         </p>
       </div>
       
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-sm font-medium text-gray-900">Subtotal</span>
-        <span className="text-sm font-medium text-gray-900">{cart.subtotal}</span>
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-sm text-gray-500">Tax</span>
-        <span className="text-sm text-gray-500">{cart.tax}</span>
-      </div>
       <div className="flex justify-between items-center border-t border-gray-200 pt-4">
-        <span className="text-base font-medium text-gray-900">Total</span>
-        <span className="text-base font-medium text-gray-900">{cart.total}</span>
+        <span className="text-base font-montserrat-bold text-gray-900">Total</span>
+        <span className="text-base font-montserrat-bold text-gray-900">{cart.total}</span>
       </div>
     </div>
   );
@@ -351,16 +343,8 @@ export default function CartDropdown({ isOpen, onClose }) {
       <svg className="mx-auto h-12 w-12 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
-      <h3 className="mt-2 text-sm font-medium text-gray-900">Your cart is empty</h3>
-      <p className="mt-1 text-sm text-gray-500">Start shopping to add items to your cart.</p>
-      <div className="mt-6">
-        <button
-          onClick={onClose}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          Continue Shopping
-        </button>
-      </div>
+      <h3 className="mt-2 text-sm font-awaken text-gray-900">Your cart is empty</h3>
+      <p className="mt-1 text-sm font-montserrat-regular text-gray-600">Start shopping to add items to your cart.</p>
     </div>
   );
 
@@ -371,7 +355,7 @@ export default function CartDropdown({ isOpen, onClose }) {
           <div ref={dropdownRef} className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Shopping Cart</h3>
+              <h3 className="text-lg font-awaken text-gray-900">Shopping Cart</h3>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={refreshCart}

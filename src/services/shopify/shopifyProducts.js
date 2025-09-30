@@ -20,7 +20,8 @@ const PRODUCT_FIELDS = `
     maxVariantPrice { amount currencyCode }
   }
    metafields(identifiers: [
-          {namespace: "custom", key: "related_products"}
+          {namespace: "custom", key: "related_products"},
+          {namespace: "custom", key: "fabric_and_care"}
         ]) {
           key
           value
@@ -195,6 +196,10 @@ const transformProduct = (p) => {
     };
   });
 
+  // Extract metafields
+  const metafields = p.metafields || [];
+  const fabricAndCare = metafields.find(mf => mf.key === 'fabric_and_care')?.value || '';
+
   return {
     // Keep full Shopify GID (don't parse into number; safer for APIs and links)
     id: p.id,
@@ -217,6 +222,7 @@ const transformProduct = (p) => {
     variants: fullVariants,
     // Metafields data
     metafields: p.metafields || [],
+    fabricAndCare: fabricAndCare,
     // Useful extras your UI might want:
     availability: {
       hasAnyAvailable: variants.some((v) => v.availableForSale),

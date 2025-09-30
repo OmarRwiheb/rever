@@ -228,7 +228,7 @@ export default function ReturnsPage() {
             {/* Instapay Field */}
             <div>
               <label htmlFor="instapay" className="block text-sm font-medium text-gray-900 mb-2">
-                Instapay Phone Number *
+                Instapay Number / ID *
               </label>
               <input
                 type="text"
@@ -406,7 +406,7 @@ export default function ReturnsPage() {
           <div className="mt-16 pt-8 border-t border-gray-200">
             <h4 className="text-sm font-medium text-gray-900 mb-4">Return Policy</h4>
             <div className="text-sm text-gray-600 space-y-2">
-              <p>• Returns must be requested within 10 days of delivery</p>
+              <p>• Returns must be requested within 7 days of delivery</p>
               <p>• Items must be in original condition with tags attached</p>
               <p>• Refunds will be processed within 5-7 business days after approval</p>
               <p>• Return shipping costs may apply depending on the reason for return</p>

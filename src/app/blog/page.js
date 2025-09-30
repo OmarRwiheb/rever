@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, User, Tag } from 'lucide-react';
 import { shopifyService } from '../../services/shopify/shopify';
+import LoadingScreen from '../../components/LoadingScreen';
 
 export default function BlogPage() {
   const [articles, setArticles] = useState([]);
@@ -58,26 +59,7 @@ export default function BlogPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <div className="border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-4 py-16">
-            <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
-              Blog
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl">
-              Discover insights, tips, and stories about fashion, style, and lifestyle.
-            </p>
-          </div>
-        </div>
-        <div className="max-w-4xl mx-auto px-4 py-16">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading articles...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Loading articles..." />;
   }
 
   // Error state

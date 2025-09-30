@@ -94,7 +94,7 @@ export default function AboutPage() {
                   Our Story
                 </h2>
                 <div className="space-y-6 text-gray-800 font-montserrat-regular leading-relaxed">
-                  <p className="text-lg font-montserrat-bold text-black">
+                  <p>
                     Rever: The Dream in Reverse (Est. 2025)
                   </p>
                   <p>
@@ -120,10 +120,10 @@ export default function AboutPage() {
                     Each Rever piece is a page from that world: crafted with intention, guided by memory, 
                     and made for those who don't chase attention, they attract it.
                   </p>
-                  <p className="text-lg font-montserrat-bold text-black">
+                  <p>
                     We create not for trends, but for those who long for elegance that endures.
                   </p>
-                  <p className="text-lg font-montserrat-bold text-black">
+                  <p >
                     Rever is not fashion. It is memory. Reawakened.
                     Because we don't follow time, we wear it.
                   </p>

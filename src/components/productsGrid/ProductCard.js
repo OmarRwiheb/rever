@@ -106,8 +106,8 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
                 isAddingToCart || !firstVariant || !firstVariant.availableForSale || firstVariant.quantityAvailable === 0
                   ? 'text-gray-500 cursor-not-allowed'
                   : isInCart
-                  ? 'text-black hover:text-green-600'
-                  : 'text-black hover:text-gray-600'
+                  ? 'text-slate-50 hover:text-slate-50'
+                  : 'text-slate-50 hover:text-slate-50'
               }`}
               title={
                 !firstVariant || !firstVariant.availableForSale || firstVariant.quantityAvailable === 0
@@ -132,7 +132,7 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
 
             {/* Wishlist Button */}
             <div className="m-2 pointer-events-auto">
-              <WishlistButton product={product} size="cart" variant="circular" borderless={true} showTooltip={false} />
+              <WishlistButton product={product} size="cart" variant="circular" borderless={true} showTooltip={false} context="product-card" />
             </div>
             
             {/* Quick Add Message */}
