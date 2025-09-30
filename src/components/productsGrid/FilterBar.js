@@ -83,7 +83,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                 onClick={() => setShowFilters(!showFilters)}
                 className="group relative inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200"
               >
-                <svg className="w-4 h-4 mr-2 text-gray-500 group-hover:text-gray-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mr-2 text-black group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
                 <span>Filters</span>
@@ -113,7 +113,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
               {/* Sort Dropdown */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-center sm:justify-start space-y-2 sm:space-y-0 sm:space-x-3">
                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap flex items-center justify-center sm:justify-start">
-                  <svg className="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-2 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h18M3 8h18M3 12h18M3 16h18" />
                   </svg>
                   Sort by:
@@ -152,7 +152,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                     </span>
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-gray-200 transition-colors duration-200">
-                        <svg className={`w-3 h-3 text-gray-500 group-hover:text-gray-700 transition-all duration-200 ${showSortDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className={`w-3 h-3 text-black group-hover:text-black transition-all duration-200 ${showSortDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
@@ -372,7 +372,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                 {/* Size Filter */}
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2 mb-4 sm:mb-6">
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900">Size</h3>

@@ -1,8 +1,583 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F4EAE8;
+  --foreground: #512123;
+}
+
+/* Force override Tailwind's default black and white colors */
+.bg-black {
+  background-color: #512123 !important;
+}
+
+.text-black {
+  color: #512123 !important;
+}
+
+.border-black {
+  border-color: #512123 !important;
+}
+
+.bg-white {
+  background-color: #F4EAE8 !important;
+}
+
+.text-white {
+  color: #F4EAE8 !important;
+}
+
+.border-white {
+  border-color: #F4EAE8 !important;
+}
+
+/* Override any other black/white utilities */
+[class*="bg-black"] {
+  background-color: #512123 !important;
+}
+
+[class*="text-black"] {
+  color: #512123 !important;
+}
+
+[class*="border-black"] {
+  border-color: #512123 !important;
+}
+
+[class*="bg-white"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="text-white"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="border-white"] {
+  border-color: #F4EAE8 !important;
+}
+
+/* Navbar specific overrides to maintain original functionality */
+nav .text-black,
+nav a.text-black,
+nav button.text-black,
+nav div.text-black,
+nav h1.text-black,
+nav span.text-black {
+  color: #512123 !important;
+}
+
+nav .text-white,
+nav a.text-white,
+nav button.text-white,
+nav div.text-white,
+nav h1.text-white,
+nav span.text-white {
+  color: #F4EAE8 !important;
+}
+
+nav .text-gray-500,
+nav a.text-gray-500,
+nav button.text-gray-500,
+nav div.text-gray-500,
+nav h1.text-gray-500,
+nav span.text-gray-500 {
+  color: #F4EAE8 !important;
+}
+
+nav .text-gray-600,
+nav a.text-gray-600,
+nav button.text-gray-600,
+nav div.text-gray-600,
+nav h1.text-gray-600,
+nav span.text-gray-600 {
+  color: #512123 !important;
+}
+
+nav .text-gray-700,
+nav a.text-gray-700,
+nav button.text-gray-700,
+nav div.text-gray-700,
+nav h1.text-gray-700,
+nav span.text-gray-700 {
+  color: #512123 !important;
+}
+
+nav .text-gray-900,
+nav a.text-gray-900,
+nav button.text-gray-900,
+nav div.text-gray-900,
+nav h1.text-gray-900,
+nav span.text-gray-900 {
+  color: #512123 !important;
+}
+
+nav .bg-gray-50,
+nav a.bg-gray-50,
+nav button.bg-gray-50,
+nav div.bg-gray-50 {
+  background-color: #F4EAE8 !important;
+}
+
+nav .bg-gray-900,
+nav a.bg-gray-900,
+nav button.bg-gray-900,
+nav div.bg-gray-900 {
+  background-color: #512123 !important;
+}
+
+nav .hover\:text-gray-300:hover,
+nav a.hover\:text-gray-300:hover,
+nav button.hover\:text-gray-300:hover,
+nav div.hover\:text-gray-300:hover {
+  color: #F4EAE8 !important;
+}
+
+nav .hover\:text-gray-600:hover,
+nav a.hover\:text-gray-600:hover,
+nav button.hover\:text-gray-600:hover,
+nav div.hover\:text-gray-600:hover {
+  color: #512123 !important;
+}
+
+/* Override dark gray colors that appear black */
+.bg-gray-900 {
+  background-color: #512123 !important;
+}
+
+.text-gray-900 {
+  color: #512123 !important;
+}
+
+.bg-gray-800 {
+  background-color: #3a1a1c !important;
+}
+
+.text-gray-800 {
+  color: #3a1a1c !important;
+}
+
+/* Override any other dark gray variations */
+[class*="bg-gray-9"] {
+  background-color: #512123 !important;
+}
+
+[class*="text-gray-9"] {
+  color: #512123 !important;
+}
+
+[class*="bg-gray-8"] {
+  background-color: #3a1a1c !important;
+}
+
+[class*="text-gray-8"] {
+  color: #3a1a1c !important;
+}
+
+/* Override other dark color variations */
+.bg-neutral-900 {
+  background-color: #512123 !important;
+}
+
+.bg-slate-900 {
+  background-color: #512123 !important;
+}
+
+.bg-zinc-900 {
+  background-color: #512123 !important;
+}
+
+[class*="bg-neutral-9"] {
+  background-color: #512123 !important;
+}
+
+[class*="bg-slate-9"] {
+  background-color: #512123 !important;
+}
+
+[class*="bg-zinc-9"] {
+  background-color: #512123 !important;
+}
+
+/* Override black/white with opacity */
+.bg-black\/60 {
+  background-color: rgba(81, 33, 35, 0.6) !important;
+}
+
+.bg-black\/50 {
+  background-color: rgba(81, 33, 35, 0.5) !important;
+}
+
+.bg-white\/80 {
+  background-color: rgba(244, 234, 232, 0.8) !important;
+}
+
+.bg-white\/50 {
+  background-color: rgba(244, 234, 232, 0.5) !important;
+}
+
+/* Additional opacity variations */
+.bg-black\/70 {
+  background-color: rgba(81, 33, 35, 0.7) !important;
+}
+
+.bg-black\/80 {
+  background-color: rgba(81, 33, 35, 0.8) !important;
+}
+
+.bg-black\/90 {
+  background-color: rgba(81, 33, 35, 0.9) !important;
+}
+
+.bg-white\/60 {
+  background-color: rgba(244, 234, 232, 0.6) !important;
+}
+
+.bg-white\/70 {
+  background-color: rgba(244, 234, 232, 0.7) !important;
+}
+
+.bg-white\/90 {
+  background-color: rgba(244, 234, 232, 0.9) !important;
+}
+
+/* Override dark colors with opacity */
+.bg-gray-900\/50 {
+  background-color: rgba(81, 33, 35, 0.5) !important;
+}
+
+.bg-gray-900\/60 {
+  background-color: rgba(81, 33, 35, 0.6) !important;
+}
+
+.bg-neutral-900\/50 {
+  background-color: rgba(81, 33, 35, 0.5) !important;
+}
+
+.bg-neutral-900\/60 {
+  background-color: rgba(81, 33, 35, 0.6) !important;
+}
+
+.bg-slate-900\/50 {
+  background-color: rgba(81, 33, 35, 0.5) !important;
+}
+
+.bg-zinc-900\/50 {
+  background-color: rgba(81, 33, 35, 0.5) !important;
+}
+
+/* Override any opacity variations with wildcards */
+/* [class*="bg-black/"] {
+  background-color: rgba(81, 33, 35, var(--tw-bg-opacity, 1)) !important;
+} */
+
+[class*="bg-white/"] {
+  background-color: rgba(244, 234, 232, var(--tw-bg-opacity, 1)) !important;
+}
+
+[class*="bg-gray-900/"] {
+  background-color: rgba(81, 33, 35, var(--tw-bg-opacity, 1)) !important;
+}
+
+[class*="bg-neutral-900/"] {
+  background-color: rgba(81, 33, 35, var(--tw-bg-opacity, 1)) !important;
+}
+
+/* Override light gray colors that appear white - use exact colors */
+.bg-gray-50 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-gray-100 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-gray-200 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-gray-300 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-gray-400 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-gray-500 {
+  background-color: #F4EAE8 !important;
+}
+
+/* Override other light color variations - use exact colors */
+.bg-slate-50 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-slate-100 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-slate-200 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-zinc-50 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-zinc-100 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-zinc-200 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-neutral-50 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-neutral-100 {
+  background-color: #F4EAE8 !important;
+}
+
+.bg-neutral-200 {
+  background-color: #F4EAE8 !important;
+}
+
+/* Override any light gray variations with wildcards - use exact colors */
+[class*="bg-gray-5"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="bg-gray-4"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="bg-gray-3"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="bg-gray-2"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="bg-gray-1"] {
+  background-color: #F4EAE8 !important;
+}
+
+[class*="bg-gray-0"] {
+  background-color: #F4EAE8 !important;
+}
+
+/* Override text gray colors - use exact colors */
+.text-gray-50 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-100 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-200 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-300 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-400 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-500 {
+  color: #F4EAE8 !important;
+}
+
+.text-gray-600 {
+  color: #512123 !important;
+}
+
+.text-gray-700 {
+  color: #512123 !important;
+}
+
+.text-gray-800 {
+  color: #512123 !important;
+}
+
+.text-gray-900 {
+  color: #512123 !important;
+}
+
+/* Override other text color variations - use exact colors */
+.text-slate-50 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-100 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-200 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-300 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-400 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-500 {
+  color: #F4EAE8 !important;
+}
+
+.text-slate-600 {
+  color: #512123 !important;
+}
+
+.text-slate-700 {
+  color: #512123 !important;
+}
+
+.text-slate-800 {
+  color: #512123 !important;
+}
+
+.text-slate-900 {
+  color: #512123 !important;
+}
+
+.text-zinc-50 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-100 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-200 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-300 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-400 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-500 {
+  color: #F4EAE8 !important;
+}
+
+.text-zinc-600 {
+  color: #512123 !important;
+}
+
+.text-zinc-700 {
+  color: #512123 !important;
+}
+
+.text-zinc-800 {
+  color: #512123 !important;
+}
+
+.text-zinc-900 {
+  color: #512123 !important;
+}
+
+.text-neutral-50 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-100 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-200 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-300 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-400 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-500 {
+  color: #F4EAE8 !important;
+}
+
+.text-neutral-600 {
+  color: #512123 !important;
+}
+
+.text-neutral-700 {
+  color: #512123 !important;
+}
+
+.text-neutral-800 {
+  color: #512123 !important;
+}
+
+.text-neutral-900 {
+  color: #512123 !important;
+}
+
+/* Override any text gray variations with wildcards - use exact colors */
+[class*="text-gray-5"] {
+  color: #512123 !important;
+}
+
+.border-gray-800 {
+  border-color: #F4EAE8 !important;
+}
+
+[class*="text-gray-4"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="text-gray-3"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="text-gray-2"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="text-gray-1"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="text-gray-0"] {
+  color: #F4EAE8 !important;
+}
+
+[class*="text-gray-6"] {
+  color: #512123 !important;
+}
+
+[class*="text-gray-7"] {
+  color: #512123 !important;
+}
+
+[class*="text-gray-8"] {
+  color: #512123 !important;
+}
+
+[class*="text-gray-9"] {
+  color: #512123 !important;
+}
+
+/* More specific navbar overrides to ensure they take precedence */
+nav * {
+  color: inherit !important;
 }
 
 @theme inline {

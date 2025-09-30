@@ -37,17 +37,17 @@ export default function WishlistPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-medium text-gray-900 mb-4">Your Wishlist is Empty</h1>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            <h1 className="text-2xl font-medium text-black mb-4">Your Wishlist is Empty</h1>
+            <p className="text-black mb-8 max-w-md mx-auto">
               Start building your wishlist by adding items you love. You can save products for later and easily find them here.
             </p>
             <Link 
               href="/collections/all"
-              className="inline-flex items-center px-6 py-3 border border-gray-900 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-colors"
+              className="inline-flex items-center px-6 py-3 border border-black text-white font-medium hover:bg-black hover:text-white transition-colors"
             >
               Start Shopping
             </Link>
@@ -63,8 +63,8 @@ export default function WishlistPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-medium text-gray-900 mb-2">My Wishlist</h1>
-            <p className="text-gray-600">
+            <h1 className="text-3xl font-medium text-black mb-2">My Wishlist</h1>
+            <p className="text-black">
               {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} saved
             </p>
           </div>
@@ -74,7 +74,7 @@ export default function WishlistPage() {
               <button
                 onClick={handleClearWishlist}
                 disabled={isClearing}
-                className="text-sm text-gray-600 hover:text-gray-900 underline disabled:opacity-50"
+                className="text-sm text-black hover:text-black underline disabled:opacity-50"
               >
                 {isClearing ? 'Clearing...' : 'Clear All'}
               </button>
@@ -112,7 +112,7 @@ export default function WishlistPage() {
                 {/* Remove from wishlist button */}
                 <button
                   onClick={() => handleRemoveItem(item.id)}
-                  className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center text-black hover:text-red-600 hover:bg-red-50 transition-all duration-200 opacity-0 group-hover:opacity-100"
                   title="Remove from wishlist"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export default function WishlistPage() {
               {/* Product Info */}
               <div className="mt-2 px-1">
                 <Link href={item.href} className="block">
-                  <h3 className="text-xs font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-1 line-clamp-2">
+                  <h3 className="text-xs font-medium text-black group-hover:text-black transition-colors uppercase mb-1 line-clamp-2">
                     {item.name}
                   </h3>
                 </Link>
@@ -137,7 +137,7 @@ export default function WishlistPage() {
         <div className="mt-12 text-center">
           <Link 
             href="/collections/all"
-            className="inline-flex items-center px-8 py-3 border border-gray-900 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-colors"
+            className="inline-flex items-center px-8 py-3 border border-black text-white font-medium hover:bg-black hover:text-white transition-colors"
           >
             Continue Shopping
           </Link>

@@ -54,7 +54,7 @@ async function sendConfirmationEmail({ email, orderNumber, items, reason, additi
         <p style="color: #666; margin: 5px 0;">Return Request Confirmation</p>
       </div>
       
-      <div style="background: #f9f9f9; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #000;">
+      <div style="background: #f9f9f9; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #512123;">
         <h2 style="color: #333; margin-top: 0; font-size: 20px;">Thank you for your return request!</h2>
         <p style="color: #555; line-height: 1.6; margin: 15px 0;">
           We have received your return request and will review it within 1-2 business days. 
@@ -62,7 +62,7 @@ async function sendConfirmationEmail({ email, orderNumber, items, reason, additi
         </p>
       </div>
       
-      <div style="background: #fff; padding: 25px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
+      <div style="background: #F4EAE8; padding: 25px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
         <h3 style="color: #333; margin-top: 0; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Return Request Details</h3>
         
         <div style="margin: 15px 0;">

@@ -149,7 +149,7 @@ export async function POST(request) {
     // Email content
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333; border-bottom: 2px solid #000; padding-bottom: 10px;">
+        <h2 style="color: #333; border-bottom: 2px solid #512123; padding-bottom: 10px;">
           New Contact Form Submission
         </h2>
         
@@ -160,7 +160,7 @@ export async function POST(request) {
           <p><strong>Subject:</strong> ${sanitizedData.subject}</p>
         </div>
         
-        <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+        <div style="background: #F4EAE8; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
           <h3 style="color: #333; margin-top: 0;">Message</h3>
           <p style="white-space: pre-wrap; line-height: 1.6;">${sanitizedData.message}</p>
         </div>

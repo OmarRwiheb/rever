@@ -10,7 +10,7 @@ import CartDropdown from './CartDropdown';
 import AuthModal from './auth/AuthModal';
 import UserDropdown from './auth/UserDropdown';
 import WishlistIntegration from './wishlist/WishlistIntegration';
-
+import Image from 'next/image';
 // Create context for navbar state
 const NavbarContext = createContext();
 
@@ -27,32 +27,38 @@ const NAVBAR_STYLES = {
   hero: {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-300'
+    hover: 'hover:text-gray-300',
+    icon: '/img/whitelogo.png'
   },
   women: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-600'
+    hover: 'hover:text-gray-600',
+    icon: '/img/logo.png'
   },
   men: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-300'
+    hover: 'hover:text-gray-300',
+    icon: '/img/logo.png'
   },
   'second-video': {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-300'
+    hover: 'hover:text-gray-300',
+    icon: '/img/whitelogo.png'
   },
   footer: {
     bg: 'bg-transparent',
     text: 'text-white',
-    hover: 'hover:text-gray-600'
+    hover: 'hover:text-gray-600',
+    icon: '/img/whitelogo.png'
   },
   default: {
     bg: 'bg-transparent',
     text: 'text-black',
-    hover: 'hover:text-gray-600'
+    hover: 'hover:text-gray-600',
+    icon: '/img/logo.png'
   }
 };
 
@@ -60,7 +66,8 @@ const NAVBAR_STYLES = {
 const STATIC_NAVBAR_STYLES = {
   bg: 'bg-transparent',
   text: 'text-black',
-  hover: 'hover:text-gray-300'
+  hover: 'hover:text-gray-300',
+  icon: '/img/logo.png'
 };
 
 export const NavbarProvider = ({ children }) => {
@@ -233,6 +240,8 @@ export default function Navbar() {
   const [isClient, setIsClient] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [currentLogo, setCurrentLogo] = useState('/img/logo.png');
+  const [isLogoTransitioning, setIsLogoTransitioning] = useState(false);
 
   // NEW: dynamic nav links from Shopify with caching
   const [navLinks, setNavLinks] = useState([]);
@@ -244,6 +253,7 @@ export default function Navbar() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
 
   // Load menu from Shopify with caching (handle: 'main-menu-1' — change if yours differs)
   useEffect(() => {
@@ -346,6 +356,19 @@ export default function Navbar() {
     [styles.bg]
   );
 
+  // Handle logo transition with smooth animation
+  useEffect(() => {
+    const newLogo = styles.icon || '/img/logo.png';
+    if (newLogo !== currentLogo) {
+      setIsLogoTransitioning(true);
+      const timer = setTimeout(() => {
+        setCurrentLogo(newLogo);
+        setIsLogoTransitioning(false);
+      }, 250); // Half of the transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [styles.icon, currentLogo]);
+
   return (
     <nav className={navClassName}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -387,7 +410,15 @@ export default function Navbar() {
           <div className="flex justify-center items-center w-1/4">
             <a href="/" className="text-center">
               <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
-                REVER
+                <div className="relative">
+                  <Image 
+                    src={currentLogo} 
+                    alt="Rever" 
+                    width={150} 
+                    height={150}
+                    className={`transition-opacity duration-500 ease-in-out ${isLogoTransitioning ? 'opacity-0' : 'opacity-100'}`}
+                  />
+                </div>
               </h1>
             </a>
           </div>
