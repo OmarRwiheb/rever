@@ -210,15 +210,15 @@ export default function ProfilePage() {
       <div className="px-4 py-5 sm:p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="text-lg leading-6 font-awaken text-gray-900">Personal Information</h3>
+            <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
               Update your account profile information and settings.
             </p>
           </div>
           {!isEditing && (
             <button
               onClick={handleEdit}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
+              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-montserrat-bold rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
             >
               <Edit2 className="w-4 h-4 mr-2" />
               Edit
@@ -226,35 +226,35 @@ export default function ProfilePage() {
           )}
         </div>
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="mb-4 bg-red-50 border border-red-400 rounded-md p-4">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-red-800">{error}</p>
+                <p className="text-sm font-montserrat-bold text-red-800">{error}</p>
               </div>
             </div>
           </div>
         )}
 
         {success && (
-          <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-4">
-            <p className="text-sm text-green-700">{success}</p>
+          <div className="mb-4 bg-green-50 border border-green-400 rounded-md p-4">
+            <p className="text-sm font-montserrat-regular text-green-700">{success}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="firstName" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 First Name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="text"
@@ -264,25 +264,25 @@ export default function ProfilePage() {
                   disabled={!isEditing}
                   value={formData.firstName}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 placeholder-gray-500 text-gray-900 ${
+                  className={`block w-full pl-10 pr-3 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 placeholder-gray-500 text-gray-900 font-montserrat-regular ${
                     fieldErrors.firstName 
-                      ? 'border-red-300 focus:ring-red-500' 
-                      : 'border-gray-300'
+                      ? 'border border-red-500 focus:ring-red-500' 
+                      : 'border border-gray-500'
                   }`}
                 />
               </div>
               {fieldErrors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{fieldErrors.firstName}</p>
+                <p className="mt-1 text-sm font-montserrat-regular text-red-600">{fieldErrors.firstName}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="lastName" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 Last Name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="text"
@@ -292,26 +292,26 @@ export default function ProfilePage() {
                   disabled={!isEditing}
                   value={formData.lastName}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 placeholder-gray-500 text-gray-900 ${
+                  className={`block w-full pl-10 pr-3 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500 transition-all duration-200 placeholder-gray-500 text-gray-900 font-montserrat-regular ${
                     fieldErrors.lastName 
-                      ? 'border-red-300 focus:ring-red-500' 
-                      : 'border-gray-300'
+                      ? 'border border-red-500 focus:ring-red-500' 
+                      : 'border border-gray-500'
                   }`}
                 />
               </div>
               {fieldErrors.lastName && (
-                <p className="mt-1 text-sm text-red-600">{fieldErrors.lastName}</p>
+                <p className="mt-1 text-sm font-montserrat-regular text-red-600">{fieldErrors.lastName}</p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
               Email Address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+                <Mail className="h-5 w-5 text-gray-600" />
               </div>
               <input
                 type="email"
@@ -329,17 +329,17 @@ export default function ProfilePage() {
               />
             </div>
             {fieldErrors.email && (
-              <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+              <p className="mt-1 text-sm font-montserrat-regular text-red-600">{fieldErrors.email}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="phone" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
               Phone Number
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Phone className="h-5 w-5 text-gray-400" />
+                <Phone className="h-5 w-5 text-gray-600" />
               </div>
               <input
                 type="tel"
@@ -357,17 +357,17 @@ export default function ProfilePage() {
               />
             </div>
             {fieldErrors.phone && (
-              <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p>
+              <p className="mt-1 text-sm font-montserrat-regular text-red-600">{fieldErrors.phone}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="acceptsMarketing" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="acceptsMarketing" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
               Email Preferences
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Bell className="h-5 w-5 text-gray-400" />
+                <Bell className="h-5 w-5 text-gray-600" />
               </div>
               <div className="flex items-center pl-10">
                 <input
@@ -377,15 +377,15 @@ export default function ProfilePage() {
                   disabled={!isEditing}
                   checked={formData.acceptsMarketing || false}
                   onChange={handleChange}
-                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border border-gray-500 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 />
-                <label htmlFor="acceptsMarketing" className="ml-3 text-sm text-gray-700">
+                <label htmlFor="acceptsMarketing" className="ml-3 text-sm font-montserrat-regular text-gray-700">
                   I want to receive marketing emails and newsletters
                 </label>
               </div>
             </div>
             {fieldErrors.acceptsMarketing && (
-              <p className="mt-1 text-sm text-red-600">{fieldErrors.acceptsMarketing}</p>
+              <p className="mt-1 text-sm font-montserrat-regular text-red-600">{fieldErrors.acceptsMarketing}</p>
             )}
           </div>
 
@@ -394,14 +394,14 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
+                className="px-4 py-2 border border-gray-500 rounded-md shadow-sm text-sm font-montserrat-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isUpdatingProfile}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-montserrat-bold text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {isUpdatingProfile ? (
                   <>

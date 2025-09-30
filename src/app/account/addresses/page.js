@@ -264,9 +264,9 @@ export default function AddressesPage() {
     return (
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6 text-center">
-          <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Please log in</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <MapPin className="mx-auto h-12 w-12 text-gray-600" />
+          <h3 className="mt-2 text-sm font-awaken text-gray-900">Please log in</h3>
+          <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
             You need to be logged in to manage your addresses.
           </p>
           <div className="mt-6">
@@ -286,8 +286,8 @@ export default function AddressesPage() {
     return (
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6 text-center">
-          <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Loading addresses...</h3>
+          <Loader2 className="mx-auto h-12 w-12 text-gray-600 animate-spin" />
+          <h3 className="mt-2 text-sm font-awaken text-gray-900">Loading addresses...</h3>
         </div>
       </div>
     );
@@ -297,9 +297,9 @@ export default function AddressesPage() {
     return (
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6 text-center">
-          <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No addresses yet</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <MapPin className="mx-auto h-12 w-12 text-gray-600" />
+          <h3 className="mt-2 text-sm font-awaken text-gray-900">No addresses yet</h3>
+          <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
             Add your first shipping address to get started.
           </p>
           <div className="mt-6">
@@ -321,8 +321,8 @@ export default function AddressesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Shipping Addresses</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="text-lg leading-6 font-awaken text-gray-900">Shipping Addresses</h3>
+          <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
             Manage your shipping addresses for faster checkout.
           </p>
         </div>
@@ -339,14 +339,14 @@ export default function AddressesPage() {
 
       {/* Messages */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="bg-red-50 border border-red-400 rounded-md p-4">
+          <p className="text-sm font-montserrat-regular text-red-700">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-md p-4">
-          <p className="text-sm text-green-700">{success}</p>
+        <div className="bg-green-50 border border-green-400 rounded-md p-4">
+          <p className="text-sm font-montserrat-regular text-green-700">{success}</p>
         </div>
       )}
 
@@ -354,17 +354,17 @@ export default function AddressesPage() {
       {isAdding && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h4 className="text-lg font-medium text-gray-900 mb-2">
+            <h4 className="text-lg font-awaken text-gray-900 mb-2">
               {editingId ? 'Edit Address' : 'Add New Address'}
             </h4>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm font-montserrat-regular text-gray-700 mb-4">
               {editingId ? 'Update your address information below.' : 'Your name and phone number have been pre-filled from your profile. You can edit them if needed.'}
             </p>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="firstName" className="block text-sm font-montserrat-bold text-gray-900">
                     First Name *
                   </label>
                   <input
@@ -374,12 +374,12 @@ export default function AddressesPage() {
                     required
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                    className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="lastName" className="block text-sm font-montserrat-bold text-gray-900">
                     Last Name *
                   </label>
                   <input
@@ -389,13 +389,13 @@ export default function AddressesPage() {
                     required
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                    className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="company" className="block text-sm font-medium text-gray-500">
+                <label htmlFor="company" className="block text-sm font-montserrat-bold text-gray-700">
                   Company (Optional)
                 </label>
                 <input
@@ -410,7 +410,7 @@ export default function AddressesPage() {
               </div>
 
               <div>
-                <label htmlFor="address1" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="address1" className="block text-sm font-montserrat-bold text-gray-900">
                   Address *
                 </label>
                 <input
@@ -426,7 +426,7 @@ export default function AddressesPage() {
               </div>
 
               <div>
-                <label htmlFor="address2" className="block text-sm font-medium text-gray-500">
+                <label htmlFor="address2" className="block text-sm font-montserrat-bold text-gray-700">
                   Apartment, suite, etc. (Optional)
                 </label>
                 <input
@@ -442,7 +442,7 @@ export default function AddressesPage() {
 
               <div className={`grid grid-cols-1 gap-4 ${hideProvince ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="city" className="block text-sm font-montserrat-bold text-gray-900">
                     City *
                   </label>
                   <input
@@ -453,13 +453,13 @@ export default function AddressesPage() {
                     value={formData.city}
                     onChange={handleChange}
                     placeholder="City"
-                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                    className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                   />
                 </div>
 
                 {!hideProvince && (
                   <div>
-                    <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="province" className="block text-sm font-montserrat-bold text-gray-900">
                       {provinceFieldName} *
                     </label>
                     {provinces.length > 0 ? (
@@ -469,7 +469,7 @@ export default function AddressesPage() {
                         required
                         value={formData.province}
                         onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                        className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 font-montserrat-regular"
                       >
                         <option value="">Select {provinceFieldName.toLowerCase()}</option>
                         {provinces.map((province) => (
@@ -487,14 +487,14 @@ export default function AddressesPage() {
                         value={formData.province}
                         onChange={handleChange}
                         placeholder={`Enter ${provinceFieldName.toLowerCase()}`}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                        className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                       />
                     )}
                   </div>
                 )}
 
                 <div>
-                  <label htmlFor="zip" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="zip" className="block text-sm font-montserrat-bold text-gray-900">
                     ZIP/Postal Code *
                   </label>
                   <input
@@ -505,14 +505,14 @@ export default function AddressesPage() {
                     value={formData.zip}
                     onChange={handleChange}
                     placeholder="ZIP or Postal Code"
-                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                    className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="country" className="block text-sm font-montserrat-bold text-gray-900">
                     Country *
                   </label>
                   <select
@@ -537,7 +537,7 @@ export default function AddressesPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="phone" className="block text-sm font-montserrat-bold text-gray-900">
                     Phone Number
                   </label>
                   <input
@@ -546,7 +546,7 @@ export default function AddressesPage() {
                     id="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900"
+                    className="mt-1 block w-full border border-gray-500 rounded-lg px-3 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent placeholder-gray-500 text-gray-900 font-montserrat-regular"
                   />
                 </div>
               </div>
@@ -555,14 +555,14 @@ export default function AddressesPage() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-200"
+                  className="px-4 py-3 border border-gray-500 rounded-lg shadow-sm text-sm font-montserrat-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="inline-flex items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-montserrat-bold text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 >
                   {isSubmitting ? (
                     <>
@@ -583,10 +583,10 @@ export default function AddressesPage() {
       {addresses.length > 0 && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {addresses.map((address) => (
-            <div key={address.id} className="bg-white shadow rounded-lg p-6">
+            <div key={address.id} className="bg-white shadow rounded-lg border border-gray-300 p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5 text-gray-400" />
+                  <MapPin className="h-5 w-5 text-gray-600" />
                   {address.id === defaultAddressId && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       <Star className="w-3 h-3 mr-1" />
@@ -597,7 +597,7 @@ export default function AddressesPage() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleEdit(address)}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     title="Edit address"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -605,7 +605,7 @@ export default function AddressesPage() {
                   {address.id !== defaultAddressId && (
                     <button
                       onClick={() => handleSetDefault(address.id)}
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
                       title="Set as default"
                     >
                       <Star className="w-4 h-4" />
@@ -613,7 +613,7 @@ export default function AddressesPage() {
                   )}
                   <button
                     onClick={() => handleDelete(address.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
                     title="Delete address"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -622,22 +622,22 @@ export default function AddressesPage() {
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-montserrat-bold text-gray-900">
                   {address.firstName} {address.lastName}
                 </p>
                 {address.company && (
-                  <p className="text-sm text-gray-600">{address.company}</p>
+                  <p className="text-sm font-montserrat-regular text-gray-700">{address.company}</p>
                 )}
-                <p className="text-sm text-gray-600">{address.address1}</p>
+                <p className="text-sm font-montserrat-regular text-gray-700">{address.address1}</p>
                 {address.address2 && (
-                  <p className="text-sm text-gray-600">{address.address2}</p>
+                  <p className="text-sm font-montserrat-regular text-gray-700">{address.address2}</p>
                 )}
-                <p className="text-sm text-gray-600">
+                <p className="text-sm font-montserrat-regular text-gray-700">
                   {address.city}{address.province ? `, ${address.province}` : ''} {address.zip}
                 </p>
-                <p className="text-sm text-gray-600">{address.country}</p>
+                <p className="text-sm font-montserrat-regular text-gray-700">{address.country}</p>
                 {address.phone && (
-                  <p className="text-sm text-gray-600">{address.phone}</p>
+                  <p className="text-sm font-montserrat-regular text-gray-700">{address.phone}</p>
                 )}
               </div>
             </div>

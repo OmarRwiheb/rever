@@ -28,9 +28,9 @@ export default function OrdersPage() {
     return (
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6 text-center">
-          <Package className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No orders yet</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <Package className="mx-auto h-12 w-12 text-gray-600" />
+          <h3 className="mt-2 text-sm font-montserrat-bold text-gray-900">No orders yet</h3>
+          <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
             Start shopping to see your orders here.
           </p>
           <div className="mt-6">
@@ -50,23 +50,23 @@ export default function OrdersPage() {
     <div className="bg-white shadow rounded-lg">
       <div className="px-4 py-5 sm:p-6">
         <div className="mb-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Order History</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="text-lg leading-6 font-awaken text-gray-900">Order History</h3>
+          <p className="mt-1 text-sm font-montserrat-regular text-gray-700">
             View and track your past orders.
           </p>
         </div>
 
         <div className="space-y-6">
           {orders.map((order) => (
-            <div key={order.id} className="border border-gray-200 rounded-lg p-6">
+            <div key={order.id} className="border border-gray-400 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <Package className="h-5 w-5 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-900">
+                  <Package className="h-5 w-5 text-gray-600" />
+                  <span className="text-sm font-montserrat-bold text-gray-900">
                     {order.name}
                   </span>
                 </div>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.fulfillmentStatus)}`}>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-montserrat-bold ${getStatusColor(order.fulfillmentStatus)}`}>
                   {order.fulfillmentStatus}
                 </span>
               </div>
@@ -74,39 +74,44 @@ export default function OrdersPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm font-montserrat-regular text-gray-700">
                     Ordered: {new Date(order.processedAt).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <DollarSign className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">
-                    Total: ${order.totalPrice.amount}
+                  <DollarSign className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm font-montserrat-regular text-gray-700">
+                    Total: EGP {order.totalPrice?.amount || 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Package className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">
-                    {order.lineItems.edges.length} item{order.lineItems.edges.length !== 1 ? 's' : ''}
+                  <Package className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm font-montserrat-regular text-gray-700">
+                    {order.lineItems?.edges?.length || 0} item{(order.lineItems?.edges?.length || 0) !== 1 ? 's' : ''}
                   </span>
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">Items</h4>
+              <div className="border-t border-gray-400 pt-4">
+                <h4 className="text-sm font-awaken text-gray-900 mb-3">Items</h4>
                 <div className="space-y-2">
-                  {order.lineItems.edges.map((edge, index) => {
+                  {order.lineItems?.edges?.map((edge, index) => {
                     const item = edge.node;
                     return (
                       <div key={index} className="flex items-center justify-between text-sm">
-                        <span className="text-gray-700">{item.title}</span>
+                        <span className="text-gray-900 font-montserrat-regular">{item.title}</span>
                         <div className="flex items-center space-x-4">
-                          <span className="text-gray-500">Qty: {item.quantity}</span>
-                          <span className="text-gray-900 font-medium">${item.variant.price.amount}</span>
+                          <span className="text-gray-700 font-montserrat-regular">Qty: {item.quantity}</span>
+                          <span className="text-gray-900 font-montserrat-bold">
+                            {item.variant?.price?.amount ? `EGP ${item.variant.price.amount}` : 
+                             item.price?.amount ? `EGP ${item.price.amount}` :
+                             item.originalUnitPrice?.amount ? `EGP ${item.originalUnitPrice.amount}` :
+                             <span className="text-gray-500 italic">Variant deleted</span>}
+                          </span>
                         </div>
                       </div>
                     );
-                  })}
+                  }) || []}
                 </div>
               </div>
             </div>
