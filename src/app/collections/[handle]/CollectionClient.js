@@ -16,6 +16,28 @@ function toPriceString(amount, currency) {
   return `${c} ${a.toFixed(2)}`;
 }
 
+// Helper function to extract colors from variants
+const extractColorsFromVariants = (variantNodes) => {
+  // Prefer explicit "Color" option; fallback to last segment in title ("Size / Color")
+  const colorByOption = variantNodes
+    .map((v) => v.selectedOptions?.find((o) => o.name.toLowerCase() === 'color')?.value)
+    .filter(Boolean);
+  if (colorByOption.length) return Array.from(new Set(colorByOption));
+
+  return Array.from(
+    new Set(
+      variantNodes
+        .map((v) => v.title)
+        .filter((t) => t && t !== 'Default Title')
+        .map((t) => {
+          const parts = t.split(' / ');
+          return parts[parts.length - 1] || t;
+        })
+        .filter(Boolean)
+    )
+  );
+};
+
 // Map Storefront product node -> your grid item shape
 function mapNodeToCard(node) {
   const minPrice = node?.priceRange?.minVariantPrice?.amount;
@@ -26,7 +48,10 @@ function mapNodeToCard(node) {
       String(o?.name || '').toLowerCase().includes('size')
     )?.values || [DEFAULT_SIZE];
 
-  const color = DEFAULT_COLOR;
+  // Extract colors from variants
+  const variantNodes = (node?.variants?.edges || []).map(e => e.node);
+  const colors = extractColorsFromVariants(variantNodes);
+  const primaryColor = colors[0] || DEFAULT_COLOR;
 
   const handle = node?.handle || String(node?.id || '').split('/').pop();
   const href = handle ? `/products/${handle}` : '#';
@@ -49,7 +74,7 @@ function mapNodeToCard(node) {
       quantityAvailable: variant.quantityAvailable,
       price: variant.price,
       compareAtPrice: variant.compareAtPrice,
-      color: colorOption?.value || color,
+      color: colorOption?.value || primaryColor,
       size: sizeOption?.value || DEFAULT_SIZE,
       selectedOptions: selectedOptions
     };
@@ -67,8 +92,8 @@ function mapNodeToCard(node) {
     isNew: false,
     isSale: false,
     description: node?.description || '',
-    color,
-    colors: [color],
+    color: primaryColor.toUpperCase(),
+    colors: colors.map(c => c.toString().toUpperCase()),
     reference: `REF. ${String(node.id).split('/').pop()}`,
     sizes: sizeOpt,
     modelInfo: '',
@@ -117,7 +142,10 @@ export default function CollectionClient({ handle }) {
   const filteredProducts = useMemo(() => {
     const out = allProducts
       .filter((p) => {
-        if (filters.colors.length > 0 && !filters.colors.includes(p.color)) return false;
+        if (filters.colors.length > 0) {
+          const hasMatchingColor = p.colors?.some((c) => filters.colors.includes(c));
+          if (!hasMatchingColor) return false;
+        }
         if (filters.sizes.length > 0) {
           const hasSize = p.sizes?.some((s) => filters.sizes.includes(s));
           if (!hasSize) return false;

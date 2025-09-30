@@ -10,7 +10,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
   const sortDropdownRef = useRef(null);
 
   // Get unique colors and sizes from products
-  const uniqueColors = [...new Set(products.map(product => product.color).filter(Boolean))];
+  const uniqueColors = [...new Set(products.flatMap(product => product.colors || []).filter(Boolean))];
   const uniqueSizes = [...new Set(products.flatMap(product => product.sizes || []).filter(Boolean))];
 
   // Click outside handler for sort dropdown
