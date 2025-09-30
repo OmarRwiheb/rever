@@ -72,7 +72,7 @@ export default function AboutPage() {
             </div>
             <div className="relative h-96 lg:h-[500px]">
               <Image
-                src="/img/lookbook.jpg"
+                src="/img/about/1.jpg"
                 alt="Rever Lookbook"
                 fill
                 className="object-cover"
@@ -131,7 +131,7 @@ export default function AboutPage() {
               </div>
               <div className="relative h-80 lg:h-96">
                 <Image
-                  src="/img/women.jpg"
+                  src="/img/about/2.jpg"
                   alt="Rever Women's Collection"
                   fill
                   className="object-cover"
@@ -149,10 +149,11 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
-                    src="/img/men.jpg"
+                    src="/img/about/3.jpg"
                     alt="Reinterpretation in Fashion"
                     fill
                     className="object-cover"
+                    style={{ objectPosition: '30% 25%' }}
                   />
                 </div>
                 <h3 className="text-xl font-awaken uppercase tracking-wider mb-4 text-black">
@@ -167,7 +168,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
-                    src="/img/product-test.jpg"
+                    src="/img/about/4.jpg"
                     alt="Artistry Excellence"
                     fill
                     className="object-cover"
@@ -185,10 +186,11 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative h-64 mb-6">
                   <Image
-                    src="/img/lookbook.jpg"
+                    src="/img/about/5.jpg"
                     alt="Conscious Elegance"
                     fill
                     className="object-cover"
+                    style={{ objectPosition: '30% 25%' }}
                   />
                 </div>
                 <h3 className="text-xl font-awaken uppercase tracking-wider mb-4 text-black">
@@ -247,10 +249,11 @@ export default function AboutPage() {
             </div>
             <div className="relative h-80 lg:h-96">
               <Image
-                src="/img/men.jpg"
+                src="/img/about/6.jpg"
                 alt="Rever Boutique"
                 fill
                 className="object-cover"
+                style={{ objectPosition: '30% 30%' }}
               />
             </div>
           </div>
