@@ -71,7 +71,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
   const hasActiveFilters = selectedColors.length > 0 || selectedSizes.length > 0;
 
   return (
-    <div className="relative top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+    <div className="relative top-0 z-10 bg-white border-b border-gray-900 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Filter Bar */}
         <div className="flex flex-col space-y-4 py-4 sm:py-6">
@@ -81,7 +81,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
             <div className="flex items-center justify-center sm:justify-start space-x-3 sm:space-x-4">
               <button 
                 onClick={() => setShowFilters(!showFilters)}
-                className="group relative inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 text-sm font-montserrat-bold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200"
+                className="group relative inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 text-sm font-montserrat-bold text-gray-700 bg-white border border-gray-900 rounded-lg hover:bg-gray-50 hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200"
               >
                 <svg className="w-4 h-4 mr-2 text-black group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -97,7 +97,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="inline-flex items-center px-2 py-2 sm:px-3 sm:py-2 text-sm font-montserrat-bold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
+                  className="inline-flex items-center px-2 py-2 sm:px-3 sm:py-2 text-sm font-montserrat-bold text-red-600 bg-red-50 border border-gray-900 rounded-lg hover:bg-red-100 hover:border-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
                 >
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -121,7 +121,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                 <div className="relative group" ref={sortDropdownRef}>
                   <button
                     onClick={() => setShowSortDropdown(!showSortDropdown)}
-                    className="flex items-center justify-between w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-montserrat-regular text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 cursor-pointer hover:border-gray-300 hover:shadow-sm min-w-[160px] group-hover:border-gray-300 group-hover:shadow-sm"
+                    className="flex items-center justify-between w-full bg-white border border-gray-900 rounded-xl px-4 py-2.5 pr-10 text-sm font-montserrat-regular text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 cursor-pointer hover:border-gray-700 hover:shadow-sm min-w-[160px] group-hover:border-gray-700 group-hover:shadow-sm"
                   >
                     <span className="flex items-center">
                       {sortBy === 'featured' && (
@@ -160,7 +160,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                   </button>
                   
                   {/* Custom Dropdown Menu */}
-                  <div className={`absolute z-50 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden transition-all duration-300 ${
+                  <div className={`absolute z-50 w-full mt-2 bg-white border border-gray-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 ${
                     showSortDropdown 
                       ? 'opacity-100 scale-100 translate-y-0' 
                       : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
@@ -265,14 +265,14 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
 
         {/* Active Filters Display */}
         {hasActiveFilters && (
-          <div className="border-t border-gray-200 py-3 sm:py-4 bg-gray-50">
+          <div className="border-t border-gray-900 py-3 sm:py-4 bg-gray-50">
             <div className="flex flex-col items-center sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
               <span className="text-sm font-montserrat-bold text-gray-700 text-center sm:text-left">Active filters:</span>
               <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                 {selectedColors.map(color => (
                   <span 
                     key={`color-${color}`}
-                    className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-montserrat-regular bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200 transition-all duration-200 group"
+                    className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-montserrat-regular bg-gray-100 text-gray-800 border border-gray-900 hover:bg-gray-200 transition-all duration-200 group"
                   >
                     <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-black mr-1 sm:mr-2 border border-gray-300"></div>
                     <span className="hidden xs:inline">{color.toLowerCase()}</span>
@@ -290,7 +290,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                 {selectedSizes.map(size => (
                   <span 
                     key={`size-${size}`}
-                    className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-montserrat-regular bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200 transition-all duration-200 group"
+                    className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-montserrat-regular bg-gray-100 text-gray-800 border border-gray-900 hover:bg-gray-200 transition-all duration-200 group"
                   >
                     <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -312,7 +312,7 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
         )}
 
         {/* Filter Panel */}
-        <div className={`border-t border-gray-200 transition-all duration-500 ease-in-out overflow-hidden ${
+        <div className={`border-t border-gray-900 transition-all duration-500 ease-in-out overflow-hidden ${
           showFilters ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className={`py-6 sm:py-8 transition-all duration-300 ${showFilters ? 'translate-y-0' : '-translate-y-4'}`}>
@@ -329,8 +329,8 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                     {uniqueColors.map((color, index) => (
                       <label 
                         key={color} 
-                        className={`relative flex items-center p-2 sm:p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm group transform hover:scale-[1.02] filter-option ${
-                          selectedColors.includes(color) ? 'border-black bg-gray-100 shadow-sm' : 'border-gray-200'
+                        className={`relative flex items-center p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-300 hover:bg-gray-50 hover:border-gray-700 hover:shadow-sm group transform hover:scale-[1.02] filter-option ${
+                          selectedColors.includes(color) ? 'border-black bg-gray-100 shadow-sm' : 'border-gray-900'
                         } ${showFilters ? 'animate-fadeInUp' : ''}`}
                         style={{ 
                           animationDelay: `${index * 75}ms`,
@@ -343,10 +343,10 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                           onChange={() => handleColorChange(color)}
                           className="sr-only"
                         />
-                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded border-2 mr-2 sm:mr-3 transition-all duration-200 ${
+                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded border mr-2 sm:mr-3 transition-all duration-200 ${
                           selectedColors.includes(color)
                             ? 'bg-black border-black'
-                            : 'border-gray-300 group-hover:border-gray-400'
+                            : 'border-gray-900 group-hover:border-gray-700'
                         }`}>
                           {selectedColors.includes(color) && (
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -382,8 +382,8 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                     {uniqueSizes.map((size, index) => (
                       <label 
                         key={size} 
-                        className={`relative flex items-center justify-center p-2 sm:p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm group transform hover:scale-[1.02] filter-option ${
-                          selectedSizes.includes(size) ? 'border-black bg-gray-100 shadow-sm' : 'border-gray-200'
+                        className={`relative flex items-center justify-center p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-300 hover:bg-gray-50 hover:border-gray-700 hover:shadow-sm group transform hover:scale-[1.02] filter-option ${
+                          selectedSizes.includes(size) ? 'border-black bg-gray-100 shadow-sm' : 'border-gray-900'
                         } ${showFilters ? 'animate-fadeInUp' : ''}`}
                         style={{ 
                           animationDelay: `${index * 50}ms`,
@@ -396,10 +396,10 @@ export default function FilterBar({ totalItems = 36, onViewModeChange, onFilters
                           onChange={() => handleSizeChange(size)}
                           className="sr-only"
                         />
-                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded border-2 mr-1 sm:mr-2 transition-all duration-200 ${
+                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded border mr-1 sm:mr-2 transition-all duration-200 ${
                           selectedSizes.includes(size)
                             ? 'bg-black border-black'
-                            : 'border-gray-300 group-hover:border-gray-400'
+                            : 'border-gray-900 group-hover:border-gray-700'
                         }`}>
                           {selectedSizes.includes(size) && (
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
