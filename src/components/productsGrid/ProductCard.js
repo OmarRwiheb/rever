@@ -148,20 +148,20 @@ export default function ProductCard({ product, viewMode = 'grid-6' }) {
       {/* Product Info */}
       {viewMode !== 'grid-12' && (
         <Link href={href} className="block text-left px-2 mt-1">
-          <h3 className="text-xs font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-0.5">
+          <h3 className="text-xs font-montserrat-bold text-gray-900 group-hover:text-gray-600 transition-colors uppercase mb-0.5">
             {name}
           </h3>
 
           {originalPrice && (
-            <span className="text-xs text-gray-900 line-through mb-0.5 block">
+            <span className="text-xs font-montserrat-regular text-gray-900 line-through mb-0.5 block">
               {originalPrice}
             </span>
           )}
 
           <div className="flex flex-col items-start justify-start text-xs leading-tight">
-            <span className={`font-medium text-gray-900 ${originalPrice ? 'bg-[#FFE693]' : ''}`}>
+            <span className={`font-montserrat-bold text-gray-900 ${originalPrice ? 'bg-[#FFE693]' : ''}`}>
               {originalPrice && (
-                <span className="font-medium text-gray-900 mr-1">
+                <span className="font-montserrat-bold text-gray-900 mr-1">
                   -{calculateDiscount(originalPrice, price)}
                 </span>
               )}

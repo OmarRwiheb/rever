@@ -11,7 +11,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => (
       onClick={onToggle}
       className="flex justify-between items-center w-full text-left"
     >
-      <h3 className="text-lg font-light uppercase tracking-wider text-black">
+      <h3 className="text-lg font-awaken uppercase tracking-wider text-black">
         {question}
       </h3>
       {isOpen ? (
@@ -21,7 +21,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => (
       )}
     </button>
     {isOpen && (
-      <div className="mt-4 text-gray-800 font-light leading-relaxed">
+      <div className="mt-4 text-gray-800 font-montserrat-regular leading-relaxed">
         {answer}
       </div>
     )}
@@ -61,10 +61,10 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl lg:text-6xl font-serif mb-8 tracking-wider text-black">
+              <h1 className="text-4xl lg:text-6xl font-awaken mb-8 tracking-wider text-black">
                 <span className="text-5xl lg:text-7xl">A</span>BOUT REVER
               </h1>
-              <p className="text-lg text-gray-800 font-light leading-relaxed">
+              <p className="text-lg text-gray-800 font-montserrat-regular leading-relaxed">
                 Rever is not fashion, it is memory reawakened. A brand that reverses noise, trends, and urgency, 
                 bringing back timeless silhouettes and old-money elegance for the modern Arab world. It draws from 
                 emotion, not attention. From meaning, not trend.
@@ -90,11 +90,11 @@ export default function AboutPage() {
           <div className="mb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase text-black">
+                <h2 className="text-3xl font-awaken mb-8 tracking-wider uppercase text-black">
                   Our Story
                 </h2>
-                <div className="space-y-6 text-gray-800 font-light leading-relaxed">
-                  <p className="text-lg font-medium text-black">
+                <div className="space-y-6 text-gray-800 font-montserrat-regular leading-relaxed">
+                  <p className="text-lg font-montserrat-bold text-black">
                     Rever: The Dream in Reverse (Est. 2025)
                   </p>
                   <p>
@@ -120,10 +120,10 @@ export default function AboutPage() {
                     Each Rever piece is a page from that world: crafted with intention, guided by memory, 
                     and made for those who don't chase attention, they attract it.
                   </p>
-                  <p className="text-lg font-medium text-black">
+                  <p className="text-lg font-montserrat-bold text-black">
                     We create not for trends, but for those who long for elegance that endures.
                   </p>
-                  <p className="text-lg font-medium text-black">
+                  <p className="text-lg font-montserrat-bold text-black">
                     Rever is not fashion. It is memory. Reawakened.
                     Because we don't follow time, we wear it.
                   </p>
@@ -142,7 +142,7 @@ export default function AboutPage() {
 
           {/* Our Values */}
           <div>
-            <h2 className="text-3xl font-serif mb-12 tracking-wider uppercase text-center text-black">
+            <h2 className="text-3xl font-awaken mb-12 tracking-wider uppercase text-center text-black">
               Our Essence
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -155,10 +155,10 @@ export default function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
+                <h3 className="text-xl font-awaken uppercase tracking-wider mb-4 text-black">
                   Reinterpretation
                 </h3>
-                <p className="text-gray-800 font-light leading-relaxed">
+                <p className="text-gray-800 font-montserrat-regular leading-relaxed">
                   At Rever, innovation is not about the new, it is about reimagining what was always timeless. 
                   We draw from cultural memory and enduring aesthetics to create designs that feel both familiar 
                   and quietly modern.
@@ -173,10 +173,10 @@ export default function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
+                <h3 className="text-xl font-awaken uppercase tracking-wider mb-4 text-black">
                   Artistry
                 </h3>
-                <p className="text-gray-800 font-light leading-relaxed">
+                <p className="text-gray-800 font-montserrat-regular leading-relaxed">
                   Each Rever piece is crafted with intention, using premium fabrics and refined techniques. 
                   True luxury lives in the details; the cut that flatters, the fabric that lingers, and the 
                   finish that makes a garment endure.
@@ -191,10 +191,10 @@ export default function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-light uppercase tracking-wider mb-4 text-black">
+                <h3 className="text-xl font-awaken uppercase tracking-wider mb-4 text-black">
                   Conscious Elegance
                 </h3>
-                <p className="text-gray-800 font-light leading-relaxed">
+                <p className="text-gray-800 font-montserrat-regular leading-relaxed">
                   We believe luxury should last. By sourcing high-quality, enduring fabrics and producing in 
                   limited quantities, we create garments meant to become part of your story, cherished, not replaced. 
                   Sustainability for us is elegance that endures.
@@ -208,7 +208,7 @@ export default function AboutPage() {
       {/* FAQ Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-serif mb-12 text-center tracking-wider uppercase text-black">
+          <h2 className="text-3xl font-awaken mb-12 text-center tracking-wider uppercase text-black">
             Frequently Asked Questions
           </h2>
           <div className="space-y-0">
@@ -230,16 +230,16 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left">
-              <h2 className="text-3xl font-serif mb-8 tracking-wider uppercase text-black">
+              <h2 className="text-3xl font-awaken mb-8 tracking-wider uppercase text-black">
                 Get in Touch
               </h2>
-              <p className="text-lg text-gray-800 font-light leading-relaxed mb-8">
+              <p className="text-lg text-gray-800 font-montserrat-regular leading-relaxed mb-8">
                 We'd love to hear from you. Whether you have a question, need guidance, or simply wish to share a thought, our team is here for you.
               </p>
               <div className="flex justify-center lg:justify-start">
                 <a
                   href="/contact"
-                  className="inline-block px-8 py-3 border border-black text-black font-light uppercase tracking-wider hover:bg-black hover:text-white transition-colors duration-200"
+                  className="inline-block px-8 py-3 border border-black text-black font-montserrat-regular uppercase tracking-wider hover:bg-black hover:text-white transition-colors duration-200"
                 >
                   Contact Us
                 </a>

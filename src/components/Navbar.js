@@ -173,7 +173,7 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
   <div className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     {hasDropdown ? (
       <div
-        className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1 cursor-pointer`}
+        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1 cursor-pointer`}
       >
         {link.name}
         <ChevronDown size={12} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -181,7 +181,7 @@ const NavLink = ({ link, styles, hasDropdown, isDropdownOpen, onMouseEnter, onMo
     ) : (
       <a
         href={link.href}
-        className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
+        className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out flex items-center gap-1`}
       >
         {link.name}
       </a>
@@ -194,7 +194,7 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
     <div className="flex items-center justify-between">
       {hasDropdown ? (
         <div
-          className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1 cursor-pointer"
+          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1 cursor-pointer"
           onClick={onToggle}
         >
           {link.name}
@@ -202,7 +202,7 @@ const MobileNavLink = ({ link, styles, hasDropdown, isDropdownOpen, onToggle }) 
       ) : (
         <a
           href={link.href}
-          className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
+          className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2 flex-1"
         >
           {link.name}
         </a>
@@ -409,7 +409,7 @@ export default function Navbar() {
           {/* Brand Logo - Center Section */}
           <div className="flex justify-center items-center w-1/4">
             <a href="/" className="text-center">
-              <h1 className={`text-2xl lg:text-3xl font-serif ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
+              <h1 className={`text-2xl lg:text-3xl font-awaken ${styles.text} tracking-wider transition-all duration-500 ease-out`}>
                 <div className="relative">
                   <Image 
                     src={currentLogo} 
@@ -427,27 +427,27 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center justify-end w-2/5 space-x-4">
           <a
               href="/lookbook"
-              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               Lookbook
             </a>
             {/* Blog Link */}
             {/* <a
               href="/blog"
-              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               Blog
             </a> */}
             {/* About Link */}
             <a
               href="/about"
-              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               About Us
             </a>
             <a
               href="/contact"
-              className={`text-xs font-light uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
+              className={`text-xs font-montserrat-regular uppercase tracking-widest ${styles.text} ${styles.hover} transition-all duration-500 ease-out`}
             >
               Contact Us
             </a>
@@ -548,7 +548,7 @@ export default function Navbar() {
 
                   <div className="flex-1 flex justify-center lg:justify-center">
                     <a href="/" className="text-center">
-                      <h1 className="text-2xl lg:text-3xl font-serif text-black tracking-wider transition-all duration-500 ease-out">
+                      <h1 className="text-2xl lg:text-3xl font-awaken text-black tracking-wider transition-all duration-500 ease-out">
                         REVER
                       </h1>
                     </a>
@@ -590,7 +590,7 @@ export default function Navbar() {
                 <div className="p-6 space-y-8">
                   {/* User Account Section */}
                   <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-500 mb-4">
                       Account
                     </h3>
                     {isAuthenticated ? (
@@ -609,16 +609,16 @@ export default function Navbar() {
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <a href="/account/profile" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/profile" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
                             Profile
                           </a>
-                          <a href="/account/orders" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/orders" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
                             Orders
                           </a>
-                          <a href="/account/addresses" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/addresses" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
                             Addresses
                           </a>
-                          <a href="/account/settings" className="block text-sm text-gray-700 hover:text-gray-900 py-2">
+                          <a href="/account/settings" className="block text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2">
                             Settings
                           </a>
                         </div>
@@ -629,7 +629,7 @@ export default function Navbar() {
                           setIsAuthModalOpen(true);
                           setIsMobileMenuOpen(false);
                         }}
-                        className="w-full text-left text-sm text-gray-700 hover:text-gray-900 py-2 flex items-center space-x-2"
+                        className="w-full text-left text-sm font-montserrat-regular text-gray-700 hover:text-gray-900 py-2 flex items-center space-x-2"
                       >
                         <User className="w-4 h-4" />
                         <span>Sign In / Sign Up</span>
@@ -638,7 +638,7 @@ export default function Navbar() {
                   </div>
 
                   <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-500 mb-4">
                       Collections
                     </h3>
                     {(menuLoaded ? navLinks : []).map((link) => (
@@ -654,27 +654,27 @@ export default function Navbar() {
                     {/* Blog Link for Mobile */}
                     <a
                       href="/lookbook"
-                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       Lookbook
                     </a>
                     {/* <a
                       href="/blog"
-                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       Blog
                     </a> */}
                     {/* About Link for Mobile */}
                     <a
                       href="/about"
-                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       About Us
                     </a>
 
                     <a
                       href="/contact"
-                      className="block text-sm font-light uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black hover:text-gray-600 transition-colors duration-200 py-2"
                     >
                       Contact Us
                     </a>

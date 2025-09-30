@@ -24,9 +24,9 @@ export default function ProductGrid({ products, viewMode = 'grid-6', classes }) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500 mb-6">We couldn't find any products matching your current filters.</p>
-            <div className="space-y-3 text-sm text-gray-600">
+            <h3 className="text-xl font-awaken text-gray-900 mb-2">No products found</h3>
+            <p className="text-gray-500 mb-6 font-montserrat-regular">We couldn't find any products matching your current filters.</p>
+            <div className="space-y-3 text-sm font-montserrat-regular text-gray-600">
               <p>Try:</p>
               <ul className="space-y-1">
                 <li>• Adjusting your color or size selections</li>

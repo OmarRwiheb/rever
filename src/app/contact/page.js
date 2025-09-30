@@ -81,8 +81,8 @@ export default function ContactPage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-medium text-gray-900 mb-4">Contact Us</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-awaken text-gray-900 mb-4">Contact Us</h1>
+          <p className="text-gray-600 font-montserrat-regular">
             We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function ContactPage() {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="name" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 Full Name *
               </label>
               <input
@@ -101,14 +101,14 @@ export default function ContactPage() {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                 placeholder="Your full name"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="email" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 Email Address *
               </label>
               <input
@@ -118,14 +118,14 @@ export default function ContactPage() {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                 placeholder="your.email@example.com"
               />
             </div>
 
             {/* Subject */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="subject" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 Subject *
               </label>
               <input
@@ -135,14 +135,14 @@ export default function ContactPage() {
                 value={formData.subject}
                 onChange={handleInputChange}
                 required
-                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                 placeholder="What is this about?"
               />
             </div>
 
             {/* Message */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="message" className="block text-sm font-montserrat-bold text-gray-900 mb-2">
                 Message *
               </label>
               <textarea

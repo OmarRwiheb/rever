@@ -602,10 +602,66 @@ nav * {
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Awaken';
+  src: url('/fonts/AwakenRegular-eZoyn.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Hairline.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'HelveticaCustom', sans-serif;
+  font-family: 'Montserrat', 'HelveticaCustom', sans-serif;
+}
+
+/* Font utility classes */
+.font-awaken {
+  font-family: 'Awaken', serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-montserrat-thin {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 100;
+}
+
+.font-montserrat-regular {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+}
+
+.font-montserrat-bold {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 /* Custom animations for filter panel */

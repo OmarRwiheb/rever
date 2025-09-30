@@ -29,8 +29,8 @@ export default function Footer({ fullPage = false }) {
           <div className="flex justify-between">
             {/* About Column */}
             <div>
-              <h3 className="text-sm font-semibold mb-4">About</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <h3 className="text-sm font-montserrat-bold mb-4">About</h3>
+              <ul className="space-y-2 text-sm font-montserrat-regular text-gray-300">
                 <li>
                   <Link 
                     href="/blog" 
@@ -60,8 +60,8 @@ export default function Footer({ fullPage = false }) {
 
             {/* Customer Service Column */}
             <div>
-              <h3 className="text-sm font-semibold mb-4">Customer Service</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <h3 className="text-sm font-montserrat-bold mb-4">Customer Service</h3>
+              <ul className="space-y-2 text-sm font-montserrat-regular text-gray-300">
                 <li>
                   <Link 
                     href="/returns" 
@@ -83,7 +83,7 @@ export default function Footer({ fullPage = false }) {
           
             {/* Follow Us Column */}
             <div>
-              <h3 className="text-sm font-semibold mb-4">Follow Us</h3>
+              <h3 className="text-sm font-montserrat-bold mb-4">Follow Us</h3>
               <div className="flex space-x-4">
                 <Link 
                   href="#" 
@@ -117,8 +117,8 @@ export default function Footer({ fullPage = false }) {
 
           {/* Newsletter Section */}
           <div className="mb-8 md:mb-12 text-center">
-            <h3 className="text-xl md:text-2xl font-semibold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 mb-6 max-w-md mx-auto text-sm md:text-base">
+            <h3 className="text-xl md:text-2xl font-awaken mb-4">Stay Updated</h3>
+            <p className="text-gray-300 mb-6 max-w-md mx-auto text-sm md:text-base font-montserrat-regular">
               Subscribe to our newsletter for exclusive updates, new arrivals, and special offers delivered straight to your inbox.
             </p>
             <NewsletterSignupForm />
@@ -127,13 +127,13 @@ export default function Footer({ fullPage = false }) {
 
         {/* Bottom Section */}
         <div className="md:mt-12 pt-6 md:pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm text-gray-400">
+          <div className="text-sm font-montserrat-regular text-gray-400">
             © 2025 Rever. All rights reserved.
           </div>
           <div className="mt-4 md:mt-0">
             <Link 
               href="/" 
-              className="text-xl font-semibold text-white transition-opacity"
+              className="text-xl font-awaken text-white transition-opacity"
             >
               Rever
             </Link>
