@@ -117,7 +117,7 @@ const DropdownMenu = ({ items, styles, isOpen, onMouseEnter, onMouseLeave }) => 
               <div className="space-y-3">
                 <a
                   href={item.href}
-                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-light"
+                  className="block text-sm uppercase tracking-widest text-black hover:text-gray-500 transition-colors duration-200 py-1 font-montserrat-regular"
                 >
                   {item.name}
                 </a>
@@ -343,7 +343,8 @@ export default function Navbar() {
         return {
           ...baseStyles,
           text: 'text-black',
-          hover: 'hover:text-gray-600'
+          hover: 'hover:text-gray-600',
+          icon: '/img/logo.png' // Use dark logo when dropdown is open
         };
       }
       return baseStyles;
