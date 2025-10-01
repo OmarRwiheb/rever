@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function ImageSection({ src, alt, priority = false }) {
+export default function ImageSection({ src, alt, priority = false, overlayText }) {
   return (
     <div 
       className="relative w-full h-full"
@@ -41,6 +41,13 @@ export default function ImageSection({ src, alt, priority = false }) {
         // Disable optimization for better Safari compatibility
         unoptimized={false}
       />
+      {overlayText && (
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+          <p className="text-white font-montserrat-regular text-sm">
+            {overlayText}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
