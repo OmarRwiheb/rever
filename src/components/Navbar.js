@@ -31,7 +31,7 @@ const NAVBAR_STYLES = {
   },
   women: {
     bg: 'bg-transparent',
-    text: 'text-black',
+    text: 'text-white',
     icon: '/img/logo.png'
   },
   men: {
