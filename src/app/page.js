@@ -6,8 +6,8 @@ import MenSection from "@/components/home/sections/Men";
 import Footer from "@/components/Footer";
 import ClientWrapper from "@/components/ClientWrapper";
 
-export default function HomePage() {
-  const headersList = headers();
+export default async function HomePage() {
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || '';
   const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 

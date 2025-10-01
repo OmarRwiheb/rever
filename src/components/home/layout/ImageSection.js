@@ -41,9 +41,11 @@ export default function ImageSection({ src, alt, priority = false, overlayText }
         // Disable optimization for better Safari compatibility
         unoptimized={false}
       />
+      
+      {/* Overlay Text */}
       {overlayText && (
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-          <p className="text-white font-montserrat-regular text-sm">
+        <div className="absolute bottom-0 left-0 right-0  p-4">
+          <p className="text-white font-montserrat-regular text-sm text-center">
             {overlayText}
           </p>
         </div>
