@@ -32,7 +32,7 @@ const NAVBAR_STYLES = {
   women: {
     bg: 'bg-transparent',
     text: 'text-white',
-    icon: '/img/logo.png'
+    icon: '/img/whitelogo.png'
   },
   men: {
     bg: 'bg-transparent',
