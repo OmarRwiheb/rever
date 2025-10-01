@@ -1,15 +1,18 @@
 // src/app/page.js
-import { headers } from 'next/headers';
+"use client";
 import HeroSection from "@/components/home/sections/Hero";
 import WomenSection from "@/components/home/sections/Women";
 import MenSection from "@/components/home/sections/Men";
 import Footer from "@/components/Footer";
 import ClientWrapper from "@/components/ClientWrapper";
+import { useState, useEffect } from "react";
 
-export default async function HomePage() {
-  const headersList = await headers();
-  const userAgent = headersList.get('user-agent') || '';
-  const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
+export default function HomePage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   return (
     <ClientWrapper 
