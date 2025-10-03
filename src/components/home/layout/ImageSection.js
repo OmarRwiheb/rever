@@ -49,10 +49,10 @@ const ImageSection = memo(function ImageSection({ src, alt, priority = false, ov
       
       {/* Overlay Text - Memoized to prevent re-renders */}
       {overlayText && (
-        <div className="absolute top-[92dvh] left-0 right-0 p-4">
-          <p className="text-white font-montserrat-regular text-sm text-center">
+        <div className="absolute top-[90dvh] left-1/2 transform -translate-x-1/2 z-10 text-center">
+          <span className="text-white text-xs tracking-[0.2em] uppercase leading-relaxed">
             {overlayText}
-          </p>
+          </span>
         </div>
       )}
     </div>

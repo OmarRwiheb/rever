@@ -85,21 +85,21 @@ const OptimizedVideoSection = memo(function OptimizedVideoSection({
       {/* Scroll Down Overlay - only show for hero video (priority=true) */}
       {priority && (
         <div className="absolute top-[90dvh] left-1/2 transform -translate-x-1/2 z-10">
-          <div className="flex flex-col items-center space-y-4 animate-bounce">
-            <span className="text-white text-sm font-medium tracking-wider uppercase">
-              Scroll Down
+          <div className="flex flex-col items-center space-y-3">
+            <span className="text-white text-xs tracking-[0.2em] uppercase leading-relaxed">
+              Women's fall 2025              
             </span>
             <svg 
-              className="w-6 h-6 text-white" 
+              className="w-4 h-4 text-white opacity-80" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
+              style={{ strokeWidth: 1.5 }}
             >
               <path 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                d="M6 9l6 6 6-6" 
               />
             </svg>
           </div>
