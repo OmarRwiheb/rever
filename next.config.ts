@@ -21,21 +21,25 @@ const nextConfig: NextConfig = {
   },
   // Optimize for mobile performance
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disable to avoid critters dependency
     optimizePackageImports: ['gsap', 'lucide-react'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+  // Turbopack configuration (moved from experimental)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
   // Compress output
   compress: true,
-  // Enable SWC minification
-  swcMinify: true,
+  // Performance optimizations
+  poweredByHeader: false,
+  generateEtags: false,
+  // Optimize for mobile
+  output: 'standalone',
   // Optimize chunks
   webpack: (config, { isServer, dev }) => {
     // Ensure GSAP works properly in production builds
