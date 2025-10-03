@@ -38,10 +38,21 @@ function MobileWishlistLink() {
 // Create context for navbar state
 const NavbarContext = createContext();
 
+// Create context for mobile menu state
+const MobileMenuContext = createContext();
+
 export const useNavbar = () => {
   const context = useContext(NavbarContext);
   if (!context) {
     throw new Error('useNavbar must be used within a NavbarProvider');
+  }
+  return context;
+};
+
+export const useMobileMenu = () => {
+  const context = useContext(MobileMenuContext);
+  if (!context) {
+    throw new Error('useMobileMenu must be used within a MobileMenuProvider');
   }
   return context;
 };
@@ -107,6 +118,21 @@ export const NavbarProvider = ({ children }) => {
     <NavbarContext.Provider value={contextValue}>
       {children}
     </NavbarContext.Provider>
+  );
+};
+
+export const MobileMenuProvider = ({ children }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const contextValue = useMemo(() => ({
+    isMobileMenuOpen,
+    setIsMobileMenuOpen
+  }), [isMobileMenuOpen]);
+
+  return (
+    <MobileMenuContext.Provider value={contextValue}>
+      {children}
+    </MobileMenuContext.Provider>
   );
 };
 
@@ -250,8 +276,7 @@ export default function Navbar() {
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const { getItemCount } = useCart();
   const { isAuthenticated, user, logout } = useUser();
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
   const [mobileDropdowns, setMobileDropdowns] = useState({});
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [isClient, setIsClient] = useState(false);
@@ -543,9 +568,6 @@ export default function Navbar() {
               animation: 'slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
             }}
             onClick={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
-            onScroll={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col h-full">
               {/* Mobile Header */}
@@ -597,13 +619,6 @@ export default function Navbar() {
               <div 
                 className="flex-1 overflow-y-auto" 
                 style={{ WebkitOverflowScrolling: 'touch' }}
-                onWheel={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-                onTouchMove={(e) => {
-                  e.stopPropagation();
-                }}
               >
                 <div className="p-6 space-y-8">
                   {/* User Account Section */}

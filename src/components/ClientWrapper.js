@@ -1,7 +1,7 @@
 // components/ClientWrapper.js
 "use client";
 import React, { useRef, useCallback, useState, useMemo, useEffect } from "react";
-import { useNavbar } from "@/components/Navbar";
+import { useNavbar, useMobileMenu } from "@/components/Navbar";
 
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
@@ -28,6 +28,7 @@ export default function ClientWrapper({
   const SECTION_UPDATE_COOLDOWN = 100;
   const now = () => Date.now();
   const { setCurrentSection } = useNavbar();
+  const { isMobileMenuOpen } = useMobileMenu();
 
   const kids = useMemo(() => {
     return React.Children.toArray(children).filter(Boolean);
@@ -109,6 +110,7 @@ export default function ClientWrapper({
         dragMinimum: 20, // Increased minimum drag for better mobile UX
         onUp: () => {
           if (
+            isMobileMenuOpen || // Don't scroll if mobile menu is open
             (tween.current && tween.current.isActive()) ||
             currentIndexRef.current >= panelsRef.current.length - 1 ||
             now() - lastScrollTime.current < SCROLL_COOLDOWN
@@ -136,6 +138,7 @@ export default function ClientWrapper({
         },
         onDown: () => {
           if (
+            isMobileMenuOpen || // Don't scroll if mobile menu is open
             (tween.current && tween.current.isActive()) ||
             currentIndexRef.current <= 0 ||
             now() - lastScrollTime.current < SCROLL_COOLDOWN
@@ -184,6 +187,19 @@ export default function ClientWrapper({
       }
     };
   }, [mounted, updateNavbarSection]);
+
+  // Handle mobile menu state changes - disable/enable Observer
+  useEffect(() => {
+    if (!observerRef.current) return;
+
+    if (isMobileMenuOpen) {
+      // Disable the Observer when mobile menu is open
+      observerRef.current.disable();
+    } else {
+      // Re-enable the Observer when mobile menu is closed
+      observerRef.current.enable();
+    }
+  }, [isMobileMenuOpen]);
 
   if (!mounted) {
     return (

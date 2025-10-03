@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar, { NavbarProvider } from "@/components/Navbar";
+import Navbar, { NavbarProvider, MobileMenuProvider } from "@/components/Navbar";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import PrivacyBanner from "@/components/PrivacyBanner";
 // import WhatsAppSupport from "@/components/WhatsAppSupport";
@@ -88,14 +88,16 @@ export default function RootLayout({ children }) {
       >
         {/* <RecaptchaProvider> */}
           <NavbarProvider>
-            <UserProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <Navbar />
-                  {children}
-                </WishlistProvider>
-              </CartProvider>
-            </UserProvider>
+            <MobileMenuProvider>
+              <UserProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    <Navbar />
+                    {children}
+                  </WishlistProvider>
+                </CartProvider>
+              </UserProvider>
+            </MobileMenuProvider>
           </NavbarProvider>
           <NewsletterPopup />
           <PrivacyBanner />
