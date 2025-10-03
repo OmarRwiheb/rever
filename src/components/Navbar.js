@@ -225,7 +225,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { currentSection, getNavbarStyles, activeDropdown, setActiveDropdown } = useNavbar();
   const { getItemCount } = useCart();
-  const { isAuthenticated, user } = useUser();
+  const { isAuthenticated, user, logout } = useUser();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDropdowns, setMobileDropdowns] = useState({});
@@ -612,9 +612,15 @@ export default function Navbar() {
                           <a href="/account/addresses" className="block text-sm font-montserrat-regular text-gray-700 py-2">
                             Addresses
                           </a>
-                          <a href="/account/settings" className="block text-sm font-montserrat-regular text-gray-700 py-2">
-                            Settings
-                          </a>
+                          <button 
+                            onClick={() => {
+                              logout();
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="block text-sm font-montserrat-regular text-gray-700 py-2 text-left"
+                          >
+                            Sign Out
+                          </button>
                         </div>
                       </div>
                     ) : (
@@ -630,11 +636,11 @@ export default function Navbar() {
                       </button>
                     )}
                   </div>
-
+                  
+                  {/* Separator line between auth/profile and navigation */}
+                  <div className="border-t border-black opacity-20 my-6"></div>
+                  
                   <div className="space-y-6">
-                    <h3 className="text-xs font-montserrat-bold uppercase tracking-widest text-gray-900 mb-4">
-                      Collections
-                    </h3>
                     {(menuLoaded ? navLinks : []).map((link) => (
                       <MobileNavLink 
                         key={link.name} 
