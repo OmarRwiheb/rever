@@ -10,7 +10,31 @@ import CartDropdown from './CartDropdown';
 import AuthModal from './auth/AuthModal';
 import UserDropdown from './auth/UserDropdown';
 import WishlistIntegration from './wishlist/WishlistIntegration';
+import { useWishlist } from '@/contexts/WishlistContext';
 import Image from 'next/image';
+
+// Mobile Wishlist Link Component
+function MobileWishlistLink() {
+  const { getWishlistCount } = useWishlist();
+  const wishlistCount = getWishlistCount();
+
+  return (
+    <a
+      href="/wishlist"
+      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2 relative"
+    >
+      <span className="flex items-center">
+        Wishlist
+        {wishlistCount > 0 && (
+          <span className="ml-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+            {wishlistCount > 99 ? '99+' : wishlistCount}
+          </span>
+        )}
+      </span>
+    </a>
+  );
+}
+
 // Create context for navbar state
 const NavbarContext = createContext();
 
@@ -671,6 +695,9 @@ export default function Navbar() {
                     >
                       About Us
                     </a>
+
+                    {/* Wishlist Link for Mobile */}
+                    <MobileWishlistLink />
 
                     <a
                       href="/contact"
