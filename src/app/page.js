@@ -1,13 +1,11 @@
 // src/app/page.js
 "use client";
 import HeroSection from "@/components/home/sections/Hero";
+import WomenSection from "@/components/home/sections/Women";
+import MenSection from "@/components/home/sections/Men";
+import Footer from "@/components/Footer";
 import ClientWrapper from "@/components/ClientWrapper";
-import { useState, useEffect, lazy, Suspense, useMemo } from "react";
-
-// Lazy load non-critical components
-const WomenSection = lazy(() => import("@/components/home/sections/Women"));
-const MenSection = lazy(() => import("@/components/home/sections/Men"));
-const Footer = lazy(() => import("@/components/Footer"));
+import { useState, useEffect, useMemo } from "react";
 
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -28,19 +26,9 @@ export default function HomePage() {
       sectionNames={sectionNames}
     >
       <HeroSection />
-      {isMobile && (
-        <Suspense fallback={<div className="w-full h-full bg-gray-900 animate-pulse" />}>
-          <WomenSection link="/collections/fall-2025" />
-        </Suspense>
-      )}
-      {isMobile && (
-        <Suspense fallback={<div className="w-full h-full bg-gray-900 animate-pulse" />}>
-          <MenSection link="/lookbook" />
-        </Suspense>
-      )}
-      <Suspense fallback={<div className="w-full h-full bg-gray-900 animate-pulse" />}>
-        <Footer fullPage />
-      </Suspense>
+      {isMobile && <WomenSection link="/collections/fall-2025" />}
+      {isMobile && <MenSection link="/lookbook" />}
+      <Footer fullPage />
     </ClientWrapper>
   );
 }
