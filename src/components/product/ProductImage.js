@@ -148,7 +148,7 @@ export default function ProductImage({ product }) {
               {productImages.map((image, index) => (
                 <div 
                   key={index} 
-                  className="relative flex-shrink-0 w-screen lg:w-full min-h-screen lg:min-h-screen cursor-pointer hover:opacity-90 transition-opacity lg:flex lg:items-center lg:justify-center bg-gray-50 scroll-snap-item lg:scroll-snap-none"
+                  className="relative flex-shrink-0 w-screen lg:w-full min-h-[70vh] lg:min-h-screen cursor-pointer hover:opacity-90 transition-opacity lg:flex lg:items-center lg:justify-center bg-gray-50 scroll-snap-item lg:scroll-snap-none"
                   onClick={() => openModal(index)}
                 >
                   <Image
@@ -156,7 +156,7 @@ export default function ProductImage({ product }) {
                     alt={`${product.name} - Image ${index + 1}`}
                     width={1200}
                     height={1800}
-                    className="object-cover lg:object-contain h-screen lg:h-full w-full"
+                    className="object-cover lg:object-contain h-[70vh] lg:h-full w-full"
                     priority={index === 0}
                   />
                 </div>

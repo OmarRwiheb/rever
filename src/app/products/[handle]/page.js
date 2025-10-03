@@ -7,6 +7,7 @@ import ProductImage from '../../../components/product/ProductImage';
 import ProductInfo from '../../../components/product/ProductInfo';
 import ProductHighlights from '../../../components/product/ProductHighlights';
 import RelatedProducts from '../../../components/product/RelatedProducts';
+import MobileStickyCart from '../../../components/product/MobileStickyCart';
 import Footer from '../../../components/Footer';
 import LoadingScreen from '../../../components/LoadingScreen';
 
@@ -22,6 +23,9 @@ export default function ProductDetailPage() {
   const params = useParams();
   const pathname = usePathname();
   const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState('S');
+  const [quantity, setQuantity] = useState(1);
+  const [originalButtonsRef, setOriginalButtonsRef] = useState(null);
 
   // Prefer /products/[handle]
   const { handleParam, idParam } = useMemo(() => {
@@ -97,6 +101,21 @@ export default function ProductDetailPage() {
     setSelectedColor(color);
   };
 
+  // Handle size selection from ProductInfo
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+  };
+
+  // Handle quantity change from ProductInfo
+  const handleQuantityChange = (qty) => {
+    setQuantity(qty);
+  };
+
+  // Handle ref from ProductInfo
+  const handleButtonsRef = (ref) => {
+    setOriginalButtonsRef(ref);
+  };
+
   if (loading) {
     return <LoadingScreen message="Loading product..." />;
   }
@@ -127,7 +146,12 @@ export default function ProductDetailPage() {
             <ProductInfo 
               product={product} 
               selectedColor={selectedColor}
+              selectedSize={selectedSize}
+              quantity={quantity}
               onColorChange={handleColorChange}
+              onSizeChange={handleSizeChange}
+              onQuantityChange={handleQuantityChange}
+              onButtonsRef={handleButtonsRef}
             />
             <ProductHighlights product={product} />
           </div>
@@ -140,6 +164,16 @@ export default function ProductDetailPage() {
       </div>
 
       <Footer />
+      
+      {/* Mobile Sticky Cart */}
+      <MobileStickyCart 
+        product={product}
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+        quantity={quantity}
+        onColorChange={handleColorChange}
+        originalButtonsRef={originalButtonsRef}
+      />
     </div>
   );
 }

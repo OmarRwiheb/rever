@@ -1,18 +1,41 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import MeasurementTablePopup from './MeasurementTablePopup';
 import WishlistButton from '@/components/wishlist/WishlistButton';
 import StockStatus from './StockStatus';
 
-export default function ProductInfo({ product, selectedColor, onColorChange }) {
-  const [selectedSize, setSelectedSize] = useState('S');
-  const [quantity, setQuantity] = useState(1);
+export default function ProductInfo({ product, selectedColor, selectedSize, quantity, onColorChange, onSizeChange, onQuantityChange, onButtonsRef }) {
+  // Use props instead of local state
+  const [localSelectedSize, setLocalSelectedSize] = useState(selectedSize || 'S');
+  const [localQuantity, setLocalQuantity] = useState(quantity || 1);
   const [isMeasurementPopupOpen, setIsMeasurementPopupOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [addToCartMessage, setAddToCartMessage] = useState('');
+  const originalButtonsRef = useRef(null);
   
   const { addToCart, getItemQuantity, isItemInCart } = useCart();
+
+  // Sync local state with props
+  useEffect(() => {
+    if (selectedSize !== undefined) {
+      setLocalSelectedSize(selectedSize);
+    }
+  }, [selectedSize]);
+
+  useEffect(() => {
+    if (quantity !== undefined) {
+      setLocalQuantity(quantity);
+    }
+  }, [quantity]);
+
+  // Pass ref to parent using callback ref
+  const buttonsRefCallback = (node) => {
+    originalButtonsRef.current = node;
+    if (onButtonsRef && node) {
+      onButtonsRef(node);
+    }
+  };
 
   // Find the actual variant based on selected color and size
   const getSelectedVariant = () => {
@@ -20,12 +43,14 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
       return null;
     }
     
+    const currentSize = selectedSize || localSelectedSize;
+    
     // First, try to find an exact match
     let variant = product.variants.find(variant => {
       const colorMatch = selectedColor && variant.color && 
         variant.color.toLowerCase() === selectedColor.toLowerCase();
-      const sizeMatch = selectedSize && variant.size && 
-        variant.size.toLowerCase() === selectedSize.toLowerCase();
+      const sizeMatch = currentSize && variant.size && 
+        variant.size.toLowerCase() === currentSize.toLowerCase();
       
       return colorMatch && sizeMatch;
     });
@@ -38,9 +63,9 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
     }
     
     // If still no match, try to find by size only
-    if (!variant && selectedSize) {
+    if (!variant && currentSize) {
       variant = product.variants.find(variant => 
-        variant.size && variant.size.toLowerCase() === selectedSize.toLowerCase()
+        variant.size && variant.size.toLowerCase() === currentSize.toLowerCase()
       );
     }
     
@@ -58,6 +83,20 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const isInCart = selectedVariant ? isItemInCart(selectedVariant.id) : false;
   const cartQuantity = selectedVariant ? getItemQuantity(selectedVariant.id) : 0;
 
+  const handleSizeChange = (size) => {
+    setLocalSelectedSize(size);
+    if (onSizeChange) {
+      onSizeChange(size);
+    }
+  };
+
+  const handleQuantityChange = (qty) => {
+    setLocalQuantity(qty);
+    if (onQuantityChange) {
+      onQuantityChange(qty);
+    }
+  };
+
   // Handle add to cart
   const handleAddToCart = async () => {
     if (!selectedVariant) {
@@ -70,7 +109,8 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
 
     try {
       // Use the actual variant ID from Shopify
-      const result = await addToCart(selectedVariant.id, quantity);
+      const currentQuantity = quantity || localQuantity;
+      const result = await addToCart(selectedVariant.id, currentQuantity);
       
       if (result.success) {
         setAddToCartMessage('Added to cart successfully!');
@@ -90,9 +130,10 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
   const updateQuantity = (delta) => {
     if (!selectedVariant) return;
     
+    const currentQuantity = quantity || localQuantity;
     const maxQuantity = selectedVariant.quantityAvailable || 0;
-    const newQuantity = Math.max(1, Math.min(maxQuantity, quantity + delta));
-    setQuantity(newQuantity);
+    const newQuantity = Math.max(1, Math.min(maxQuantity, currentQuantity + delta));
+    handleQuantityChange(newQuantity);
   };
 
   return (
@@ -110,18 +151,18 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           {product.isSale && (
             <div className="space-y-2">
               <div className="text-sm text-gray-500 line-through">
-                {product.originalPrice}
+                EGP {typeof product.originalPrice === 'object' ? product.originalPrice.amount : product.originalPrice}
               </div>
               <div>
                 <span className="text-sm font-medium text-black bg-[#FFE693] px-3 py-2 rounded">
-                  -{product.discountPercentage}% {product.price}
+                  -{product.discountPercentage}% EGP {typeof product.price === 'object' ? product.price.amount : product.price}
                 </span>
               </div>
             </div>
           )}
           {!product.isSale && (
             <div className="text-md font-montserrat-regular text-gray-900">
-              {product.price}
+              EGP {typeof product.price === 'object' ? product.price.amount : product.price}
             </div>
           )}
         </div>
@@ -207,9 +248,9 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
             {product.sizes && product.sizes.map((size) => (
               <button
                 key={size}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => handleSizeChange(size)}
                 className={`text-sm font-medium transition-colors ${
-                  selectedSize === size
+                  (selectedSize || localSelectedSize) === size
                     ? 'underline text-gray-900'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -242,17 +283,17 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => updateQuantity(-1)}
-              disabled={quantity <= 1}
+              disabled={(quantity || localQuantity) <= 1}
               className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               -
             </button>
             <span className="w-12 text-center text-sm text-gray-900">
-              {quantity}
+              {quantity || localQuantity}
             </span>
             <button
               onClick={() => updateQuantity(1)}
-              disabled={!selectedVariant || quantity >= (selectedVariant.quantityAvailable || 0)}
+              disabled={!selectedVariant || (quantity || localQuantity) >= (selectedVariant.quantityAvailable || 0)}
               className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               +
@@ -260,32 +301,19 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
           </div>
         </div>
 
-        {/* Add to Cart Message */}
-        {addToCartMessage && (
-          <div className={`p-3 rounded-md text-sm ${
-            addToCartMessage.includes('successfully') 
-              ? 'text-white border'
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}
-          style={addToCartMessage.includes('successfully') ? { backgroundColor: '#353C3D', borderColor: '#353C3D' } : {}}
-          >
-            {addToCartMessage}
-          </div>
-        )}
 
         {/* Add to Basket Button and Wishlist Button */}
-        <div className="flex space-x-3">
+        <div ref={buttonsRefCallback} className="flex space-x-3">
           <button 
             onClick={handleAddToCart}
             disabled={isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0}
             className={`flex-1 font-medium py-3 px-6 transition-colors ${
               isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
-                ? 'bg-gray-300 text-slate-50 cursor-not-allowed'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : isInCart
-                ? 'text-white hover:opacity-90'
-                : 'bg-white border border-gray-900 text-slate-50 hover:bg-gray-900 hover:text-white'
+                ? 'bg-gray-800 text-white hover:opacity-90'
+                : 'bg-black text-white hover:bg-gray-800'
             }`}
-            style={isInCart ? { backgroundColor: '#353C3D' } : {}}
           >
             {isAddingToCart 
               ? 'ADDING...' 
@@ -293,13 +321,22 @@ export default function ProductInfo({ product, selectedColor, onColorChange }) {
               ? 'OUT OF STOCK'
               : isInCart 
               ? 'ADDED TO CART' 
-              : 'ADD TO BASKET'
+              : 'ADD TO CART'
             }
           </button>
           
           {/* Wishlist Button */}
           <WishlistButton product={product} size="default" showText={false} />
         </div>
+
+        {/* Add to Cart Message */}
+        {addToCartMessage && (
+          <div className={`mt-2 text-xs text-center ${
+            addToCartMessage.includes('Failed') ? 'text-gray-900' : 'text-gray-900'
+          }`}>
+            {addToCartMessage}
+          </div>
+        )}
 
         {/* Additional Links */}
         {/* <div className="space-y-4 text-xs">
