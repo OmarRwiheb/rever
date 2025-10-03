@@ -697,6 +697,8 @@ export default function Navbar() {
                     >
                       Lookbook
                     </a>
+                    {/* Wishlist Link for Mobile */}
+                    <MobileWishlistLink />
                     {/* <a
                       href="/blog"
                       className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
@@ -710,15 +712,18 @@ export default function Navbar() {
                     >
                       About Us
                     </a>
-
-                    {/* Wishlist Link for Mobile */}
-                    <MobileWishlistLink />
-
                     <a
                       href="/contact"
                       className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
                     >
                       Contact Us
+                    </a>
+
+                    <a
+                      href="/returns"
+                      className="block text-sm font-montserrat-regular uppercase tracking-widest text-black transition-colors duration-200 py-2"
+                    >
+                      Returns & Exchanges
                     </a>
                   </div>
                 </div>
