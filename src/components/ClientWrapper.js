@@ -1,17 +1,17 @@
 // components/ClientWrapper.js
 "use client";
 import React, { useRef, useCallback, useState, useMemo, useEffect } from "react";
+import { useNavbar } from "@/components/Navbar";
+
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
-import { useNavbar } from "@/components/Navbar";
-import LoadingScreen from "./LoadingScreen";
 
 gsap.registerPlugin(Observer);
 
 export default function ClientWrapper({
   children,
   mountRadius = 1,
-  sectionNames = ["hero", "women", "men", "second-video", "footer"],
+  sectionNames = ["hero", "women", "men", "footer"],
 }) {
   const containerRef = useRef(null);
   const panelsRef = useRef([]);
@@ -22,6 +22,7 @@ export default function ClientWrapper({
   const lastScrollTime = useRef(0);
   const lastSectionUpdate = useRef(0);
   const observerRef = useRef(null);
+  const isActiveRef = useRef(true);
 
   const SCROLL_COOLDOWN = 1000;
   const SECTION_UPDATE_COOLDOWN = 100;
@@ -42,159 +43,160 @@ export default function ClientWrapper({
     }
   }, []);
 
+  // Memoize section names to prevent unnecessary recreations
+  const sectionNamesRef = useRef(sectionNames);
+  useEffect(() => {
+    sectionNamesRef.current = sectionNames;
+  }, [sectionNames]);
+
   const updateNavbarSection = useCallback(
     (index) => {
       const t = now();
       if (t - lastSectionUpdate.current < SECTION_UPDATE_COOLDOWN) return;
-      setCurrentSection(sectionNames[index] || "hero");
       lastSectionUpdate.current = t;
+      setCurrentSection(sectionNamesRef.current[index] || "hero");
     },
-    [setCurrentSection, sectionNames]
+    [setCurrentSection]
   );
 
   useEffect(() => {
     if (!mounted || !containerRef.current || panelsRef.current.length === 0) return;
 
-    // Prevent pull-to-refresh on mobile only when at first panel
-    const preventPullRefresh = (e) => {
-      if (currentIndexRef.current <= 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-    };
+    isActiveRef.current = true;
 
-    // Add touch event listeners for mobile pull-to-refresh prevention
-    const handleTouchStart = (e) => {
-      if (currentIndexRef.current <= 0 && e.touches[0].clientY > 50) {
-        e.preventDefault();
-      }
-    };
-
+    // Simplified touch handling for better performance
     const handleTouchMove = (e) => {
-      if (currentIndexRef.current <= 0) {
+      if (currentIndexRef.current === 0 && e.touches[0].clientY > 50) {
         e.preventDefault();
       }
     };
 
-    // Add event listeners only to the container, not the entire document
-    if (containerRef.current) {
-      containerRef.current.addEventListener('touchstart', handleTouchStart, { passive: false });
-      containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
-      containerRef.current.addEventListener('gesturestart', preventPullRefresh, { passive: false });
+    // Add event listeners to container only
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
 
-    // Small delay to ensure all panels are rendered
+    // Immediate initialization for faster loading
     const initTimeout = setTimeout(() => {
-      // Position panels
+      // Position panels with optimized settings
       panelsRef.current.forEach((panel, i) => {
         if (panel) {
           gsap.set(panel, {
             yPercent: i === 0 ? 0 : 100,
             zIndex: 10 + i,
+            force3D: true, // Force GPU acceleration
           });
         }
       });
 
       updateNavbarSection(0);
 
-      // Create observer
+      // Create observer with optimized settings
       if (observerRef.current) {
         observerRef.current.kill();
       }
 
       observerRef.current = Observer.create({
         target: window,
-        type: "wheel,touch,pointer",
+        type: "wheel,touch",
         preventDefault: true,
         wheelSpeed: -1,
-        tolerance: 10,
+        tolerance: 15, // Increased tolerance for better mobile performance
         allowClicks: true,
         lockAxis: true,
         ignoreInertia: true,
-        dragMinimum: 10,
+        dragMinimum: 20, // Increased minimum drag for better mobile UX
         onUp: () => {
-          console.log("Scroll up detected, current index:", currentIndexRef.current);
-          
           if (
             (tween.current && tween.current.isActive()) ||
             currentIndexRef.current >= panelsRef.current.length - 1 ||
             now() - lastScrollTime.current < SCROLL_COOLDOWN
           ) {
-            console.log("Scroll blocked");
             return;
           }
 
           const next = panelsRef.current[currentIndexRef.current + 1];
           if (next) {
-            console.log("Animating to next panel");
+            currentIndexRef.current++;
             tween.current = gsap.to(next, {
               yPercent: 0,
-              duration: 0.6,
-              ease: "power3.out",
+              duration: 0.5, // Faster animation
+              ease: "power2.out", // Simpler easing for better performance
+              force3D: true,
               onComplete: () => {
-                setActiveIndex(currentIndexRef.current);
-                console.log("Animation complete, new index:", currentIndexRef.current);
+                if (isActiveRef.current) {
+                  setActiveIndex(currentIndexRef.current);
+                }
               },
             });
-            currentIndexRef.current++;
             updateNavbarSection(currentIndexRef.current);
             lastScrollTime.current = now();
           }
         },
         onDown: () => {
-          console.log("Scroll down detected, current index:", currentIndexRef.current);
-          
           if (
             (tween.current && tween.current.isActive()) ||
             currentIndexRef.current <= 0 ||
             now() - lastScrollTime.current < SCROLL_COOLDOWN
           ) {
-            console.log("Scroll blocked");
             return;
           }
 
           const current = panelsRef.current[currentIndexRef.current];
           if (current) {
-            console.log("Animating to previous panel");
+            currentIndexRef.current--;
             tween.current = gsap.to(current, {
               yPercent: 100,
-              duration: 0.6,
-              ease: "power3.out",
+              duration: 0.5, // Faster animation
+              ease: "power2.out", // Simpler easing for better performance
+              force3D: true,
               onComplete: () => {
-                setActiveIndex(currentIndexRef.current);
-                console.log("Animation complete, new index:", currentIndexRef.current);
+                if (isActiveRef.current) {
+                  setActiveIndex(currentIndexRef.current);
+                }
               },
             });
-            currentIndexRef.current--;
             updateNavbarSection(currentIndexRef.current);
             lastScrollTime.current = now();
           }
         },
       });
-
-      console.log("GSAP Observer initialized with", panelsRef.current.length, "panels");
-    }, 100);
+    }, 50); // Reduced timeout for faster initialization
 
     return () => {
+      isActiveRef.current = false;
       clearTimeout(initTimeout);
+      
       if (observerRef.current) {
         observerRef.current.kill();
+        observerRef.current = null;
       }
+      
       if (tween.current) {
         tween.current.kill();
+        tween.current = null;
       }
-      // Remove event listeners from container
-      if (containerRef.current) {
-        containerRef.current.removeEventListener('touchstart', handleTouchStart);
-        containerRef.current.removeEventListener('touchmove', handleTouchMove);
-        containerRef.current.removeEventListener('gesturestart', preventPullRefresh);
+      
+      // Remove event listeners
+      if (container) {
+        container.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, [mounted, updateNavbarSection, kids.length]);
+  }, [mounted, updateNavbarSection]);
 
   if (!mounted) {
-    return <LoadingScreen />;
+    return (
+      <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
+        <div 
+          className="w-full animate-pulse bg-neutral-900/50" 
+          style={{
+            marginTop: "5rem",
+            height: "calc(100vh - 5rem)"
+          }}
+        />
+      </div>
+    );
   }
 
   return (
@@ -207,15 +209,11 @@ export default function ClientWrapper({
         overscrollBehavior: "none",
         touchAction: "pan-y",
         WebkitOverflowScrolling: "touch",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
       }}
     >
       {kids.map((Child, i) => {
         const shouldMount = Math.abs(i - activeIndex) <= mountRadius || i === 0;
+        const isNearActive = Math.abs(i - activeIndex) <= 1;
 
         return (
           <div
@@ -231,7 +229,7 @@ export default function ClientWrapper({
               width: "100vw",
               height: "100vh",
               overflow: "hidden",
-              willChange: "transform",
+              willChange: isNearActive ? "transform" : "auto",
               background: "transparent",
             }}
           >

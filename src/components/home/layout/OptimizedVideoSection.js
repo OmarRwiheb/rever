@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, memo } from "react";
 
-export default function OptimizedVideoSection({
+const OptimizedVideoSection = memo(function OptimizedVideoSection({
   src,
   mobileSrc,
   poster,
@@ -12,26 +12,53 @@ export default function OptimizedVideoSection({
 }) {
   const videoRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Detect mobile once on mount
+  // Detect mobile once on mount with proper SSR handling
   useEffect(() => {
+    setMounted(true);
     setIsMobile(window.innerWidth <= 768);
   }, []);
 
-  // Play/pause based on visibility
+  // Play/pause based on visibility - optimized with useCallback
   useEffect(() => {
+    if (!mounted) return;
+    
     const v = videoRef.current;
     if (!v) return;
+    
     if (isActive) {
-      const p = v.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
+      const playPromise = v.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
     } else {
       v.pause();
     }
-  }, [isActive]);
+  }, [isActive, mounted]);
 
-  const preload = priority ? "auto" : "metadata";
-  const videoSrc = (isMobile && mobileSrc) ? mobileSrc : src;
+  // Memoize video source to prevent unnecessary re-renders
+  const videoSrc = useMemo(() => {
+    if (!mounted) return mobileSrc || src; // Return mobile src during SSR if available
+    return (isMobile && mobileSrc) ? mobileSrc : src;
+  }, [isMobile, mobileSrc, src, mounted]);
+
+  // Optimize preload based on priority and mobile
+  const optimizedPreload = useMemo(() => {
+    if (!mounted) return "none"; // Don't preload during SSR
+    if (priority) return isMobile ? "metadata" : "auto"; // Less aggressive on mobile even for priority
+    return "none"; // No preloading for non-priority videos
+  }, [mounted, priority, isMobile]);
+
+
+  if (!mounted) {
+    // Return a placeholder during SSR to prevent hydration mismatch
+    return (
+      <div className="relative w-full h-full">
+        <div className="w-full h-full bg-gray-900 animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full">
@@ -42,13 +69,20 @@ export default function OptimizedVideoSection({
         muted
         playsInline
         loop
-        preload={preload}
+        preload={optimizedPreload}
         poster={poster}
         controls={false}
         controlsList="nodownload noremoteplayback noplaybackrate"
         disablePictureInPicture
         src={videoSrc}
+        style={{
+          // Optimize for better performance
+          willChange: isActive ? "transform" : "auto",
+          contain: "layout style paint",
+        }}
       />
     </div>
   );
-}
+});
+
+export default OptimizedVideoSection;

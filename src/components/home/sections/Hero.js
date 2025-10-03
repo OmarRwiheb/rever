@@ -1,6 +1,7 @@
 import OptimizedVideoSection from "../layout/OptimizedVideoSection";
+import { memo } from "react";
 
-export default function Hero() {
+const Hero = memo(function Hero() {
     return (
         <OptimizedVideoSection 
             src="/vid/main_desktop.mp4" 
@@ -8,4 +9,9 @@ export default function Hero() {
             priority={true} // Hero video loads immediately
         />
     );
-}
+});
+
+// Add display name for better debugging
+Hero.displayName = 'Hero';
+
+export default Hero;

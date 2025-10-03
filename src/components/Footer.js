@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import NewsletterSignupForm from './NewsletterSignupForm';
+import { memo } from 'react';
 
-export default function Footer({ fullPage = false }) {
+const Footer = memo(function Footer({ fullPage = false }) {
   return (
     <footer 
       className={`${fullPage ? "h-screen" : ""} bg-black text-white select-none`}
@@ -159,4 +160,9 @@ export default function Footer({ fullPage = false }) {
 
     </footer>
   );
-}
+});
+
+// Add display name for better debugging
+Footer.displayName = 'Footer';
+
+export default Footer;
