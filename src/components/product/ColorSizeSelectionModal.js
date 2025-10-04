@@ -233,7 +233,7 @@ export default function ColorSizeSelectionModal({
 
           {/* Success/Error Message */}
           {addToCartMessage && (
-            <div className={`mt-2 text-xs text-center ${
+            <div className={`mt-2 mb-2 text-xs text-center ${
               addToCartMessage.includes('Failed') ? 'text-gray-900' : 'text-gray-900'
             }`}>
               {addToCartMessage}
