@@ -96,7 +96,7 @@ export default function ColorSizeSelectionModal({
       setTimeout(() => {
         onClose();
         setAddToCartMessage('');
-      }, 1500);
+      }, 500);
     } catch (error) {
       console.error('Failed to add to cart:', error);
       setAddToCartMessage('Failed to add to cart');
