@@ -84,7 +84,7 @@ const OptimizedVideoSection = memo(function OptimizedVideoSection({
       
       {/* Scroll Down Overlay - only show for hero video (priority=true) */}
       {priority && (
-        <div className="absolute top-[90dvh] left-1/2 transform -translate-x-1/2 z-10">
+        <div className="absolute top-[90dvh] left-1/2 transform -translate-x-1/2 z-10 md:hidden">
           <div className="flex flex-col items-center space-y-3">
             <span className="text-white text-xs tracking-[0.2em] uppercase leading-relaxed">
               Women's fall 2025              
