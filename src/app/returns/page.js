@@ -228,7 +228,7 @@ export default function ReturnsPage() {
             {/* Instapay Field */}
             <div>
               <label htmlFor="instapay" className="block text-sm font-medium text-gray-900 mb-2">
-                Instapay Number / ID *
+                Instapay Number / Username *
               </label>
               <input
                 type="text"
