@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { validateFormSubmission } from '@/lib/recaptcha';
 import { ArrowRight, Plus, X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 export default function ReturnsPage() {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -351,7 +352,7 @@ export default function ReturnsPage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-medium text-gray-900 mb-4">
+          <h1 className="text-3xl font-awaken text-gray-900 mb-4">
             {requestType === 'return' ? 'Return Request' : requestType === 'exchange' ? 'Exchange Request' : 'Return or Exchange Request'}
           </h1>
           <p className="text-gray-600">
@@ -362,32 +363,32 @@ export default function ReturnsPage() {
         {/* Request Type Selection */}
         {!requestType && (
           <div className="mb-12">
-            <h2 className="text-xl font-medium text-gray-900 mb-6 text-center">What would you like to do?</h2>
+            <h2 className="text-xl font-montserrat-regular text-gray-900 mb-6 text-center">What would you like to do?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <button
                 onClick={() => setRequestType('return')}
-                className="p-6 border-2 border-gray-200 rounded-lg hover:border-gray-900 transition-colors text-left group"
+                className="p-6 border-2 border-black rounded-lg hover:border-gray-900 transition-colors text-left group"
               >
                 <div className="flex items-center mb-3">
                   <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-gray-200 transition-colors">
                     <RefreshCw className="w-6 h-6 text-gray-600" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900">Return Items</h3>
+                  <h3 className="text-lg font-montserrat-regular text-gray-900">Return Items</h3>
                 </div>
                 <p className="text-gray-600 text-sm">
-                  Return items for a full refund. Items must be in original condition with tags attached.
+                  Return items for a full refund.
                 </p>
               </button>
 
               <button
                 onClick={() => setRequestType('exchange')}
-                className="p-6 border-2 border-gray-200 rounded-lg hover:border-gray-900 transition-colors text-left group"
+                className="p-6 border-2 border-gray-200 rounded-lg hover:border-black transition-colors text-left group"
               >
                 <div className="flex items-center mb-3">
                   <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-gray-200 transition-colors">
                     <ArrowRight className="w-6 h-6 text-gray-600" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900">Exchange Items</h3>
+                  <h3 className="text-lg font-montserrat-regular text-gray-900">Exchange Items</h3>
                 </div>
                 <p className="text-gray-600 text-sm">
                   Exchange items for different size, color, or style. We'll help you find the perfect fit.
@@ -417,7 +418,7 @@ export default function ReturnsPage() {
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Order Number */}
                 <div>
-                  <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="orderNumber" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Order Number *
                   </label>
                   <input
@@ -427,14 +428,14 @@ export default function ReturnsPage() {
                     value={formData.orderNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="e.g., #REV-12345"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="email" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -444,14 +445,14 @@ export default function ReturnsPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
                 {/* Phone Number */}
                 <div>
-                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="phoneNumber" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -461,14 +462,14 @@ export default function ReturnsPage() {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="+201123456789"
                   />
                 </div>
 
                 {/* Instapay Field */}
                 <div>
-                  <label htmlFor="instapay" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="instapay" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Instapay Number / Username *
                   </label>
                   <input
@@ -478,7 +479,7 @@ export default function ReturnsPage() {
                     value={formData.instapay}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                      placeholder="+201123456789"
                   />
                 </div>
@@ -486,7 +487,7 @@ export default function ReturnsPage() {
                 {/* Items to Return */}
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <label className="block text-sm font-medium text-gray-900">
+                    <label className="block text-sm font-montserrat-regular text-gray-900">
                       Items to Return *
                     </label>
                     <button
@@ -502,7 +503,7 @@ export default function ReturnsPage() {
                     {formData.items.map((item, index) => (
                       <div key={index} className="border-b border-gray-200 pb-8 last:border-b-0">
                         <div className="flex items-center justify-between mb-6">
-                          <h4 className="text-sm font-medium text-gray-900">
+                          <h4 className="text-sm font-montserrat-regular text-gray-900">
                             Item {index + 1}
                           </h4>
                           {formData.items.length > 1 && (
@@ -519,7 +520,7 @@ export default function ReturnsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Product Name */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Product Name *
                             </label>
                             <input
@@ -527,14 +528,14 @@ export default function ReturnsPage() {
                               value={item.productName}
                               onChange={(e) => handleItemChange(index, 'productName', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Cotton T-Shirt"
                             />
                           </div>
 
                           {/* Size */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Size *
                             </label>
                             <input
@@ -542,14 +543,14 @@ export default function ReturnsPage() {
                               value={item.size}
                               onChange={(e) => handleItemChange(index, 'size', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., M, L, XL"
                             />
                           </div>
 
                           {/* Color */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Color *
                             </label>
                             <input
@@ -557,14 +558,14 @@ export default function ReturnsPage() {
                               value={item.color}
                               onChange={(e) => handleItemChange(index, 'color', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Black, White, Blue"
                             />
                           </div>
 
                           {/* Quantity */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Quantity *
                             </label>
                             <input
@@ -573,7 +574,7 @@ export default function ReturnsPage() {
                               value={item.quantity}
                               onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value))}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                             />
                           </div>
                         </div>
@@ -584,7 +585,7 @@ export default function ReturnsPage() {
 
                 {/* Reason for Return */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-4">
+                  <label className="block text-sm font-montserrat-regular text-gray-900 mb-4">
                     Reason for Return *
                   </label>
                   <div className="space-y-3">
@@ -615,7 +616,7 @@ export default function ReturnsPage() {
                   {/* Custom Reason Input */}
                   {formData.reason === 'other' && (
                     <div className="mt-4">
-                      <label htmlFor="customReason" className="block text-sm font-medium text-gray-900 mb-2">
+                      <label htmlFor="customReason" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                         Please specify your reason *
                       </label>
                       <input
@@ -625,7 +626,7 @@ export default function ReturnsPage() {
                         value={formData.customReason}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                        className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                         placeholder="Please describe your reason for return..."
                       />
                     </div>
@@ -634,7 +635,7 @@ export default function ReturnsPage() {
 
                 {/* Additional Information */}
                 <div>
-                  <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="additionalInfo" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Additional Information *
                   </label>
                   <textarea
@@ -644,7 +645,7 @@ export default function ReturnsPage() {
                     onChange={handleInputChange}
                     rows={4}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="Please provide any additional details about your return request..."
                   />
                 </div>
@@ -679,7 +680,7 @@ export default function ReturnsPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full max-w-xs py-3 font-medium transition-colors ${
+                    className={`w-full max-w-xs py-3 font-montserrat-regular transition-colors ${
                       isSubmitting
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-gray-900 text-white hover:bg-gray-800'
@@ -692,7 +693,7 @@ export default function ReturnsPage() {
 
               {/* Return Policy Information */}
               <div className="mt-16 pt-8 border-t border-gray-200">
-                <h4 className="text-sm font-medium text-gray-900 mb-4">Return Policy</h4>
+                <h4 className="text-sm font-montserrat-regular text-gray-900 mb-4">Return Policy</h4>
                 <div className="text-sm text-gray-600 space-y-2">
                   <p>• Returns must be requested within 7 days of delivery</p>
                   <p>• Items must be in original condition with tags attached</p>
@@ -711,7 +712,7 @@ export default function ReturnsPage() {
               <form onSubmit={handleExchangeSubmit} className="space-y-8">
                 {/* Order Number */}
                 <div>
-                  <label htmlFor="exchangeOrderNumber" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="exchangeOrderNumber" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Order Number *
                   </label>
                   <input
@@ -721,14 +722,14 @@ export default function ReturnsPage() {
                     value={exchangeFormData.orderNumber}
                     onChange={handleExchangeInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="e.g., #REV-12345"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="exchangeEmail" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="exchangeEmail" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -738,14 +739,14 @@ export default function ReturnsPage() {
                     value={exchangeFormData.email}
                     onChange={handleExchangeInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
                 {/* Phone Number */}
                 <div>
-                  <label htmlFor="exchangePhoneNumber" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="exchangePhoneNumber" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -755,7 +756,7 @@ export default function ReturnsPage() {
                     value={exchangeFormData.phoneNumber}
                     onChange={handleExchangeInputChange}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="+201123456789"
                   />
                 </div>
@@ -763,7 +764,7 @@ export default function ReturnsPage() {
                 {/* Items to Exchange */}
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <label className="block text-sm font-medium text-gray-900">
+                    <label className="block text-sm font-montserrat-regular text-gray-900">
                       Items You're Returning *
                     </label>
                     <button
@@ -779,7 +780,7 @@ export default function ReturnsPage() {
                     {exchangeFormData.items.map((item, index) => (
                       <div key={index} className="border-b border-gray-200 pb-8 last:border-b-0">
                         <div className="flex items-center justify-between mb-6">
-                          <h4 className="text-sm font-medium text-gray-900">
+                          <h4 className="text-sm font-montserrat-regular text-gray-900">
                             Item {index + 1}
                           </h4>
                           {exchangeFormData.items.length > 1 && (
@@ -796,7 +797,7 @@ export default function ReturnsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Product Name */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Product Name *
                             </label>
                             <input
@@ -804,14 +805,14 @@ export default function ReturnsPage() {
                               value={item.productName}
                               onChange={(e) => handleExchangeItemChange(index, 'productName', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Cotton T-Shirt"
                             />
                           </div>
 
                           {/* Size */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Size *
                             </label>
                             <input
@@ -819,14 +820,14 @@ export default function ReturnsPage() {
                               value={item.size}
                               onChange={(e) => handleExchangeItemChange(index, 'size', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., M, L, XL"
                             />
                           </div>
 
                           {/* Color */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Color *
                             </label>
                             <input
@@ -834,14 +835,14 @@ export default function ReturnsPage() {
                               value={item.color}
                               onChange={(e) => handleExchangeItemChange(index, 'color', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Black, White, Blue"
                             />
                           </div>
 
                           {/* Quantity */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Quantity *
                             </label>
                             <input
@@ -850,7 +851,7 @@ export default function ReturnsPage() {
                               value={item.quantity}
                               onChange={(e) => handleExchangeItemChange(index, 'quantity', parseInt(e.target.value))}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                             />
                           </div>
                         </div>
@@ -862,7 +863,7 @@ export default function ReturnsPage() {
                 {/* Exchange To Items */}
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <label className="block text-sm font-medium text-gray-900">
+                    <label className="block text-sm font-montserrat-regular text-gray-900">
                       Items You Want Instead *
                     </label>
                     <button
@@ -878,7 +879,7 @@ export default function ReturnsPage() {
                     {exchangeFormData.exchangeTo.map((item, index) => (
                       <div key={index} className="border-b border-gray-200 pb-8 last:border-b-0">
                         <div className="flex items-center justify-between mb-6">
-                          <h4 className="text-sm font-medium text-gray-900">
+                          <h4 className="text-sm font-montserrat-regular text-gray-900">
                             Item {index + 1}
                           </h4>
                           {exchangeFormData.exchangeTo.length > 1 && (
@@ -895,7 +896,7 @@ export default function ReturnsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Product Name */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Product Name *
                             </label>
                             <input
@@ -903,14 +904,14 @@ export default function ReturnsPage() {
                               value={item.productName}
                               onChange={(e) => handleExchangeToItemChange(index, 'productName', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Cotton T-Shirt"
                             />
                           </div>
 
                           {/* Size */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Size *
                             </label>
                             <input
@@ -918,14 +919,14 @@ export default function ReturnsPage() {
                               value={item.size}
                               onChange={(e) => handleExchangeToItemChange(index, 'size', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., M, L, XL"
                             />
                           </div>
 
                           {/* Color */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Color *
                             </label>
                             <input
@@ -933,14 +934,14 @@ export default function ReturnsPage() {
                               value={item.color}
                               onChange={(e) => handleExchangeToItemChange(index, 'color', e.target.value)}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                               placeholder="e.g., Black, White, Blue"
                             />
                           </div>
 
                           {/* Quantity */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                            <label className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                               Quantity *
                             </label>
                             <input
@@ -949,7 +950,7 @@ export default function ReturnsPage() {
                               value={item.quantity}
                               onChange={(e) => handleExchangeToItemChange(index, 'quantity', parseInt(e.target.value))}
                               required
-                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                              className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                             />
                           </div>
                         </div>
@@ -960,7 +961,7 @@ export default function ReturnsPage() {
 
                 {/* Reason for Exchange */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-4">
+                  <label className="block text-sm font-montserrat-regular text-gray-900 mb-4">
                     Reason for Exchange *
                   </label>
                   <div className="space-y-3">
@@ -991,7 +992,7 @@ export default function ReturnsPage() {
                   {/* Custom Reason Input */}
                   {exchangeFormData.reason === 'other' && (
                     <div className="mt-4">
-                      <label htmlFor="exchangeCustomReason" className="block text-sm font-medium text-gray-900 mb-2">
+                      <label htmlFor="exchangeCustomReason" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                         Please specify your reason *
                       </label>
                       <input
@@ -1001,7 +1002,7 @@ export default function ReturnsPage() {
                         value={exchangeFormData.customReason}
                         onChange={handleExchangeInputChange}
                         required
-                        className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500"
+                        className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent text-gray-900 placeholder-gray-500 font-montserrat-regular"
                         placeholder="Please describe your reason for exchange..."
                       />
                     </div>
@@ -1010,7 +1011,7 @@ export default function ReturnsPage() {
 
                 {/* Additional Information */}
                 <div>
-                  <label htmlFor="exchangeAdditionalInfo" className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="exchangeAdditionalInfo" className="block text-sm font-montserrat-regular text-gray-900 mb-2">
                     Additional Information *
                   </label>
                   <textarea
@@ -1020,7 +1021,7 @@ export default function ReturnsPage() {
                     onChange={handleExchangeInputChange}
                     rows={4}
                     required
-                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500"
+                    className="w-full px-0 py-2 border-0 border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-transparent resize-none text-gray-900 placeholder-gray-500 font-montserrat-regular"
                     placeholder="Please provide any additional details about your exchange request..."
                   />
                 </div>
@@ -1043,7 +1044,7 @@ export default function ReturnsPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full max-w-xs py-3 font-medium transition-colors ${
+                    className={`w-full max-w-xs py-3 font-montserrat-regular transition-colors ${
                       isSubmitting
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-gray-900 text-white hover:bg-gray-800'
@@ -1056,7 +1057,7 @@ export default function ReturnsPage() {
 
               {/* Exchange Policy Information */}
               <div className="mt-16 pt-8 border-t border-gray-200">
-                <h4 className="text-sm font-medium text-gray-900 mb-4">Exchange Policy</h4>
+                <h4 className="text-sm font-montserrat-regular text-gray-900 mb-4">Exchange Policy</h4>
                 <div className="text-sm text-gray-600 space-y-2">
                   <p>• Items must be in original condition with tags attached</p>
                   <p>• We'll contact you within 1-2 business days to confirm your exchange</p>
@@ -1069,6 +1070,9 @@ export default function ReturnsPage() {
           )}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
