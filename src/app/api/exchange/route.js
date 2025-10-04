@@ -1,12 +1,15 @@
-// app/api/returns/route.js
+// app/api/exchange/route.js
 import { NextResponse } from 'next/server';
 import { validateFormSubmission } from '@/lib/recaptcha';
 import nodemailer from 'nodemailer';
 
 // Email sending function
-async function sendConfirmationEmail({ email, orderNumber, items, reason, additionalInfo, instapay, returnRequestId }) {
+async function sendConfirmationEmail({ email, orderNumber, items, reason, additionalInfo, exchangeTo, exchangeRequestId }) {
+  console.log('sendConfirmationEmail called for exchange request:', { email, orderNumber, exchangeRequestId });
+  
   // Check if email configuration is available
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log('Email configuration missing - SMTP_USER or SMTP_PASS not set');
     return;
   }
 
@@ -31,69 +34,68 @@ async function sendConfirmationEmail({ email, orderNumber, items, reason, additi
 
   // Format reason for display
   const reasonLabels = {
-    'not_as_described': 'Item not as described',
     'wrong_size': 'Wrong size',
-    'defective': 'Defective/Damaged item',
-    'quality_issues': 'Quality issues',
-    'fit_issues': 'Not satisfied with fit',
+    'different_color': 'Different color',
+    'style_preference': 'Style preference',
+    'fit_issues': 'Fit issues',
     'other': 'Other'
   };
 
   const reasonText = reasonLabels[reason] || reason;
-
-  // Format items for display
-  const itemsList = items.map((item, index) => 
-    `Item ${index + 1}: ${item.productName} - Size: ${item.size}, Color: ${item.color} (Quantity: ${item.quantity})`
-  ).join('\n');
 
   // Email content
   const emailHtml = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px;">
         <h1 style="color: #333; font-size: 28px; margin: 0;">REVER</h1>
-        <p style="color: #666; margin: 5px 0;">Return Request Confirmation</p>
+        <p style="color: #666; margin: 5px 0;">Exchange Request Confirmation</p>
       </div>
       
       <div style="background: #f9f9f9; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #512123;">
-        <h2 style="color: #333; margin-top: 0; font-size: 20px;">Thank you for your return request!</h2>
+        <h2 style="color: #333; margin-top: 0; font-size: 20px;">Thank you for your exchange request!</h2>
         <p style="color: #555; line-height: 1.6; margin: 15px 0;">
-          We have received your return request and will review it within 1-2 business days. 
+          We have received your exchange request and will review it within 1-2 business days. 
           You will receive an update via email once your request has been processed.
         </p>
       </div>
       
       <div style="background: #F4EAE8; padding: 25px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #333; margin-top: 0; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Return Request Details</h3>
+        <h3 style="color: #333; margin-top: 0; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Exchange Request Details</h3>
         
         <div style="margin: 15px 0;">
           <p style="margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-          <p style="margin: 8px 0;"><strong>Request ID:</strong> ${returnRequestId}</p>
-          <p style="margin: 8px 0;"><strong>Reason for Return:</strong> ${reasonText}</p>
-          ${instapay ? `<p style="margin: 8px 0;"><strong>Instapay Phone:</strong> ${instapay}</p>` : ''}
+          <p style="margin: 8px 0;"><strong>Request ID:</strong> ${exchangeRequestId}</p>
+          <p style="margin: 8px 0;"><strong>Reason for Exchange:</strong> ${reasonText}</p>
+          <p style="margin: 8px 0;"><strong>Additional Information:</strong> ${additionalInfo}</p>
         </div>
         
         <div style="margin: 20px 0;">
-          <h4 style="color: #333; margin: 15px 0 10px 0;">Items to Return:</h4>
+          <h4 style="color: #333; margin: 15px 0 10px 0;">Items to Exchange:</h4>
           <div style="background: #f8f8f8; padding: 15px; border-radius: 5px;">
-            ${itemsList.split('\n').map(item => `<p style="margin: 5px 0; font-family: monospace;">${item}</p>`).join('')}
+            ${items.map((item, index) => 
+              `<p style="margin: 5px 0; font-family: monospace;">Item ${index + 1}: ${item.productName} - Size: ${item.size}, Color: ${item.color} (Quantity: ${item.quantity})</p>`
+            ).join('')}
           </div>
         </div>
         
-        ${additionalInfo ? `
         <div style="margin: 20px 0;">
-          <h4 style="color: #333; margin: 15px 0 10px 0;">Additional Information:</h4>
-          <p style="background: #f8f8f8; padding: 15px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6;">${additionalInfo}</p>
+          <h4 style="color: #333; margin: 15px 0 10px 0;">Exchange To:</h4>
+          <div style="background: #f8f8f8; padding: 15px; border-radius: 5px;">
+            ${exchangeTo.map((item, index) => 
+              `<p style="margin: 5px 0; font-family: monospace;">Item ${index + 1}: ${item.productName} - Size: ${item.size}, Color: ${item.color} (Quantity: ${item.quantity})</p>`
+            ).join('')}
+          </div>
         </div>
-        ` : ''}
       </div>
       
       <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3 style="color: #333; margin-top: 0;">What happens next?</h3>
         <ul style="color: #555; line-height: 1.6; padding-left: 20px;">
-          <li>We'll review your return request within 1-2 business days</li>
-          <li>You'll receive an email confirmation with return instructions</li>
-          <li>Refunds will be processed through Instapay only</li>
-          <li>Return shipping costs may apply depending on the reason</li>
+          <li>We'll review your exchange request within 1-2 business days</li>
+          <li>You'll receive an email confirmation with exchange instructions</li>
+          <li>We'll help you find the perfect replacement item</li>
+          <li>Exchange shipping costs may apply</li>
+          <li>Price differences will be handled separately</li>
         </ul>
       </div>
       
@@ -106,29 +108,35 @@ async function sendConfirmationEmail({ email, orderNumber, items, reason, additi
   `;
 
   const emailText = `
-REVER - Return Request Confirmation
+REVER - Exchange Request Confirmation
 
-Thank you for your return request!
+Thank you for your exchange request!
 
-We have received your return request and will review it within 1-2 business days. 
+We have received your exchange request and will review it within 1-2 business days. 
 You will receive an update via email once your request has been processed.
 
-Return Request Details:
+Exchange Request Details:
 - Order Number: ${orderNumber}
-- Request ID: ${returnRequestId}
-- Reason for Return: ${reasonText}
-${instapay ? `- Instapay Phone: ${instapay}` : ''}
+- Request ID: ${exchangeRequestId}
+- Reason for Exchange: ${reasonText}
+- Additional Information: ${additionalInfo}
 
-Items to Return:
-${itemsList}
+Items to Exchange:
+${items.map((item, index) => 
+  `Item ${index + 1}: ${item.productName} - Size: ${item.size}, Color: ${item.color} (Quantity: ${item.quantity})`
+).join('\n')}
 
-${additionalInfo ? `Additional Information:\n${additionalInfo}\n` : ''}
+Exchange To:
+${exchangeTo.map((item, index) => 
+  `Item ${index + 1}: ${item.productName} - Size: ${item.size}, Color: ${item.color} (Quantity: ${item.quantity})`
+).join('\n')}
 
 What happens next?
-- We'll review your return request within 1-2 business days
-- You'll receive an email confirmation with return instructions
-- Refunds will be processed through Instapay only
-- Return shipping costs may apply depending on the reason
+- We'll review your exchange request within 1-2 business days
+- You'll receive an email confirmation with exchange instructions
+- We'll help you find the perfect replacement item
+- Exchange shipping costs may apply
+- Price differences will be handled separately
 
 ---
 This is an automated confirmation email. Please do not reply to this email.
@@ -141,7 +149,7 @@ Submitted on: ${new Date().toLocaleString()}
     const mailData = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: email,
-      subject: `Return Request Confirmation - Order ${orderNumber}`,
+      subject: `Exchange Request Confirmation - Order ${orderNumber}`,
       text: emailText,
       html: emailHtml,
     };
@@ -172,12 +180,11 @@ export async function POST(request) {
       items, 
       reason, 
       additionalInfo,
-      instapay,
-      recaptchaToken 
+      exchangeTo
     } = body;
 
     // Validate required fields
-    if (!orderNumber || !email || !phoneNumber || !items || !reason || !additionalInfo || !instapay) {
+    if (!orderNumber || !email || !phoneNumber || !items || !reason || !additionalInfo || !exchangeTo) {
       return NextResponse.json({ 
         error: 'Missing required fields. All fields are required.' 
       }, { status: 400 });
@@ -198,34 +205,6 @@ export async function POST(request) {
         }, { status: 400 });
       }
     }
-
-    // Verify reCAPTCHA if token provided
-    // if (recaptchaToken) {
-    //   try {
-    //     await validateFormSubmission(null, 'returns', recaptchaToken);
-    //   } catch (error) {
-    //     console.error('reCAPTCHA verification failed:', error);
-    //     return NextResponse.json({ 
-    //       error: 'reCAPTCHA verification failed' 
-    //     }, { status: 400 });
-    //   }
-    // }
-
-    // Format products data according to the JSON schema
-    const productsData = items.map(item => {
-      const quantity = parseInt(item.quantity);
-      
-      if (isNaN(quantity)) {
-        throw new Error(`Invalid product data: quantity=${item.quantity}`);
-      }
-      
-      return {
-        product_name: item.productName,
-        size: item.size,
-        color: item.color,
-        quantity: quantity
-      };
-    });
 
     // Create metaobject mutation
     const mutation = `
@@ -250,7 +229,7 @@ export async function POST(request) {
 
     const variables = {
       metaobject: {
-        type: 'return_request',
+        type: 'exchange_request',
         fields: [
           {
             key: 'order_number',
@@ -266,19 +245,29 @@ export async function POST(request) {
           },
           {
             key: 'products',
-            value: JSON.stringify(productsData)
+            value: JSON.stringify(items.map(item => ({
+              product_name: item.productName,
+              size: item.size,
+              color: item.color,
+              quantity: item.quantity
+            })))
           },
           {
-            key: 'reason_for_return',
+            key: 'reason',
             value: reason
           },
           {
             key: 'additional_info',
-            value: additionalInfo || ''
+            value: additionalInfo
           },
           {
-            key: 'instapay',
-            value: instapay || ''
+            key: 'exchange_to',
+            value: JSON.stringify(exchangeTo.map(item => ({
+              product_name: item.productName,
+              size: item.size,
+              color: item.color,
+              quantity: item.quantity
+            })))
           }
         ]
       }
@@ -289,30 +278,32 @@ export async function POST(request) {
     const accessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
     if (!shopifyEndpoint || !accessToken) {
-      console.warn('Shopify Admin API configuration missing - storing return request locally');
+      console.warn('Shopify Admin API configuration missing - storing exchange request locally');
       
-      // Generate a local return request ID
-      const returnRequestId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Generate a local exchange request ID
+      const exchangeRequestId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       // Send confirmation email to user even without Shopify integration
       try {
+        console.log('Attempting to send exchange confirmation email to:', email);
         await sendConfirmationEmail({
           email,
           orderNumber,
           items,
           reason,
           additionalInfo,
-          instapay,
-          returnRequestId
+          exchangeTo,
+          exchangeRequestId
         });
+        console.log('Exchange confirmation email sent successfully to:', email);
       } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
+        console.error('Failed to send exchange confirmation email:', emailError);
       }
 
       return NextResponse.json({
         success: true,
-        message: 'Return request submitted successfully (stored locally)',
-        returnRequestId,
+        message: 'Exchange request submitted successfully (stored locally)',
+        exchangeRequestId,
         warning: 'Shopify Admin API not configured - request stored locally only'
       });
     }
@@ -365,31 +356,34 @@ export async function POST(request) {
 
     // Send confirmation email to user
     try {
+      console.log('Attempting to send exchange confirmation email to:', email);
       await sendConfirmationEmail({
         email,
         orderNumber,
         items,
         reason,
         additionalInfo,
-        instapay,
-        returnRequestId: createdMetaobject.id
+        exchangeTo,
+        exchangeRequestId: createdMetaobject.id
       });
+      console.log('Exchange confirmation email sent successfully to:', email);
     } catch (emailError) {
+      console.error('Failed to send exchange confirmation email:', emailError);
       // Don't fail the request if email fails, just log it
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Return request submitted successfully',
-      returnRequestId: createdMetaobject.id,
+      message: 'Exchange request submitted successfully',
+      exchangeRequestId: createdMetaobject.id,
       data: createdMetaobject
     });
 
   } catch (error) {
-    console.error('Returns API error:', error);
+    console.error('Exchange API error:', error);
     return NextResponse.json(
       { 
-        error: `Failed to create return request: ${error.message}`,
+        error: `Failed to create exchange request: ${error.message}`,
         details: error.stack
       },
       { status: 500 }
