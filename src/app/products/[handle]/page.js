@@ -172,6 +172,7 @@ export default function ProductDetailPage() {
         selectedSize={selectedSize}
         quantity={quantity}
         onColorChange={handleColorChange}
+        onSizeChange={handleSizeChange}
         originalButtonsRef={originalButtonsRef}
       />
     </div>

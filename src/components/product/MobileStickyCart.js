@@ -2,12 +2,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import WishlistButton from '@/components/wishlist/WishlistButton';
+import ColorSizeSelectionModal from './ColorSizeSelectionModal';
 
-export default function MobileStickyCart({ product, selectedColor, selectedSize, quantity, onColorChange, originalButtonsRef }) {
+export default function MobileStickyCart({ product, selectedColor, selectedSize, quantity, onColorChange, onSizeChange, originalButtonsRef }) {
   const [isVisible, setIsVisible] = useState(false);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [addToCartMessage, setAddToCartMessage] = useState('');
-  const { addToCart, getItemQuantity, isItemInCart } = useCart();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isItemInCart } = useCart();
 
   // Find the actual variant based on selected color and size
   const getSelectedVariant = () => {
@@ -50,32 +50,9 @@ export default function MobileStickyCart({ product, selectedColor, selectedSize,
   const selectedVariant = getSelectedVariant();
   const isInCart = selectedVariant ? isItemInCart(selectedVariant.id) : false;
 
-  // Handle add to cart
-  const handleAddToCart = async () => {
-    if (!selectedVariant || isAddingToCart) return;
-
-    setIsAddingToCart(true);
-    setAddToCartMessage('');
-
-    try {
-      await addToCart(selectedVariant.id, quantity);
-      setAddToCartMessage('Added to cart!');
-      
-      // Clear message after 2 seconds
-      setTimeout(() => {
-        setAddToCartMessage('');
-      }, 2000);
-    } catch (error) {
-      console.error('Failed to add to cart:', error);
-      setAddToCartMessage('Failed to add to cart');
-      
-      // Clear error message after 3 seconds
-      setTimeout(() => {
-        setAddToCartMessage('');
-      }, 3000);
-    } finally {
-      setIsAddingToCart(false);
-    }
+  // Handle button click - open modal instead of direct add to cart
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
   };
 
   // Scroll detection to show/hide sticky component
@@ -120,7 +97,7 @@ export default function MobileStickyCart({ product, selectedColor, selectedSize,
     <>
       {/* Sticky Mobile Cart */}
       {isVisible && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 lg:hidden" style={{ boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)' }}>
+        <div className="fixed bottom-0 left-0 right-0 z-10 bg-white border-t border-gray-200 lg:hidden" style={{ boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)' }}>
           <div className="px-4 py-3">
             {/* Product Info */}
             <div className="flex items-center justify-between mb-3">
@@ -128,12 +105,6 @@ export default function MobileStickyCart({ product, selectedColor, selectedSize,
                 <h3 className="text-sm font-medium text-gray-900 truncate">
                   {product.name}
                 </h3>
-                {selectedVariant && (
-                  <div className="text-xs text-gray-600 mt-1">
-                    {selectedColor && <span>{selectedColor}</span>}
-                    {selectedSize && <span className="ml-2">{selectedSize}</span>}
-                  </div>
-                )}
               </div>
               {selectedVariant && (
                 <div className="text-sm font-semibold text-gray-900 ml-4">
@@ -145,38 +116,28 @@ export default function MobileStickyCart({ product, selectedColor, selectedSize,
             {/* Buttons */}
             <div className="flex space-x-3">
               <button 
-                onClick={handleAddToCart}
-                disabled={isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0}
-                className={`flex-1 font-medium py-3 px-4 text-sm transition-colors ${
-                  isAddingToCart || !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : isInCart
-                    ? 'bg-gray-800 text-white hover:opacity-90'
-                    : 'bg-black text-white hover:bg-gray-800'
-                }`}
+                onClick={handleButtonClick}
+                className="flex-1 font-medium py-3 px-4 text-sm transition-colors bg-black text-white hover:bg-gray-800"
               >
-                {isAddingToCart 
-                  ? 'ADDING...' 
-                  : !selectedVariant || !selectedVariant.availableForSale || selectedVariant.quantityAvailable === 0
-                  ? 'OUT OF STOCK'
-                  : isInCart 
-                  ? 'ADDED TO CART' 
-                  : 'ADD TO CART'
-                }
+                ADD TO CART
               </button>
+              <WishlistButton product={product} size="default" showText={false} />
             </div>
-
-            {/* Success/Error Message */}
-            {addToCartMessage && (
-              <div className={`mt-2 text-xs text-center ${
-                addToCartMessage.includes('Failed') ? 'text-gray-900' : 'text-gray-900'
-              }`}>
-                {addToCartMessage}
-              </div>
-            )}
           </div>
         </div>
       )}
+
+      {/* Color Size Selection Modal */}
+      <ColorSizeSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={product}
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+        quantity={quantity}
+        onColorChange={onColorChange}
+        onSizeChange={onSizeChange}
+      />
     </>
   );
 }
