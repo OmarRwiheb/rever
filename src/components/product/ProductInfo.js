@@ -151,18 +151,18 @@ export default function ProductInfo({ product, selectedColor, selectedSize, quan
           {product.isSale && (
             <div className="space-y-2">
               <div className="text-sm text-gray-500 line-through">
-                EGP {typeof product.originalPrice === 'object' ? product.originalPrice.amount : product.originalPrice}
+                {typeof product.originalPrice === 'object' ? product.originalPrice.amount : product.originalPrice}
               </div>
               <div>
-                <span className="text-sm font-medium text-black bg-[#FFE693] px-3 py-2 rounded">
-                  -{product.discountPercentage}% EGP {typeof product.price === 'object' ? product.price.amount : product.price}
-                </span>
+                  <span className="text-sm font-medium text-black bg-[#FFE693] px-3 py-2 rounded">
+                    -{product.discountPercentage}% {typeof product.price === 'object' ? product.price.amount : product.price}
+                  </span>
               </div>
             </div>
           )}
           {!product.isSale && (
             <div className="text-md font-montserrat-regular text-gray-900">
-              EGP {typeof product.price === 'object' ? product.price.amount : product.price}
+              {typeof product.price === 'object' ? product.price.amount : product.price}
             </div>
           )}
         </div>
