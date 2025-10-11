@@ -26,6 +26,7 @@ const PRODUCT_FIELDS = `
           key
           value
         }
+  tags
   options { name values }
   variants(first: 50) {
     edges {
@@ -46,7 +47,7 @@ const PRODUCT_FIELDS = `
 
 const PRODUCTS_QUERY = `
   query Products($first: Int!, $after: String) @inContext(country: EG, language: EN) {
-    products(first: $first, after: $after, query: "available_for_sale:true") {
+    products(first: $first, after: $after, query: "available_for_sale:true AND NOT tag:dev-only") {
       edges {
         cursor
         node { ${PRODUCT_FIELDS} }
@@ -73,6 +74,17 @@ const PRODUCT_BY_HANDLE_QUERY = `
 
 // ---------- Helpers ----------
 const lc = (s) => (s || '').toLowerCase();
+
+// Helper function to check if product has dev-only tag
+const hasDevOnlyTag = (tags) => {
+  if (!Array.isArray(tags)) return false;
+  return tags.some(tag => lc(tag) === 'dev-only');
+};
+
+// Helper function to filter out dev-only products
+const filterDevOnlyProducts = (products) => {
+  return products.filter(product => !hasDevOnlyTag(product.tags));
+};
 
 const getOptionValues = (options, names) => {
   if (!Array.isArray(options)) return [];
@@ -223,6 +235,8 @@ const transformProduct = (p) => {
     // Metafields data
     metafields: p.metafields || [],
     fabricAndCare: fabricAndCare,
+    // Tags data
+    tags: p.tags || [],
     // Useful extras your UI might want:
     availability: {
       hasAnyAvailable: variants.some((v) => v.availableForSale),
@@ -240,9 +254,11 @@ export async function getProducts(first = 50, after = null) {
   if (!connection?.edges) throw new Error('Invalid response from Shopify');
 
   const products = connection.edges.map((e) => transformProduct(e.node));
+  // Apply additional client-side filtering as backup
+  const filteredProducts = filterDevOnlyProducts(products);
   const pageInfo = connection.pageInfo || { hasNextPage: false, endCursor: null };
 
-  return { products, pageInfo };
+  return { products: filteredProducts, pageInfo };
 }
 
 export async function getProductById(id) {

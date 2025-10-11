@@ -44,8 +44,15 @@ export default function RelatedProducts({ product }) {
             })
           );
           
-          // Filter out failed requests
-          const validProducts = products.filter(p => p !== null);
+          // Filter out failed requests and dev-only products
+          const validProducts = products.filter(p => {
+            if (p === null) return false;
+            // Filter out dev-only products
+            if (p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+              return false;
+            }
+            return true;
+          });
           setRecommendations(validProducts);
         } else {
           setRecommendations([]);

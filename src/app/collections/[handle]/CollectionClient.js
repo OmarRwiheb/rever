@@ -142,6 +142,11 @@ export default function CollectionClient({ handle }) {
   const filteredProducts = useMemo(() => {
     const out = allProducts
       .filter((p) => {
+        // Filter out dev-only products
+        if (p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+          return false;
+        }
+        
         if (filters.colors.length > 0) {
           const hasMatchingColor = p.colors?.some((c) => filters.colors.includes(c));
           if (!hasMatchingColor) return false;

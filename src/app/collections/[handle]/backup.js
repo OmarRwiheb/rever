@@ -99,6 +99,11 @@ export default function CollectionPage() {
   // Apply filters + sorting
   const filteredProducts = useMemo(() => {
     let filtered = allProducts.filter((product) => {
+      // Filter out dev-only products
+      if (product.tags && product.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+        return false;
+      }
+      
       // Color filter
       if (filters.colors.length > 0 && !filters.colors.includes(product.color)) {
         return false;

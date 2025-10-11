@@ -48,6 +48,17 @@ const COLLECTION_BY_HANDLE_QUERY = `
   }
 `;
 
+// Helper function to check if product has dev-only tag
+const hasDevOnlyTag = (tags) => {
+  if (!Array.isArray(tags)) return false;
+  return tags.some(tag => tag.toLowerCase() === 'dev-only');
+};
+
+// Helper function to filter out dev-only products
+const filterDevOnlyProducts = (products) => {
+  return products.filter(product => !hasDevOnlyTag(product.tags));
+};
+
 export async function getCollectionProductsByHandle({
   handle,
   first = 24,
@@ -66,8 +77,10 @@ export async function getCollectionProductsByHandle({
 
   const edges = data.collection.products?.edges ?? [];
   const products = edges.map(e => e.node);
+  // Filter out dev-only products
+  const filteredProducts = filterDevOnlyProducts(products);
   const pageInfo = data.collection.products?.pageInfo ?? { hasNextPage: false, endCursor: null };
   console.log('collection', data.collection);
-  console.log('products', products);
-  return { collection: data.collection, products, pageInfo };
+  console.log('products', filteredProducts);
+  return { collection: data.collection, products: filteredProducts, pageInfo };
 }
