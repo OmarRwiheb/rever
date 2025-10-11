@@ -228,7 +228,7 @@ const transformProduct = (p) => {
 
   // Extract metafields
   const metafields = p.metafields || [];
-  const fabricAndCare = metafields.find(mf => mf.key === 'fabric_and_care')?.value || '';
+  const fabricAndCare = metafields.find(mf => mf && mf.key === 'fabric_and_care')?.value || '';
 
   return {
     // Keep full Shopify GID (don't parse into number; safer for APIs and links)
