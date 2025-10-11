@@ -99,8 +99,8 @@ export default function CollectionPage() {
   // Apply filters + sorting
   const filteredProducts = useMemo(() => {
     let filtered = allProducts.filter((product) => {
-      // Filter out dev-only products
-      if (product.tags && product.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+      // Filter out dev-only products (only in production)
+      if (process.env.NODE_ENV === 'production' && product.tags && product.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
         return false;
       }
       

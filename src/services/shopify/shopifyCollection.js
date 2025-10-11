@@ -48,14 +48,25 @@ const COLLECTION_BY_HANDLE_QUERY = `
   }
 `;
 
+// Helper function to check if we're in production
+const isProduction = () => {
+  // Check NODE_ENV first, then fallback to checking if we're not in development
+  return process.env.NODE_ENV === 'production' || 
+         (process.env.NODE_ENV !== 'development' && typeof window === 'undefined');
+};
+
 // Helper function to check if product has dev-only tag
 const hasDevOnlyTag = (tags) => {
   if (!Array.isArray(tags)) return false;
   return tags.some(tag => tag.toLowerCase() === 'dev-only');
 };
 
-// Helper function to filter out dev-only products
+// Helper function to filter out dev-only products (only in production)
 const filterDevOnlyProducts = (products) => {
+  // Only filter dev-only products in production
+  if (!isProduction()) {
+    return products;
+  }
   return products.filter(product => !hasDevOnlyTag(product.tags));
 };
 

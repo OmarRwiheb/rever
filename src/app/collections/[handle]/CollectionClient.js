@@ -142,8 +142,8 @@ export default function CollectionClient({ handle }) {
   const filteredProducts = useMemo(() => {
     const out = allProducts
       .filter((p) => {
-        // Filter out dev-only products
-        if (p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+        // Filter out dev-only products (only in production)
+        if (process.env.NODE_ENV === 'production' && p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
           return false;
         }
         

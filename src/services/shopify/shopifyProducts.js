@@ -45,9 +45,23 @@ const PRODUCT_FIELDS = `
   }
 `;
 
+// Helper function to check if we're in production
+const isProduction = () => {
+  // Check NODE_ENV first, then fallback to checking if we're not in development
+  return process.env.NODE_ENV === 'production' || 
+         (process.env.NODE_ENV !== 'development' && typeof window === 'undefined');
+};
+
+// Dynamic query based on environment
+const getProductsQuery = () => {
+  const baseQuery = "available_for_sale:true";
+  const devOnlyExclusion = isProduction() ? " AND NOT tag:dev-only" : "";
+  return baseQuery + devOnlyExclusion;
+};
+
 const PRODUCTS_QUERY = `
   query Products($first: Int!, $after: String) @inContext(country: EG, language: EN) {
-    products(first: $first, after: $after, query: "available_for_sale:true AND NOT tag:dev-only") {
+    products(first: $first, after: $after, query: "${getProductsQuery()}") {
       edges {
         cursor
         node { ${PRODUCT_FIELDS} }
@@ -81,8 +95,12 @@ const hasDevOnlyTag = (tags) => {
   return tags.some(tag => lc(tag) === 'dev-only');
 };
 
-// Helper function to filter out dev-only products
+// Helper function to filter out dev-only products (only in production)
 const filterDevOnlyProducts = (products) => {
+  // Only filter dev-only products in production
+  if (!isProduction()) {
+    return products;
+  }
   return products.filter(product => !hasDevOnlyTag(product.tags));
 };
 

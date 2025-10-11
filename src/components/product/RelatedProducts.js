@@ -44,11 +44,11 @@ export default function RelatedProducts({ product }) {
             })
           );
           
-          // Filter out failed requests and dev-only products
+          // Filter out failed requests and dev-only products (only in production)
           const validProducts = products.filter(p => {
             if (p === null) return false;
-            // Filter out dev-only products
-            if (p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
+            // Filter out dev-only products (only in production)
+            if (process.env.NODE_ENV === 'production' && p.tags && p.tags.some(tag => tag.toLowerCase() === 'dev-only')) {
               return false;
             }
             return true;
